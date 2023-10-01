@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "title": "post updated",
+      "author": "jun",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "title": "post2",
+      "author": "jun"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
