@@ -1,96 +1,33 @@
 {
   "threads": [
     {
-      "id": 1,
-      "title": "post updated",
-      "topic": "please post comment",
-      "builder": "hiroyuki",
-      "createdAt": ""
+      "title": "タイトル",
+      "topic": "トピック",
+      "createdAt": 1696721763505,
+      "builder": "名無し",
+      "id": 1
     },
     {
-      "content": "aaa",
-      "poster": "",
+      "title": "タイトル",
+      "topic": "トピック",
+      "createdAt": 1696721784144,
+      "builder": "名無し",
       "id": 2
     },
     {
       "title": "タイトル",
       "topic": "トピック",
-      "createdAt": 1696663657126,
+      "createdAt": 1696721907292,
       "builder": "名無し",
       "id": 3
+    },
+    {
+      "title": "タイトル",
+      "topic": "トピック",
+      "createdAt": "2023-10-07T23:39:10.868Z",
+      "builder": "名無し",
+      "id": 4
     }
   ],
-  "comments": [
-    {
-      "commentContent": "aaa",
-      "poster": "",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T06:51:03.686Z",
-      "threadId": "1",
-      "id": 1
-    },
-    {
-      "commentContent": "投稿者名なし",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T06:58:10.573Z",
-      "threadId": "1",
-      "id": 2
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.827Z",
-      "threadId": "1",
-      "id": 3
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.843Z",
-      "threadId": "1",
-      "id": 4
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.866Z",
-      "threadId": "1",
-      "id": 5
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.890Z",
-      "threadId": "1",
-      "id": 6
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.905Z",
-      "threadId": "1",
-      "id": 7
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.925Z",
-      "threadId": "1",
-      "id": 8
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.935Z",
-      "threadId": "1",
-      "id": 9
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T07:02:30.947Z",
-      "threadId": "1",
-      "id": 10
-    }
-  ]
+  "comments": []
 }
