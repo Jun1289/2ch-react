@@ -1,18 +1,24 @@
 const dotenv = require('dotenv')
 dotenv.config()
-// import * as jsonServer from 'json-server'
-const jsonServer = require('json-server')
-// const serverMiddleware = require('./middleware.js')
-const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 const nfetch = require('node-fetch')
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const jsonServer = require('json-server')
+const server = jsonServer.create()
+const router = jsonServer.router('db.json')
+const middlewares = jsonServer.defaults()
 
-server.use(middlewares)
-
+server.use(cookieParser());
 server.use(jsonServer.bodyParser)
+
+// 引数のユーザ名と一致するユーザを返す関数
+const getUserByName = async (name) => {
+  const usersExist = await nfetch("http://localhost:8000/users");
+  const users = await usersExist.json();
+  return users.find((user) => name === user.name);
+}
 
 // コメント投稿
 server.post('/threads/:threadId/comments', (req, res, next) => {
@@ -71,8 +77,23 @@ server.post('/threads', (req, res, next) => {
   next()
 })
 
-// お気に入りに登録
+// ユーザがログインしているかチェック
+server.use((req, res, next) => {
+  console.log("cookieです", req.cookies)
+  if (req.cookies.token) {
+    console.log("if内容です", req.cookies)
+    try {
+      const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
+      req.user = user;
+      console.log(user)
+    } catch (err) {
+      res.status(401).json({ message: '無効なトークンです' });
+    }
+  }
+  next();
+});
 
+// お気に入りに登録
 
 // お気に入りから削除
 
@@ -83,16 +104,15 @@ server.post("/users/register", async (req, res) => {
     const { name, password } = req.body;
 
     const usersExist = await nfetch("http://localhost:8000/users")
-    const users = await usersExist.json()
-    const user = users.find((user) => name === user.name)
+    const user = await getUserByName(name)
 
     if (user) {
       return res.status(400).json({ message: "既に使用されているユーザ名です。他のユーザ名を入力してください" })
     }
 
     // jwt.sign の第一引数は トークンのペイロード（ユーザの認証情報）、第二引数は秘密鍵の情報、第三引数はオプション（今回はトークンの有効期限を10分に設定）
-    const token = jwt.sign({ name }, process.env.ACCESS_TOKEN_SELECT, {
-      expiresIn: "10m",
+    const token = jwt.sign({ name }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "24h",
     })
     // bcrypt.hash の第二引数は salt rounds(ハッシュ化を行う回数)
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -111,40 +131,41 @@ server.post("/users/register", async (req, res) => {
 
     const newUser = await response.json();
 
-    res.cookie("token", token, { httpOnly: true })
+    res.cookie("token", token, { httpOnly: true, path: '/' })
 
     res.status(200).json({ message: "新しくユーザが作成されました", newUser })
   } catch (error) {
     console.log(error)
-    res.status(405).json(error);
+    res.status(400).json(error);
   }
 });
 
 // ログイン
 server.post("/users/signin", async (req, res) => {
+  console.log(req.body)
   try {
     const inputUserName = req.body.name
     const inputPassword = req.body.password
     const usersExist = await nfetch("http://localhost:8000/users")
-    const users = await usersExist.json()
-    const user = users.find((user) => inputUserName == user.name)
+    const user = await getUserByName(inputUserName)
+
+    if (!user) {
+      return res.status(401).json({ message: "認証情報が無効です" })
+    }
+
     const match = await bcrypt.compare(inputPassword, user.hashedPassword)
 
-    if (!user && !match) {
-      return res.status(400).json({ message: "ユーザ名とパスワードが間違っています" })
-    }
-    if (!user) {
-      return res.status(400).json({ message: "ユーザ名が間違っています" })
-    }
     if (!match) {
-      return res.status(400).json({ message: "パスワードが間違っています" })
+      return res.status(401).json({ message: "認証情報が無効です" })
     }
 
     const token = jwt.sign(
       { inputUserName },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m", }
+      { expiresIn: "24h", }
     )
+
+    res.cookie("token", token, { httpOnly: true, path: '/' })
 
     res.status(200).json({
       message: "ログインに成功しました",
@@ -153,12 +174,15 @@ server.post("/users/signin", async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(400).json(error)
+    res.status(500).json({ message: "内部エラーが発生しました" })
   }
 })
 
 // ログアウト
-
+server.post('/users/logout', (req, res) => {
+  res.clearCookie('token', { path: '/' });
+  res.json({ message: 'ログアウトしました' });
+});
 
 server.delete('/clear-comments', (req, res) => {
   (router.db.get('comments') as any).remove().write();
@@ -180,7 +204,7 @@ server.delete('/threads/:threadId/comments', (req, res) => {
   res.status(200).send(`スレッドID ${threadId} のスレッドの子マントを全て削除しました`);
 });
 
-
+server.use(middlewares)
 server.use(router)
 server.listen(8000, () => {
   console.log('JSON Server is running')

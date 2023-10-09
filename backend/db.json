@@ -291,6 +291,24 @@
       "hashedPassword": "$2b$10$n9X9PeO7yGw/zaoUmnxdwuLalUhdsSPEzn0XVuZRMlmPETz89ffW2",
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjMiLCJwYXNzd29yZCI6IjEyMzQ1NiIsImlhdCI6MTY5Njc0NzU0NywiZXhwIjoxNjk2NzQ4MTQ3fQ.nKkLPlnj-bH-I5PsvboqGehA6k6puJN8KnmV6yqSbYg",
       "id": 5
+    },
+    {
+      "name": "user5",
+      "hashedPassword": "$2b$10$.GiVRFXv7mEpSSWDnRLI7.HxlVLNlcs6tPu6kMYdoPZ4pEynU3HC2",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjUiLCJpYXQiOjE2OTY3NjY0MjEsImV4cCI6MTY5Njg1MjgyMX0.aXzRXSVvKhYaT9no4ZY3VmTU7-FysbOvrSdSBMXTUjM",
+      "id": 6
+    },
+    {
+      "name": "user6",
+      "hashedPassword": "$2b$10$DtJeBsiJAnwPMGehypk0V.PauA.0SUoiZWecu2LimrjeKpKrcWkdC",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjYiLCJpYXQiOjE2OTY3NjY5MTUsImV4cCI6MTY5Njg1MzMxNX0.8XcrTIv0IxJdKduJULmJg0UA50aWRqX18k78_Wimm6o",
+      "id": 7
+    },
+    {
+      "name": "user7",
+      "hashedPassword": "$2b$10$ahC/vN28U444vIIuM6OTduVOWaajskXtMMz3xvKCQBymxSbpkwYli",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjciLCJpYXQiOjE2OTY3NjY5ODksImV4cCI6MTY5Njg1MzM4OX0.C1uCkPlE2wS2Q2vksw0nBb1xd257Ky3AvPA5FkEVgwo",
+      "id": 8
     }
   ]
 }
