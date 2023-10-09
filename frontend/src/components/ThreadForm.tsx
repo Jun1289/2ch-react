@@ -31,10 +31,10 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
         topic: threadTopicRef.current?.value
       })
       onThreadCreated(response.data)
+      formRef.current?.reset()
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);
     }
-    formRef.current?.reset()
   }, [onThreadCreated])
 
   return (
