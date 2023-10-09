@@ -22,6 +22,24 @@ const getUserByName = async (name) => {
   return users.find((user) => name === user.name);
 }
 
+// ローカルマシンのフロント炎からのリクエストのみ許可する
+const allowedOrigins = ["http://localhost:5173", , "http://127.0.0.1:5173"];
+
+server.use(cors({
+  origin: function (origin, callback) {
+    // 同一オリジンからのアクセスは許可
+    if (!origin) return callback(null, true);
+    // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
+    return callback(null, true);
+  }
+}));
+
+
 // コメント投稿
 server.post('/threads/:threadId/comments', (req, res, next) => {
   const threadId = req.params.threadId;
