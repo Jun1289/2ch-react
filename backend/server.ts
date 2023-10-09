@@ -13,10 +13,12 @@ const middlewares = jsonServer.defaults()
 server.use(cookieParser());
 server.use(jsonServer.bodyParser)
 
+const BASE_URL = "http://localhost:8000";
+
 // 引数のユーザ名と一致するユーザを返す関数
 const getUserByName = async (name) => {
-  const usersExist = await nfetch("http://localhost:8000/users");
-  const users = await usersExist.json();
+  const fetchedUsers = await nfetch(`${BASE_URL}/users`);
+  const users = await fetchedUsers.json();
   return users.find((user) => name === user.name);
 }
 
@@ -38,7 +40,7 @@ server.post('/threads/:threadId/comments', (req, res, next) => {
   }
 
   if (!req.body.commentContent) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: 'コメントが入力されていません'
     })
   }
@@ -56,13 +58,13 @@ server.post('/threads/:threadId/comments', (req, res, next) => {
 // スレッドの新規作成
 server.post('/threads', (req, res, next) => {
   if (!req.body.title) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: 'スレッドのタイトルが入力されていません'
     })
   }
 
   if (!req.body.topic) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: 'スレッドのトピックが入力されていません'
     })
   }
@@ -79,13 +81,10 @@ server.post('/threads', (req, res, next) => {
 
 // ユーザがログインしているかチェック
 server.use((req, res, next) => {
-  console.log("cookieです", req.cookies)
   if (req.cookies.token) {
-    console.log("if内容です", req.cookies)
     try {
       const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
       req.user = user;
-      console.log(user)
     } catch (err) {
       res.status(401).json({ message: '無効なトークンです' });
     }
@@ -93,19 +92,41 @@ server.use((req, res, next) => {
   next();
 });
 
-// お気に入りに登録
+// スレッドをお気に入りに登録・登録削除
+server.post('/users/:id/toggle-favorite/:threadId', (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  const threadId = req.params.threadId;
 
-// お気に入りから削除
+  const users = router.db.get('users').value();
+  const user = users.find(user => user.id === userId);
 
+  if (!user) {
+    return res.status(404).json({ message: 'ユーザが見つかりませんでした' });
+  }
+
+  // like 配列に threadId が存在するか確認し、存在すれば削除、存在しなければ追加
+  const index = user.like.indexOf(threadId);
+  if (index > -1) {
+    user.like.splice(index, 1);
+  } else {
+    user.like.push(threadId);
+  }
+
+  // 更新したユーザデータで元のユーザデータを更新
+  router.db.get('users')
+    .find({ id: userId })
+    .assign(user)
+    .write();
+
+  res.status(200).json({ message: 'お気に入りの切り替えに成功しました', user });
+});
 
 // ユーザ新規登録
 server.post("/users/register", async (req, res) => {
   try {
     const { name, password } = req.body;
 
-    const usersExist = await nfetch("http://localhost:8000/users")
     const user = await getUserByName(name)
-
     if (user) {
       return res.status(400).json({ message: "既に使用されているユーザ名です。他のユーザ名を入力してください" })
     }
@@ -117,7 +138,7 @@ server.post("/users/register", async (req, res) => {
     // bcrypt.hash の第二引数は salt rounds(ハッシュ化を行う回数)
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const response = await nfetch("http://localhost:8000/users", {
+    const response = await nfetch(`${BASE_URL}/users"`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -125,6 +146,7 @@ server.post("/users/register", async (req, res) => {
       body: JSON.stringify({
         name,
         hashedPassword,
+        like: [],
         token
       }),
     });
@@ -133,22 +155,19 @@ server.post("/users/register", async (req, res) => {
 
     res.cookie("token", token, { httpOnly: true, path: '/' })
 
-    res.status(200).json({ message: "新しくユーザが作成されました", newUser })
+    res.status(201).json({ message: "新しくユーザが作成されました", newUser })
   } catch (error) {
-    console.log(error)
     res.status(400).json(error);
   }
 });
 
 // ログイン
 server.post("/users/signin", async (req, res) => {
-  console.log(req.body)
   try {
-    const inputUserName = req.body.name
+    const inputName = req.body.name
     const inputPassword = req.body.password
-    const usersExist = await nfetch("http://localhost:8000/users")
-    const user = await getUserByName(inputUserName)
 
+    const user = await getUserByName(inputName)
     if (!user) {
       return res.status(401).json({ message: "認証情報が無効です" })
     }
@@ -160,7 +179,7 @@ server.post("/users/signin", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { inputUserName },
+      { inputName },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "24h", }
     )
@@ -173,8 +192,7 @@ server.post("/users/signin", async (req, res) => {
       newToken: token,
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: "内部エラーが発生しました" })
+    res.status(500).json({ message: "ログインの途中でサーバ側でエラーが発生しました" })
   }
 })
 
@@ -184,16 +202,19 @@ server.post('/users/logout', (req, res) => {
   res.json({ message: 'ログアウトしました' });
 });
 
+// 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {
   (router.db.get('comments') as any).remove().write();
   res.status(200).send('すべてのコメントを削除しました');
 });
 
+// 全てのスレッドの削除
 server.delete('/clear-threads', (req, res) => {
   (router.db.get('threads') as any).remove().write();
   res.status(200).send('すべてのスレッドを削除しました');
 });
 
+// 特定のスレッドのコメントの削除
 server.delete('/threads/:threadId/comments', (req, res) => {
   const threadId = parseInt(req.params.threadId, 10);
   if (isNaN(threadId)) {

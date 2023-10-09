@@ -309,6 +309,15 @@
       "hashedPassword": "$2b$10$ahC/vN28U444vIIuM6OTduVOWaajskXtMMz3xvKCQBymxSbpkwYli",
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjciLCJpYXQiOjE2OTY3NjY5ODksImV4cCI6MTY5Njg1MzM4OX0.C1uCkPlE2wS2Q2vksw0nBb1xd257Ky3AvPA5FkEVgwo",
       "id": 8
+    },
+    {
+      "name": "user8",
+      "hashedPassword": "$2b$10$5OV00Jul5z.lHjho1D80WuCtqrlSrMQWE3Lq1EtOe81uSclxXctB.",
+      "like": [
+        "1"
+      ],
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM",
+      "id": 9
     }
   ]
 }

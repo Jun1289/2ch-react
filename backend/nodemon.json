@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "*.ts",
+    "db.json"
+  ],
+  "exec": "ts-node server.ts",
+  "ext": "ts json"
+}
