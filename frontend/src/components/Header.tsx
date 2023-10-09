@@ -1,5 +1,12 @@
+import { Link } from "react-router-dom"
+
 export const Header = () => {
   return (
-    <div> headerです</div>
+    <header>
+      <Link to="/">
+        <h1>掲示板</h1>
+      </Link>
+
+    </header>
   )
 }

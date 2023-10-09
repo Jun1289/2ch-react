@@ -6,12 +6,24 @@ interface ThreadFormProps {
 }
 
 export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
+  const [inputError, setInputError] = React.useState<null | string>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
   const threadBuilderRef = React.useRef<HTMLInputElement>(null)
   const threadTitleRef = React.useRef<HTMLInputElement>(null)
   const threadTopicRef = React.useRef<HTMLTextAreaElement>(null)
 
   const handleSubmit = React.useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
+
+    setInputError(null)
+    if (!threadTitleRef.current?.value) {
+      setInputError("タイトルを入力してください。")
+    }
+    if (!threadTopicRef.current?.value) {
+      setInputError((prevError) => prevError ? prevError + "話題を入力してください。" : "話題を入力してください。")
+    }
+    if (inputError) return
+
     try {
       const response = await axios.post("http://localhost:8000/threads", {
         builder: threadBuilderRef.current?.value,
@@ -22,12 +34,14 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);
     }
+    formRef.current?.reset()
   }, [onThreadCreated])
 
   return (
     <section>
+      {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
       <p>スレッドの新規作成</p>
-      <form onSubmit={handleSubmit}>
+      <form ref={formRef} onSubmit={handleSubmit}>
         <div>
           <label htmlFor="builder">スレ主</label>
           <input
