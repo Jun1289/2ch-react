@@ -12,7 +12,8 @@
       "topic": "トピック",
       "createdAt": 1696721784144,
       "builder": "名無し",
-      "id": 2
+      "id": 2,
+      "updatedAt": "2023-10-10T00:02:25.343Z"
     },
     {
       "title": "タイトル",
@@ -323,6 +324,22 @@
       "createdAt": "2023-10-08T00:11:55.330Z",
       "threadId": "2",
       "id": 33
+    },
+    {
+      "commentContent": "updatedAt のテスト",
+      "author": "jun",
+      "responder": "名無し",
+      "createdAt": "2023-10-10T00:00:45.468Z",
+      "threadId": "2",
+      "id": 34
+    },
+    {
+      "commentContent": "updatedAt のテスト",
+      "author": "jun",
+      "responder": "名無し",
+      "createdAt": "2023-10-10T00:02:25.343Z",
+      "threadId": "2",
+      "id": 35
     }
   ],
   "users": [

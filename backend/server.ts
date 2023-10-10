@@ -41,7 +41,7 @@ server.use(cors({
 
 
 // コメント投稿
-server.post('/threads/:threadId/comments', (req, res, next) => {
+server.post('/threads/:threadId/comments', async (req, res, next) => {
   const threadId = req.params.threadId;
   if (isNaN(Number(threadId))) {
     return res.status(400).json({
@@ -70,6 +70,33 @@ server.post('/threads/:threadId/comments', (req, res, next) => {
   const now = new Date().toISOString()
   req.body.createdAt = now
 
+  // スレッドのupdatedAt パラメータをコメントの投稿日時に更新
+  try {
+    const threadResponse = await nfetch(`http://localhost:8000/threads/${threadId}`);
+    if (!threadResponse.ok) {
+      throw new Error('スレッドのデータを取得できませんでした');
+    }
+    const threadData = await threadResponse.json();
+
+    threadData.updatedAt = now;
+
+    const updateResponse = await nfetch(`http://localhost:8000/threads/${threadId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(threadData)
+    });
+
+    if (!updateResponse.ok) {
+      throw new Error('スレッドのupdatedAt パラメータの更新に失敗しました');
+    }
+
+  } catch (error) {
+    console.error('スレッドの updatedAt パラメータの更新処理に失敗しました:', error);
+    return res.status(500).json({ message: '内部処理のエラーです' });
+  }
+
   next()
 })
 
@@ -89,6 +116,7 @@ server.post('/threads', (req, res, next) => {
 
   const now = new Date().toISOString()
   req.body.createdAt = now
+  req.body.updatedAt = now
 
   if (!req.body.builder) {
     req.body.builder = '名無し'
