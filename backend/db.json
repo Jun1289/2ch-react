@@ -1,345 +1,47 @@
 {
   "threads": [
     {
-      "title": "タイトル",
-      "topic": "トピック",
-      "createdAt": 1696721763505,
+      "title": "初スレッド",
+      "topic": "コメント投稿数の反映",
+      "createdAt": "2023-10-11T11:36:01.135Z",
+      "updatedAt": "2023-10-11T12:07:09.954Z",
+      "commentTotal": 4,
       "builder": "名無し",
       "id": 1
-    },
-    {
-      "title": "タイトル",
-      "topic": "トピック",
-      "createdAt": 1696721784144,
-      "builder": "名無し",
-      "id": 2,
-      "updatedAt": "2023-10-10T00:02:25.343Z"
-    },
-    {
-      "title": "タイトル",
-      "topic": "トピック",
-      "createdAt": 1696721907292,
-      "builder": "名無し",
-      "id": 3
-    },
-    {
-      "title": "タイトル",
-      "topic": "トピック",
-      "createdAt": "2023-10-07T23:39:10.868Z",
-      "builder": "名無し",
-      "id": 4
-    },
-    {
-      "builder": "っっd",
-      "title": "っっd",
-      "topic": "っっっd",
-      "createdAt": "2023-10-09T05:36:57.172Z",
-      "id": 5
-    },
-    {
-      "builder": "っっd",
-      "title": "っっd",
-      "topic": "っっっd",
-      "createdAt": "2023-10-09T05:37:00.356Z",
-      "id": 6
-    },
-    {
-      "builder": "っっd",
-      "title": "っっd",
-      "topic": "っっっd",
-      "createdAt": "2023-10-09T05:37:01.281Z",
-      "id": 7
-    },
-    {
-      "builder": "スレ主",
-      "title": "タイトル",
-      "topic": "wadai ",
-      "createdAt": "2023-10-09T05:40:35.652Z",
-      "id": 8
-    },
-    {
-      "builder": "私いスレッド",
-      "title": "タイトルです",
-      "topic": "話題です",
-      "createdAt": "2023-10-09T05:56:39.456Z",
-      "id": 9
-    },
-    {
-      "builder": "スレ主です",
-      "title": "タイトルだ",
-      "topic": "話題だ",
-      "createdAt": "2023-10-09T07:44:18.795Z",
-      "id": 10
-    },
-    {
-      "builder": "スレ主です",
-      "title": "タイトルだよん",
-      "topic": "話題だよん",
-      "createdAt": "2023-10-09T08:30:33.035Z",
-      "id": 11
-    },
-    {
-      "builder": "名無し",
-      "title": "っd",
-      "topic": "っd",
-      "createdAt": "2023-10-09T08:30:41.196Z",
-      "id": 12
-    },
-    {
-      "builder": "新しいスレ主",
-      "title": "レンダリングテスト",
-      "topic": "話題のテスト\n",
-      "createdAt": "2023-10-09T12:02:26.613Z",
-      "id": 13
     }
   ],
   "comments": [
     {
-      "commentContent": "コメント内容",
+      "commentContent": "初コメント",
       "responder": "名無し",
-      "createdAt": "2023-10-07T23:49:37.454Z",
+      "createdAt": "2023-10-11T11:36:50.104Z",
+      "commentNo": 0,
       "threadId": "1",
       "id": 1
     },
     {
-      "commentContent": "連続投句",
+      "commentContent": "初コメント",
       "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.521Z",
+      "createdAt": "2023-10-11T11:38:44.170Z",
+      "commentNo": 2,
       "threadId": "1",
       "id": 2
     },
     {
-      "commentContent": "連続投句",
+      "commentContent": "３コメント",
       "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.544Z",
+      "createdAt": "2023-10-11T12:01:29.849Z",
+      "commentNo": 3,
       "threadId": "1",
       "id": 3
     },
     {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.561Z",
+      "responder": "こんちゃ",
+      "commentContent": "コメ",
+      "createdAt": "2023-10-11T12:07:09.954Z",
+      "commentNo": 4,
       "threadId": "1",
       "id": 4
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.570Z",
-      "threadId": "1",
-      "id": 5
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.582Z",
-      "threadId": "1",
-      "id": 6
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.591Z",
-      "threadId": "1",
-      "id": 7
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.602Z",
-      "threadId": "1",
-      "id": 8
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.614Z",
-      "threadId": "1",
-      "id": 9
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.626Z",
-      "threadId": "1",
-      "id": 10
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:57:51.638Z",
-      "threadId": "1",
-      "id": 11
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.549Z",
-      "threadId": "1",
-      "id": 12
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.566Z",
-      "threadId": "1",
-      "id": 13
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.579Z",
-      "threadId": "1",
-      "id": 14
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.593Z",
-      "threadId": "1",
-      "id": 15
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.605Z",
-      "threadId": "1",
-      "id": 16
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.619Z",
-      "threadId": "1",
-      "id": 17
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.630Z",
-      "threadId": "1",
-      "id": 18
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.643Z",
-      "threadId": "1",
-      "id": 19
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.654Z",
-      "threadId": "1",
-      "id": 20
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-07T23:58:23.670Z",
-      "threadId": "1",
-      "id": 21
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.912Z",
-      "threadId": "1",
-      "id": 22
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.932Z",
-      "threadId": "1",
-      "id": 23
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.945Z",
-      "threadId": "1",
-      "id": 24
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.959Z",
-      "threadId": "1",
-      "id": 25
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.973Z",
-      "threadId": "1",
-      "id": 26
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.985Z",
-      "threadId": "1",
-      "id": 27
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:09.994Z",
-      "threadId": "1",
-      "id": 28
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:10.010Z",
-      "threadId": "1",
-      "id": 29
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:10.022Z",
-      "threadId": "1",
-      "id": 30
-    },
-    {
-      "commentContent": "連続投句",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:00:10.035Z",
-      "threadId": "1",
-      "id": 31
-    },
-    {
-      "commentContent": "コメント内容",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:03:00.546Z",
-      "threadId": "1",
-      "id": 32
-    },
-    {
-      "commentContent": "コメント内容",
-      "responder": "名無し",
-      "createdAt": "2023-10-08T00:11:55.330Z",
-      "threadId": "2",
-      "id": 33
-    },
-    {
-      "commentContent": "updatedAt のテスト",
-      "author": "jun",
-      "responder": "名無し",
-      "createdAt": "2023-10-10T00:00:45.468Z",
-      "threadId": "2",
-      "id": 34
-    },
-    {
-      "commentContent": "updatedAt のテスト",
-      "author": "jun",
-      "responder": "名無し",
-      "createdAt": "2023-10-10T00:02:25.343Z",
-      "threadId": "2",
-      "id": 35
     }
   ],
   "users": [
