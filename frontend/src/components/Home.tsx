@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
   const [threadsData, setThreadsData] = useState<null | { id: number, title: string }[]>(null);
@@ -52,7 +53,9 @@ export const Home = () => {
         <ul>
           {threadsData.map(thread => (
             <li key={thread.id}>
-              {thread.id}: {thread.title} ({commentCounts[thread.id] || 0})
+              <Link to={`/threads/${thread.id}`}>
+                {thread.id}: {thread.title} ({commentCounts[thread.id] || 0})
+              </Link>
             </li>
           ))}
         </ul>

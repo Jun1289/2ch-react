@@ -1,8 +1,10 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 // import { CommentForm } from "./CommentForm";
 
 export const Thread = () => {
+  const { threadId } = useParams()
   const [commentsData, setCommentsData] = useState<null | { responder: string, commentContent: string, commentNo: number, createdAt: string }[]>(null);
   const [inputError, setInputError] = React.useState<null | string>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -24,7 +26,7 @@ export const Thread = () => {
     if (inputError) return
 
     try {
-      const response = await axios.post("http://localhost:8000/threads/1/comments", {
+      const response = await axios.post(`http://localhost:8000/threads/${threadId}/comments`, {
         responder: commentResponderRef.current?.value,
         commentContent: commentContentRef.current?.value,
       })
@@ -40,10 +42,10 @@ export const Thread = () => {
     // ここで非同期データを取得
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/comments');
+        const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`);
         setCommentsData(response.data);
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("コメントの取得でエラーが発生しました:", error);
       }
     };
     fetchData();
@@ -52,6 +54,21 @@ export const Thread = () => {
 
   return (
     <div>
+      {commentsData ? (
+        <ul>
+          {commentsData.map((comment, index) => (
+            <li key={index}>
+              <div>
+                {comment.commentNo} : {comment.responder} : {comment.createdAt}
+              </div>
+              <div>
+                {comment.commentContent}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) :
+        <div>コメントはまだありません</div>}
       <section>
         {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
         <p>コメント投稿</p>
@@ -76,21 +93,6 @@ export const Thread = () => {
           <input type="submit" value="送信" />
         </form>
       </section>
-      {commentsData ? (
-        <ul>
-          {commentsData.map((comment, index) => (
-            <li key={index}>
-              <div>
-                {comment.commentNo} : {comment.responder} : {comment.createdAt}
-              </div>
-              <div>
-                {comment.commentContent}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) :
-        <div>スレッドはまだありません</div>}
     </div>
   )
 }
