@@ -6,3 +6,11 @@
 li {
   list-style: none;
 }
+
+.content-wrapper {
+  margin: 0 auto;
+}
+
+.no-border {
+  border: none;
+}
