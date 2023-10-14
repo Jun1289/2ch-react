@@ -36,7 +36,8 @@ server.use(cors({
     }
     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
     return callback(null, true);
-  }
+  },
+  credentials: true
 }));
 
 
@@ -136,6 +137,7 @@ server.use((req, res, next) => {
     try {
       const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
       req.user = user;
+      console.log("ログインチェックを通りました。")
     } catch (err) {
       res.status(401).json({ message: '無効なトークンです' });
     }
@@ -235,8 +237,8 @@ server.post("/users/signin", async (req, res) => {
       { expiresIn: "24h", }
     )
 
-    res.cookie("token", token, { httpOnly: true, path: '/' })
-
+    res.cookie("token", token, { sameSite: "lax", secure: false, httpOnly: false, path: '/' })
+    console.log('cookie created successfully');
     res.status(200).json({
       message: "ログインに成功しました",
       ...user,
@@ -248,10 +250,18 @@ server.post("/users/signin", async (req, res) => {
 })
 
 // ログアウト
-server.post('/users/logout', (req, res) => {
-  res.clearCookie('token', { path: '/' });
-  res.json({ message: 'ログアウトしました' });
+// server.post('/users/logout', (req, res) => {
+//   res.clearCookie('token', { path: '/' });
+//   res.status(200).json({ message: 'ログアウトしました' });
+// });
+
+// ログアウト
+server.post("/users/logout", (req, res) => {
+  // トークンを削除することでログアウトを行う
+  res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
+  res.status(200).json({ message: "ログアウトに成功しました" });
 });
+
 
 // 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 
 // type Params = {
@@ -9,6 +9,7 @@ import axios from "axios"
 
 export const User = () => {
   const { userId } = useParams()
+  const navigate = useNavigate()
   const [user, setUser] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
   const userNameRef = useRef<HTMLInputElement>(null)
@@ -28,15 +29,17 @@ export const User = () => {
     setInputError(null)
     const fetchedUser = async () => {
       try {
-        await axios.post("http://localhost:8000/users/signin", {
+        await axios.post("http://127.0.0.1:8000/users/signin", {
           name: userNameRef.current?.value,
           password: passwordRef.current?.value
+        }, {
+          withCredentials: true
         }).then(function (response) {
           const status = response.status
           if (status == 200) {
             console.log(response.data)
             { response ? setUser(response.data) : setInputError("ユーザー名かパスワードが間違っています") }
-            window.location.href = `http://127.0.0.1:5173/user/${response.data.id}`
+            navigate(`${response.data.id}`)
           }
         })
       } catch (error) {
@@ -48,7 +51,10 @@ export const User = () => {
 
   const toLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/users/logout")
+      await axios.post("http://127.0.0.1:8000/users/logout", null, {
+        withCredentials: true
+      })
+      console.log("ログアウトのボタンが押されました")
     } catch (error) {
       console.error("ログアウト時にエラーが発生しました。", error)
     }
