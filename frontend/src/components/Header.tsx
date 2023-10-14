@@ -7,8 +7,8 @@ export const Header = () => {
       <Link to="/">
         <h1>掲示板</h1>
       </Link>
-      <Link to="/user/1">
-        <p><img src="/assets/noAvatar.png" width="30px" height="auto" /></p>
+      <Link to="/user">
+        <p><img src="/assets/logout.png" width="30px" height="auto" /></p>
       </Link>
     </header>
   )

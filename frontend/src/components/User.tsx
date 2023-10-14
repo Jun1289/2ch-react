@@ -1,25 +1,58 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import axios from "axios"
 
 // type Params = {
 //   userId: string;
 // }
+
+
 export const User = () => {
   const { userId } = useParams()
-  const [user, setUser] = useState<null | { name: string, hashedPassword: string, likes: string[] }>(null);
+  const [user, setUser] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
+  const [inputError, setInputError] = useState<null | string>(null)
+  const userNameRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchedUser = async () => {
+  //     const response = await axios.get(`http://localhost:8000/users/${userId}`)
+  //     setUser(response.data)
+  //   }
+  //   fetchedUser()
+  // }, [userId])
+
+  const hundleSubmit = useCallback<React.FormEventHandler>(async (event) => {
+    event.preventDefault();
+    setInputError(null)
     const fetchedUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/users/${userId}`)
-        setUser(response.data)
+        await axios.post("http://localhost:8000/users/signin", {
+          name: userNameRef.current?.value,
+          password: passwordRef.current?.value
+        }).then(function (response) {
+          const status = response.status
+          if (status == 200) {
+            console.log(response.data)
+            { response ? setUser(response.data) : setInputError("ユーザー名かパスワードが間違っています") }
+            window.location.href = `http://127.0.0.1:5173/user/${response.data.id}`
+          }
+        })
       } catch (error) {
-        console.error("ユーザ情報の取得でエラーが発生しました。", error)
+        console.error("ログイン時にエラーが発生しました。", error)
       }
     }
     fetchedUser()
-  }, [userId])
+  }, [])
+
+  const toLogout = async () => {
+    try {
+      await axios.post("http://localhost:8000/users/logout")
+    } catch (error) {
+      console.error("ログアウト時にエラーが発生しました。", error)
+    }
+  }
 
   return (
     <>
@@ -42,10 +75,23 @@ export const User = () => {
               )}
             </dd>
           </dl>
-          <button>ログアウト</button>
+          <button onClick={toLogout}>ログアウト</button>
         </>
       ) : (
-        <button>ログイン</button>
+        <>
+          {inputError ? <p>{inputError}</p> : null}
+          <form ref={formRef} onSubmit={hundleSubmit}>
+            <div>
+              <label htmlFor="userName">ユーザー名</label>
+              <input id="userName" type="text" ref={userNameRef} />
+            </div>
+            <div>
+              <label htmlFor="password">パスワード</label>
+              <input id="password" type="password" ref={passwordRef} />
+            </div>
+            <input type="submit" value="ログイン" />
+          </form>
+        </>
       )}
     </>
   )
