@@ -156,11 +156,11 @@ server.post('/users/:id/toggle-favorite/:threadId', (req, res) => {
   }
 
   // like 配列に threadId が存在するか確認し、存在すれば削除、存在しなければ追加
-  const index = user.like.indexOf(threadId);
+  const index = user.likes.indexOf(threadId);
   if (index > -1) {
-    user.like.splice(index, 1);
+    user.likes.splice(index, 1);
   } else {
-    user.like.push(threadId);
+    user.likes.push(threadId);
   }
 
   // 更新したユーザデータで元のユーザデータを更新
@@ -197,7 +197,7 @@ server.post("/users/register", async (req, res) => {
       body: JSON.stringify({
         name,
         hashedPassword,
-        like: [],
+        likes: [],
         token
       }),
     });

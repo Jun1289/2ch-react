@@ -112,8 +112,9 @@
     {
       "name": "user8",
       "hashedPassword": "$2b$10$5OV00Jul5z.lHjho1D80WuCtqrlSrMQWE3Lq1EtOe81uSclxXctB.",
-      "like": [
-        "1"
+      "likes": [
+        "1",
+        "2"
       ],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM",
       "id": 9
