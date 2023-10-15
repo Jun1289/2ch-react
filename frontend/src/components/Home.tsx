@@ -15,8 +15,6 @@ export const Home = () => {
   const getCommentCnt = async (threadId: number): Promise<number> => {
     const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
     const comments = response.data
-    console.log("comments", comments)
-    console.log("response", response)
     return comments.length
   }
 

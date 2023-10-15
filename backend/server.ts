@@ -240,7 +240,6 @@ server.post("/users/signin", async (req, res) => {
     res.cookie("token", token, { sameSite: "lax", secure: false, httpOnly: false, path: '/' })
     console.log('cookie created successfully');
     res.status(200).json({
-      message: "ログインに成功しました",
       ...user,
       newToken: token,
     })

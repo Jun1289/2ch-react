@@ -1,28 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
-
-// type Params = {
-//   userId: string;
-// }
-
+import { UserProvider, useUserContext } from "../state/userContext"
 
 export const User = () => {
   const { userId } = useParams()
   const navigate = useNavigate()
-  const [user, setUser] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
+  const [userInfo, setUserInfo] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
   const userNameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
-
-  // useEffect(() => {
-  //   const fetchedUser = async () => {
-  //     const response = await axios.get(`http://localhost:8000/users/${userId}`)
-  //     setUser(response.data)
-  //   }
-  //   fetchedUser()
-  // }, [userId])
+  const { user, setUser } = useUserContext()
 
   const hundleSubmit = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
@@ -37,9 +26,11 @@ export const User = () => {
         }).then(function (response) {
           const status = response.status
           if (status == 200) {
-            console.log(response.data)
-            { response ? setUser(response.data) : setInputError("ユーザー名かパスワードが間違っています") }
+            setUserInfo(response.data)
+            setUser(response.data)
             navigate(`${response.data.id}`)
+          } else {
+            setInputError("ユーザー名かパスワードが間違っています")
           }
         })
       } catch (error) {
@@ -55,6 +46,7 @@ export const User = () => {
         withCredentials: true
       })
       console.log("ログアウトのボタンが押されました")
+      setUser(null)
     } catch (error) {
       console.error("ログアウト時にエラーが発生しました。", error)
     }
@@ -63,16 +55,16 @@ export const User = () => {
   return (
     <>
       <h2>ユーザープロフィール</h2>
-      {user ? (
+      {userInfo ? (
         <>
           <dl>
             <dt>ユーザー名</dt>
-            <dd>{user.name}</dd>
+            <dd>{userInfo.name}</dd>
             <dt>お気に入りスレッド一覧</dt>
             <dd>
-              {user.likes && user.likes.length > 0 ? (
+              {userInfo.likes && userInfo.likes.length > 0 ? (
                 <ul>
-                  {user.likes.map(like => (
+                  {userInfo.likes.map(like => (
                     <li key={like}><Link to={`/threads/${like}`}>スレッド{like}</Link></li>
                   ))}
                 </ul>
