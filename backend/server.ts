@@ -191,7 +191,7 @@ server.post("/users/register", async (req, res) => {
     // bcrypt.hash の第二引数は salt rounds(ハッシュ化を行う回数)
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const response = await nfetch(`${BASE_URL}/users"`, {
+    const response = await nfetch(`${BASE_URL}/users`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -239,6 +239,24 @@ server.post("/users/signin", async (req, res) => {
 
     res.cookie("token", token, { sameSite: "lax", secure: false, httpOnly: false, path: '/' })
     console.log('cookie created successfully');
+
+    await nfetch(`http://localhost:8000/users/${user.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token })  // ここでtokenのみをJSONとして送信
+    })
+      .then(response => response.json())
+      .then(updatedUser => {
+        console.log("Updated user:", updatedUser);
+      })
+      .catch(error => {
+        console.error("ユーザーのトークンの更新でエラーが発生しました。", error);
+      });
+
+
+
     res.status(200).json({
       ...user,
       newToken: token,
@@ -266,6 +284,12 @@ server.post("/users/logout", (req, res) => {
 server.delete('/clear-comments', (req, res) => {
   (router.db.get('comments') as any).remove().write();
   res.status(200).send('すべてのコメントを削除しました');
+});
+
+// 全てのユーザーの削除
+server.delete('/clear-users', (req, res) => {
+  (router.db.get('users') as any).remove().write();
+  res.status(200).send('すべてのユーザーを削除しました');
 });
 
 // 全てのスレッドの削除

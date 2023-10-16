@@ -5,7 +5,6 @@ import { useUserContext } from "../state/userContext"
 export const Header = () => {
   const { user } = useUserContext()
 
-  console.log(user)
   return (
     <header>
       <Link to="/">

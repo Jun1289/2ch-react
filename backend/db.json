@@ -63,61 +63,11 @@
   ],
   "users": [
     {
-      "name": "ユーザ名",
-      "password": "パスワード",
-      "id": 1
-    },
-    {
-      "name": "ユーザ名2",
-      "hashedPassword": "$2b$10$RECgVS5V2yQ0JhMb19/g1.Nbg7zk7NjzSXUbgkdSYIqNLr2qYeZHq",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoi44Om44O844K25ZCNMiIsInBhc3N3b3JkIjoi44OR44K544Ov44O844OJIiwiaWF0IjoxNjk2NzQ2ODg5LCJleHAiOjE2OTY3NDc0ODl9.Mh09bPNb19krF-_V9uYWaWyugZ3_HoD7Hl9AWRHarGM",
-      "id": 2
-    },
-    {
       "name": "user",
-      "hashedPassword": "$2b$10$uGpIm8D6uxT/vThSGYsTF.Fe2Pj3hGEZv.ScSJuA0gqfs4KJ..UoC",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlciIsInBhc3N3b3JkIjoiMTIzNDU2IiwiaWF0IjoxNjk2NzQ3MjkwLCJleHAiOjE2OTY3NDc4OTB9.2mOyL4FdTxFgfGD5WpTUASaXXDs4GManXN971E7OM7w",
-      "id": 3
-    },
-    {
-      "name": "user2",
-      "hashedPassword": "$2b$10$C8ABJ9PZIy7dPzfoYHjseuGY473DM0aL7QhQR.W.FPPiA9bGUEk0i",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjIiLCJwYXNzd29yZCI6IjEyMzQ1NiIsImlhdCI6MTY5Njc0NzQ1NCwiZXhwIjoxNjk2NzQ4MDU0fQ.KXwLK9v_zt6aarL6AXcKAJaXFKzezfA6j8CH8pYk6NA",
-      "id": 4
-    },
-    {
-      "name": "user3",
-      "hashedPassword": "$2b$10$n9X9PeO7yGw/zaoUmnxdwuLalUhdsSPEzn0XVuZRMlmPETz89ffW2",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjMiLCJwYXNzd29yZCI6IjEyMzQ1NiIsImlhdCI6MTY5Njc0NzU0NywiZXhwIjoxNjk2NzQ4MTQ3fQ.nKkLPlnj-bH-I5PsvboqGehA6k6puJN8KnmV6yqSbYg",
-      "id": 5
-    },
-    {
-      "name": "user5",
-      "hashedPassword": "$2b$10$.GiVRFXv7mEpSSWDnRLI7.HxlVLNlcs6tPu6kMYdoPZ4pEynU3HC2",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjUiLCJpYXQiOjE2OTY3NjY0MjEsImV4cCI6MTY5Njg1MjgyMX0.aXzRXSVvKhYaT9no4ZY3VmTU7-FysbOvrSdSBMXTUjM",
-      "id": 6
-    },
-    {
-      "name": "user6",
-      "hashedPassword": "$2b$10$DtJeBsiJAnwPMGehypk0V.PauA.0SUoiZWecu2LimrjeKpKrcWkdC",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjYiLCJpYXQiOjE2OTY3NjY5MTUsImV4cCI6MTY5Njg1MzMxNX0.8XcrTIv0IxJdKduJULmJg0UA50aWRqX18k78_Wimm6o",
-      "id": 7
-    },
-    {
-      "name": "user7",
-      "hashedPassword": "$2b$10$ahC/vN28U444vIIuM6OTduVOWaajskXtMMz3xvKCQBymxSbpkwYli",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjciLCJpYXQiOjE2OTY3NjY5ODksImV4cCI6MTY5Njg1MzM4OX0.C1uCkPlE2wS2Q2vksw0nBb1xd257Ky3AvPA5FkEVgwo",
-      "id": 8
-    },
-    {
-      "name": "user8",
-      "hashedPassword": "$2b$10$5OV00Jul5z.lHjho1D80WuCtqrlSrMQWE3Lq1EtOe81uSclxXctB.",
-      "likes": [
-        "1",
-        "2"
-      ],
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM",
-      "id": 9
+      "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
+      "likes": [],
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk3NDQ3OTkwLCJleHAiOjE2OTc1MzQzOTB9.AQqdqA2w-HTo_tz_lRNWBUcpttH9YSuftN0SsLG7kCg",
+      "id": 1
     }
   ]
 }
