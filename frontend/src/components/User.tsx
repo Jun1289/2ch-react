@@ -1,50 +1,48 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
-import { UserProvider, useUserContext } from "../state/userContext"
+import { useUserContext } from "../state/userContext"
 import Cookies from 'js-cookie';
-import { patienceDiff } from "./dif.js"
 
 export const User = () => {
-  const { userId } = useParams()
   const navigate = useNavigate()
   // const [userInfo, setUserInfo] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const userNameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
-  const { user, setUser } = useUserContext()
+  const { user, setUser, loading } = useUserContext()
 
-  const token = Cookies.get('token')
+  // const token = Cookies.get('token')
 
 
-  useEffect(() => {
-    const fetchedUser = async () => {
-      try {
-        // const response = await axios.get(`http://localhost:8000/users?token=${token1}`)
-        const response = await axios.get(`http://localhost:8000/users?token=${token}`)
-        // const response = await axios.get(`http://localhost:8000/users?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM`)
-        const status = response.status
-        const emptyData = !response.data.length
-        console.log(response.data)
-        if (status == 200 && !emptyData) {
-          console.log("200 res")
-          // setUserInfo(response.data)
-          console.log("response.data", response.data)
-          setUser(response.data[0])
-          setLoading(false)
-          navigate(`/user/${response.data[0].id}`)
-        } else {
-          setLoading(false)
-        }
-      } catch (error) {
-        console.error("ログイン時にエラーが発生しました。", error)
-        setLoading(false)
-      }
-    }
-    fetchedUser()
-  }, [token])
+  // useEffect(() => {
+  //   const fetchedUser = async () => {
+  //     try {
+  //       // const response = await axios.get(`http://localhost:8000/users?token=${token1}`)
+  //       const response = await axios.get(`http://localhost:8000/users?token=${token}`)
+  //       // const response = await axios.get(`http://localhost:8000/users?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM`)
+  //       const status = response.status
+  //       const emptyData = !response.data.length
+  //       console.log(response.data)
+  //       if (status == 200 && !emptyData) {
+  //         console.log("200 res")
+  //         // setUserInfo(response.data)
+  //         console.log("response.data", response.data)
+  //         setUser(response.data[0])
+  //         setLoading(false)
+  //         navigate(`/user/${response.data[0].id}`)
+  //       } else {
+  //         setLoading(false)
+  //       }
+  //     } catch (error) {
+  //       console.error("ログイン時にエラーが発生しました。", error)
+  //       setLoading(false)
+  //     }
+  //   }
+  //   fetchedUser()
+  // }, [token])
 
   const hundleSubmit = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
@@ -61,7 +59,7 @@ export const User = () => {
           if (status == 200) {
             // setUserInfo(response.data)
             setUser(response.data)
-            navigate(`${response.data.id}`)
+            navigate(`/user/${response.data.id}`)
           } else {
             setInputError("ユーザー名かパスワードが間違っています")
           }
@@ -89,9 +87,7 @@ export const User = () => {
   return (
     <>
       {loading ? (
-        <div>
-          Loading...
-        </div>
+        null
       ) : (
         <>
           <h2>ユーザープロフィール</h2>

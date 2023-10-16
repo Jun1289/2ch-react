@@ -7,7 +7,6 @@ export const Home = () => {
   const [threadsData, setThreadsData] = useState<null | { id: number, title: string }[]>(null);
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
 
-
   const addNewThread = (newThread: { id: number, title: string }) => {
     setThreadsData(prevThreads => [...(prevThreads || []), newThread]);
   }
