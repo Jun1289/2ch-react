@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 export const Home = () => {
   const [threadsData, setThreadsData] = useState<null | { id: number, title: string }[]>(null);
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
+  const [loadingThread, setLoadingThread] = useState(true)
+  const [loadingComment, setLoadingComment] = useState(true)
 
   const addNewThread = (newThread: { id: number, title: string }) => {
     setThreadsData(prevThreads => [...(prevThreads || []), newThread]);
@@ -14,6 +16,7 @@ export const Home = () => {
   const getCommentCnt = async (threadId: number): Promise<number> => {
     const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
     const comments = response.data
+    setLoadingComment(false)
     return comments.length
   }
 
@@ -23,8 +26,10 @@ export const Home = () => {
       try {
         const response = await axios.get('http://localhost:8000/threads');
         setThreadsData(response.data);
+        setLoadingThread(false)
       } catch (error) {
         console.error("Error fetching threads:", error);
+        setLoadingThread(false)
       }
     };
     fetchData();
@@ -46,18 +51,27 @@ export const Home = () => {
   return (
     <div>
       <ThreadForm onThreadCreated={addNewThread} />
-      {threadsData ? (
-        <ul>
-          {threadsData.map(thread => (
-            <li key={thread.id}>
-              <Link to={`/threads/${thread.id}`}>
-                {thread.id}: {thread.title} ({commentCounts[thread.id] || 0})
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) :
-        <div>スレッドはまだありません</div>}
-    </div>
+      {
+        loadingThread || loadingComment ? (
+          null
+        ) : (
+
+          threadsData ? (
+            <ul>
+              {
+                threadsData.map(thread => (
+                  <li key={thread.id}>
+                    <Link to={`/threads/${thread.id}`}>
+                      {thread.id}: {thread.title} ({commentCounts[thread.id] || 0})
+                    </Link>
+                  </li>
+                ))
+              }
+            </ul>
+          ) : (
+            <div>スレッドはまだありません</div>
+          )
+        )}
+    </div >
   )
 }

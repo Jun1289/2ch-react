@@ -11,6 +11,8 @@ export const Thread = () => {
   const formRef = React.useRef<HTMLFormElement>(null);
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
   const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
+  const [loadingComment, setLoadingComment] = useState(true)
+  const [loadingThread, setLoadingThread] = useState(true)
 
   const addNewComment = (newComment: { responder: string, commentContent: string, commentNo: number, createdAt: string }) => {
     setCommentsData(prevComments => [...(prevComments || []), newComment]);
@@ -46,8 +48,10 @@ export const Thread = () => {
         const response = await axios.get(`http://localhost:8000/threads/${threadId}`)
         console.log(response.data)
         setThreadData(response.data)
+        setLoadingThread(false)
       } catch (error) {
         console.error("スレッドデータの取得でエラーが発生しました")
+        setLoadingThread(false)
       }
     }
     fetchThreadData()
@@ -59,8 +63,10 @@ export const Thread = () => {
       try {
         const commentsData = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
         setCommentsData(commentsData.data);
+        setLoadingComment(false)
       } catch (error) {
         console.error("コメントの取得でエラーが発生しました:", error);
+        setLoadingComment(false)
       }
     };
     fetchData();
@@ -68,54 +74,59 @@ export const Thread = () => {
 
 
   return (
-    <>
-      <div className="thread-wrapper content-wrapper">
-        <section>
-          <h2>{threadData?.title}</h2>
-          <div>{threadData?.topic}</div>
-        </section>
-        <section>
-          {commentsData ? (
-            <ul>
-              {commentsData.map((comment, index) => (
-                <li key={index}>
-                  <div>
-                    {comment.commentNo} : {comment.responder} : {comment.createdAt}
-                  </div>
-                  <div>
-                    {comment.commentContent}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) :
-            <div>コメントはまだありません</div>}
-        </section>
-        <section>
-          {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
-          <p>コメント投稿</p>
-          <form ref={formRef} onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="responder">投稿者</label>
-              <input
-                id="responder"
-                name="responder"
-                type="text"
-                ref={commentResponderRef}
-              />
-            </div>
-            <div>
-              <label htmlFor="commentContent">コメント</label>
-              <textarea
-                id="commentContent"
-                name="commentContent"
-                ref={commentContentRef}
-              />
-            </div>
-            <input type="submit" value="送信" />
-          </form>
-        </section>
-      </div>
+    <>{
+      (loadingThread || loadingComment) ? (
+        null
+      ) : (
+        <div className="thread-wrapper content-wrapper">
+          <section>
+            <h2>{threadData?.title}</h2>
+            <div>{threadData?.topic}</div>
+          </section>
+          <section>
+            {commentsData ? (
+              <ul>
+                {commentsData.map((comment, index) => (
+                  <li key={index}>
+                    <div>
+                      {comment.commentNo} : {comment.responder} : {comment.createdAt}
+                    </div>
+                    <div>
+                      {comment.commentContent}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) :
+              <div>コメントはまだありません</div>}
+          </section>
+          <section>
+            {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
+            <p>コメント投稿</p>
+            <form ref={formRef} onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="responder">投稿者</label>
+                <input
+                  id="responder"
+                  name="responder"
+                  type="text"
+                  ref={commentResponderRef}
+                />
+              </div>
+              <div>
+                <label htmlFor="commentContent">コメント</label>
+                <textarea
+                  id="commentContent"
+                  name="commentContent"
+                  ref={commentContentRef}
+                />
+              </div>
+              <input type="submit" value="送信" />
+            </form>
+          </section>
+        </div>
+      )
+    }
     </>
   )
 }
