@@ -55,7 +55,6 @@ export const Home = () => {
         loadingThread || loadingComment ? (
           null
         ) : (
-
           threadsData ? (
             <ul>
               {

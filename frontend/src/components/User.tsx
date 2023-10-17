@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../state/userContext"
@@ -14,37 +14,8 @@ export const User = () => {
   const formRef = useRef<HTMLFormElement>(null)
   const { user, setUser, loading } = useUserContext()
 
-  // const token = Cookies.get('token')
-
-
-  // useEffect(() => {
-  //   const fetchedUser = async () => {
-  //     try {
-  //       // const response = await axios.get(`http://localhost:8000/users?token=${token1}`)
-  //       const response = await axios.get(`http://localhost:8000/users?token=${token}`)
-  //       // const response = await axios.get(`http://localhost:8000/users?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjgiLCJpYXQiOjE2OTY4MTU5OTksImV4cCI6MTY5NjkwMjM5OX0.o2K0CjrLxKCCCOfzns-uulXuZxQQnmxPxha7XKUV1fM`)
-  //       const status = response.status
-  //       const emptyData = !response.data.length
-  //       console.log(response.data)
-  //       if (status == 200 && !emptyData) {
-  //         console.log("200 res")
-  //         // setUserInfo(response.data)
-  //         console.log("response.data", response.data)
-  //         setUser(response.data[0])
-  //         setLoading(false)
-  //         navigate(`/user/${response.data[0].id}`)
-  //       } else {
-  //         setLoading(false)
-  //       }
-  //     } catch (error) {
-  //       console.error("ログイン時にエラーが発生しました。", error)
-  //       setLoading(false)
-  //     }
-  //   }
-  //   fetchedUser()
-  // }, [token])
-
-  const hundleSubmit = useCallback<React.FormEventHandler>(async (event) => {
+  console.log(user)
+  const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
     const fetchedUser = async () => {
@@ -69,6 +40,35 @@ export const User = () => {
       }
     }
     fetchedUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const hundleSignup = useCallback<React.FormEventHandler>(async (event) => {
+    event.preventDefault();
+    setInputError(null)
+    const fetchedUser = async () => {
+      try {
+        await axios.post("http://127.0.0.1:8000/users/register", {
+          name: userNameRef.current?.value,
+          password: passwordRef.current?.value
+        }, {
+          withCredentials: true
+        }).then(function (response) {
+          const status = response.status
+          if (status == 200) {
+            // setUserInfo(response.data)
+            console.log(response.data)
+            setUser(response.data)
+            navigate(`/user/${response.data.id}`)
+          } else {
+            setInputError("ユーザー名かパスワードが間違っています")
+          }
+        })
+      } catch (error) {
+        console.error("新規ユーザー作成時にエラーが発生しました。", error)
+      }
+    }
+    fetchedUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toLogout = async () => {
@@ -114,7 +114,7 @@ export const User = () => {
           ) : (
             <>
               {inputError ? <p>{inputError}</p> : null}
-              <form ref={formRef} onSubmit={hundleSubmit}>
+              <form ref={formRef}>
                 <div>
                   <label htmlFor="userName">ユーザー名</label>
                   <input id="userName" type="text" ref={userNameRef} />
@@ -123,7 +123,12 @@ export const User = () => {
                   <label htmlFor="password">パスワード</label>
                   <input id="password" type="password" ref={passwordRef} />
                 </div>
-                <input type="submit" value="ログイン" />
+                <div>
+                  <button onClick={hundleLogin}>ログイン</button>
+                </div>
+                <div>
+                  <button onClick={hundleSignup}>新規ユーザー作成</button>
+                </div>
               </form>
             </>
           )}

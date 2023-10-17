@@ -206,9 +206,12 @@ server.post("/users/register", async (req, res) => {
 
     const newUser = await response.json();
 
-    res.cookie("token", token, { httpOnly: true, path: '/' })
+    res.cookie("token", token, { httpOnly: false, secure: false, path: '/' })
 
-    res.status(201).json({ message: "新しくユーザが作成されました", newUser })
+    res.status(200).json({
+      ...newUser,
+      newToken: token,
+    })
   } catch (error) {
     res.status(400).json(error);
   }

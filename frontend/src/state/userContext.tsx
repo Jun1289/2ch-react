@@ -2,9 +2,17 @@ import axios from 'axios';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
 
+type User = {
+  name: string,
+  hashedPassword: string,
+  likes: string[],
+  token: string,
+  id: number
+}
+
 type UserContextType = {
-  user: object | null;
-  setUser: React.Dispatch<React.SetStateAction<object | null>>;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean
 };
 
@@ -23,10 +31,11 @@ interface UserProviderProps {
 // };
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<object | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const token = Cookies.get('token')
 
+  console.log("token", token)
   useEffect(() => {
     const fetchedUser = async () => {
       try {
@@ -35,7 +44,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         const emptyData = !response.data.length
         console.log(response.data)
         if (status == 200 && !emptyData) {
-          console.log("200 res")
           console.log("response.data", response.data)
           setUser(response.data[0])
           setLoading(false)
