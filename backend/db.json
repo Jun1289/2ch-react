@@ -71,12 +71,16 @@
   ],
   "users": [
     {
-      "name": "user",
-      "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
-      "likes": [
-        "1"
-      ],
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk3NTM3NzYzLCJleHAiOjE2OTc2MjQxNjN9.iVQtgy2EbB0lGFZYj8iwoUbQN5F9Nta6FoAJs-FAm-o",
+      "user": {
+        "name": "user",
+        "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
+        "likes": [
+          "1",
+          "2"
+        ],
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk3NTQ0NzY0LCJleHAiOjE2OTc2MzExNjR9.9Q73p3GCNIUhcCyIZT7WY-pgGryNWN3n08MPoNXTJlQ",
+        "id": 1
+      },
       "id": 1
     },
     {
@@ -183,6 +187,15 @@
       "likes": [],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlcjEzIiwiaWF0IjoxNjk3NTM3OTc2LCJleHAiOjE2OTc2MjQzNzZ9.ZMSEGZp_Y53i4-yuaed9SwVwbl4Qsj9izc5vltl3y30",
       "id": 16
+    },
+    {
+      "name": "userNew",
+      "hashedPassword": "$2b$10$SzKsiSfTxbpZ9AM6Z1CXpui4RhYSmBgwFTVPg.qS1lgrN8Th1xdki",
+      "likes": [
+        "1"
+      ],
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidXNlck5ldyIsImlhdCI6MTY5Nzg1OTU3NiwiZXhwIjoxNjk3OTQ1OTc2fQ.RQG4xjDzliaR8OpH5RSvc0MvYh2YEv_xbOVAhZu4_7w",
+      "id": 17
     }
   ]
 }

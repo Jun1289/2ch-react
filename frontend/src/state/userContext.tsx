@@ -35,16 +35,18 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const token = Cookies.get('token')
 
-  console.log("token", token)
   useEffect(() => {
     const fetchedUser = async () => {
       try {
+        if (!token) {
+          setLoading(false)
+          return
+        }
         const response = await axios.get(`http://localhost:8000/users?token=${token}`)
         const status = response.status
         const emptyData = !response.data.length
-        console.log(response.data)
+        console.log("user Context : ", response.data)
         if (status == 200 && !emptyData) {
-          console.log("response.data", response.data)
           setUser(response.data[0])
           setLoading(false)
         } else {

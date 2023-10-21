@@ -1,11 +1,21 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../state/userContext"
 import Cookies from 'js-cookie';
 
+type Thread = {
+  id: number,
+  title: string,
+  topic: string,
+  createdAt: string,
+  updatedAt: string,
+  commentTotal: number,
+  builder: string
+}
 export const User = () => {
   const navigate = useNavigate()
+  const [threadsData, setThreadsData] = useState<null | Thread[]>(null);
   // const [userInfo, setUserInfo] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
   // const [loading, setLoading] = useState(true);
@@ -14,7 +24,7 @@ export const User = () => {
   const formRef = useRef<HTMLFormElement>(null)
   const { user, setUser, loading } = useUserContext()
 
-  console.log(user)
+  // console.log(user)
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
@@ -55,8 +65,6 @@ export const User = () => {
         }).then(function (response) {
           const status = response.status
           if (status == 200) {
-            // setUserInfo(response.data)
-            console.log(response.data)
             setUser(response.data)
             navigate(`/user/${response.data.id}`)
           } else {
@@ -84,6 +92,45 @@ export const User = () => {
     }
   }
 
+  const handleFavorite = (event: React.MouseEvent<Element, MouseEvent>, threadId: number) => {
+    const deleteFavorite = async () => {
+      try {
+        await axios.get(`http://localhost:8000/users/${user?.id}`)
+          .then(function (response) {
+            let fetchedUser = response.data
+            console.log("before filter", fetchedUser)
+            fetchedUser = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
+            console.log("after filter", fetchedUser)
+
+            setUser(fetchedUser)
+          })
+      } catch (error) {
+        console.error("お気に入りの切り替えに失敗しました。", error)
+      }
+    }
+    deleteFavorite()
+  }
+
+
+  useEffect(() => {
+    // ここで非同期データを取得
+    const fetchedThreadsData: Thread[] = []
+    const fetchThreadsData = async () => {
+      try {
+        if (user && user.likes.length > 0) {
+          for (const like of user.likes) {
+            const response = await axios.get(`http://localhost:8000/threads/${like}`);
+            fetchedThreadsData.push(response.data)
+          }
+          setThreadsData(fetchedThreadsData);
+        }
+      } catch (error) {
+        console.error("Error fetching threads:", error);
+      }
+    };
+    fetchThreadsData();
+  }, [user])
+
   return (
     <>
       {loading ? (
@@ -98,10 +145,15 @@ export const User = () => {
                 <dd>{user.name}</dd>
                 <dt>お気に入りスレッド一覧</dt>
                 <dd>
-                  {user.likes && user.likes.length > 0 ? (
+                  {threadsData && threadsData.length > 0 ? (
                     <ul>
-                      {user.likes.map(like => (
-                        <li key={like}><Link to={`/threads/${like}`}>スレッド{like}</Link></li>
+                      {threadsData.map(thread => (
+                        <li key={thread.id}>
+                          <Link to={`/threads/${thread.id}`}>
+                            {thread.title}
+                          </Link>
+                          <a href="#" className="added" onClick={(event) => handleFavorite(event, thread.id)}>★</a>
+                        </li>
                       ))}
                     </ul>
                   ) : (
