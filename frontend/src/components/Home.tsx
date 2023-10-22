@@ -4,8 +4,18 @@ import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../state/userContext";
 
+type Thread = {
+  id: number,
+  title: string,
+  topic: string,
+  createdAt: string,
+  updatedAt: string,
+  commentTotal: number,
+  builder: string
+}
+
 export const Home = () => {
-  const [threadsData, setThreadsData] = useState<null | { id: number, title: string }[]>(null);
+  const [threadsData, setThreadsData] = useState<null | Pick<Thread, "id" | "title">[]>(null);
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
   const [loadingThread, setLoadingThread] = useState(true)
   const [loadingComment, setLoadingComment] = useState(true)
@@ -15,6 +25,24 @@ export const Home = () => {
     setThreadsData(prevThreads => [...(prevThreads || []), newThread]);
   }
 
+  const handleDelete = async (threadId: number, event: React.MouseEvent<Element, MouseEvent>) => {
+    event.preventDefault();
+    console.log(threadId)
+
+    try {
+      await axios.delete(`http://localhost:8000/threads/${threadId}`)
+        .then(function (response) {
+          console.log(response.data)
+          const newThreadsData = threadsData?.filter((thread) => {
+            return thread.id !== threadId
+          }) || null;
+          console.log(newThreadsData)
+          setThreadsData(newThreadsData)
+        })
+    } catch (error) {
+      console.error("コメントの削除でエラーが発生しました:", error);
+    }
+  }
 
   const getCommentCnt = async (threadId: number): Promise<number> => {
     const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
@@ -120,6 +148,7 @@ export const Home = () => {
                       ) : (
                         null
                       )}
+                      <button onClick={(e) => handleDelete(thread.id, e)}>削除</button>
                     </li>
                   ))
                 }

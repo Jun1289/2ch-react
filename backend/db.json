@@ -19,15 +19,6 @@
       "id": 2
     },
     {
-      "builder": "主",
-      "title": "こんちゃ",
-      "topic": "なし",
-      "createdAt": "2023-10-22T01:20:58.002Z",
-      "updatedAt": "2023-10-22T01:21:30.132Z",
-      "commentTotal": 1,
-      "id": 3
-    },
-    {
       "builder": "スレ主",
       "title": "四番目",
       "topic": "こんにちは",
@@ -37,12 +28,20 @@
       "id": 4
     },
     {
-      "title": "スレ主削除後",
-      "topic": "スレ主はもういない",
-      "createdAt": "2023-10-22T02:46:36.645Z",
-      "updatedAt": "2023-10-22T02:46:36.645Z",
+      "title": "新規スレッド",
+      "topic": "新規",
+      "createdAt": "2023-10-22T03:53:51.968Z",
+      "updatedAt": "2023-10-22T03:53:51.968Z",
       "commentTotal": 0,
       "id": 5
+    },
+    {
+      "title": "どうなる",
+      "topic": "スレッド",
+      "createdAt": "2023-10-22T03:54:09.562Z",
+      "updatedAt": "2023-10-22T03:54:09.562Z",
+      "commentTotal": 0,
+      "id": 6
     }
   ],
   "comments": [
@@ -77,14 +76,6 @@
       "commentNo": 6,
       "threadId": "1",
       "id": 7
-    },
-    {
-      "responder": "名無し",
-      "commentContent": "コメント",
-      "createdAt": "2023-10-22T01:21:30.132Z",
-      "commentNo": 1,
-      "threadId": "3",
-      "id": 8
     },
     {
       "responder": "こんちゃ",

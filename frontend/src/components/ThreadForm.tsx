@@ -1,8 +1,18 @@
 import axios from "axios"
 import React from "react";
 
+type Thread = {
+  id: number,
+  title: string,
+  topic: string,
+  createdAt: string,
+  updatedAt: string,
+  commentTotal: number,
+  builder: string
+}
+
 interface ThreadFormProps {
-  onThreadCreated: (newThread: { id: number, title: string }) => void;
+  onThreadCreated: (newThread: Pick<Thread, "id" | "title">) => void;
 }
 
 export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
