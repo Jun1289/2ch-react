@@ -4,8 +4,8 @@
       "title": "初スレッド",
       "topic": "コメント投稿数の反映",
       "createdAt": "2023-10-11T11:36:01.135Z",
-      "updatedAt": "2023-10-21T11:38:49.702Z",
-      "commentTotal": 6,
+      "updatedAt": "2023-10-22T03:31:43.371Z",
+      "commentTotal": 14,
       "builder": "名無し",
       "id": 1
     },
@@ -55,14 +55,6 @@
       "id": 1
     },
     {
-      "commentContent": "初コメント",
-      "responder": "名無し",
-      "createdAt": "2023-10-11T11:38:44.170Z",
-      "commentNo": 2,
-      "threadId": "1",
-      "id": 2
-    },
-    {
       "commentContent": "３コメント",
       "responder": "名無し",
       "createdAt": "2023-10-11T12:01:29.849Z",
@@ -71,28 +63,12 @@
       "id": 3
     },
     {
-      "responder": "こんちゃ",
-      "commentContent": "コメ",
-      "createdAt": "2023-10-11T12:07:09.954Z",
-      "commentNo": 4,
-      "threadId": "1",
-      "id": 4
-    },
-    {
       "responder": "二番目のスレッドの投稿",
       "commentContent": "コメント",
       "createdAt": "2023-10-11T23:19:32.990Z",
       "commentNo": 1,
       "threadId": "2",
       "id": 5
-    },
-    {
-      "responder": "投稿者です",
-      "commentContent": "コメントです\n",
-      "createdAt": "2023-10-17T09:04:45.645Z",
-      "commentNo": 5,
-      "threadId": "1",
-      "id": 6
     },
     {
       "responder": "初めて投稿します",
@@ -125,6 +101,62 @@
       "commentNo": 2,
       "threadId": "2",
       "id": 10
+    },
+    {
+      "responder": "どうなる",
+      "commentContent": "投稿",
+      "createdAt": "2023-10-22T03:30:48.533Z",
+      "commentNo": 8,
+      "threadId": "1",
+      "id": 11
+    },
+    {
+      "responder": "投稿",
+      "commentContent": "コメント",
+      "createdAt": "2023-10-22T03:30:59.226Z",
+      "commentNo": 9,
+      "threadId": "1",
+      "id": 12
+    },
+    {
+      "responder": "どうなる",
+      "commentContent": "十個目",
+      "createdAt": "2023-10-22T03:31:07.792Z",
+      "commentNo": 10,
+      "threadId": "1",
+      "id": 13
+    },
+    {
+      "responder": "もう一丁",
+      "commentContent": "いけるか？",
+      "createdAt": "2023-10-22T03:31:21.173Z",
+      "commentNo": 11,
+      "threadId": "1",
+      "id": 14
+    },
+    {
+      "responder": "いくぜ",
+      "commentContent": "１２",
+      "createdAt": "2023-10-22T03:31:31.199Z",
+      "commentNo": 12,
+      "threadId": "1",
+      "id": 15
+    },
+    {
+      "responder": "１３",
+      "commentContent": "１３",
+      "createdAt": "2023-10-22T03:31:37.157Z",
+      "commentNo": 13,
+      "threadId": "1",
+      "id": 16
+    },
+    {
+      "responder": "１４",
+      "commentContent": "１４",
+      "createdAt": "2023-10-22T03:31:43.371Z",
+      "commentNo": 14,
+      "threadId": "1",
+      "id": 17
     }
   ],
   "users": [

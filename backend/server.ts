@@ -75,7 +75,8 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     const threadData = await threadResponse.json();
 
     threadData.updatedAt = now;
-    ++threadData.commentTotal;
+    const newCommentTotal = threadData.commentTotal + 1;
+    threadData.commentTotal = newCommentTotal;
 
     const updateResponse = await nfetch(`http://localhost:8000/threads/${threadId}`, {
       method: 'PUT',
@@ -89,18 +90,15 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
       throw new Error('スレッドのupdatedAt パラメータの更新に失敗しました');
     }
 
+    if (!req.body.responder) {
+      req.body.responder = '名無し'
+    }
+    req.body.createdAt = now
+    req.body.commentNo = newCommentTotal
   } catch (error) {
     console.error('スレッドの updatedAt パラメータの更新処理に失敗しました:', error);
     return res.status(500).json({ message: '内部処理のエラーです' });
   }
-
-  if (!req.body.responder) {
-    req.body.responder = '名無し'
-  }
-
-  req.body.createdAt = now
-
-  req.body.commentNo = commentsForThread + 1
 
   next()
 })

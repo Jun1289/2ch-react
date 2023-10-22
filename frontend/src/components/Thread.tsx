@@ -3,10 +3,31 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 // import { CommentForm } from "./CommentForm";
 
+type Thread = {
+  id: number,
+  title: string,
+  topic: string,
+  createdAt: string,
+  updatedAt: string,
+  commentTotal: number,
+  builder: string
+}
+
+type Comment = {
+  id: number,
+  commentNo: number,
+  responder: string,
+  commentContent: string,
+  createdAt: string,
+  updatedAt: string,
+  threadId: number
+}
+
+
 export const Thread = () => {
   const { threadId } = useParams()
-  const [commentsData, setCommentsData] = useState<null | { responder: string, commentContent: string, commentNo: number, createdAt: string }[]>(null);
-  const [threadData, setThreadData] = useState<null | { builder: string, title: string, topic: number, createdAt: string }>(null);
+  const [commentsData, setCommentsData] = useState<null | Comment[]>(null);
+  const [threadData, setThreadData] = useState<null | Thread>(null);
   const [inputError, setInputError] = React.useState<null | string>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
@@ -14,7 +35,7 @@ export const Thread = () => {
   const [loadingComment, setLoadingComment] = useState(true)
   const [loadingThread, setLoadingThread] = useState(true)
 
-  const addNewComment = (newComment: { responder: string, commentContent: string, commentNo: number, createdAt: string }) => {
+  const addNewComment = (newComment: Comment) => {
     setCommentsData(prevComments => [...(prevComments || []), newComment]);
   }
 
@@ -28,6 +49,25 @@ export const Thread = () => {
     const seconds = String(dateObj.getSeconds()).padStart(2, '0');
 
     return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
+  }
+
+  const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
+    event.preventDefault();
+    console.log(commentId)
+
+    try {
+      await axios.delete(`http://localhost:8000/comments/${commentId}`)
+        .then(function (response) {
+          console.log(response.data)
+          const newCommentsData = commentsData?.filter((comment) => {
+            return comment.id !== commentId
+          }) || null;
+          console.log(newCommentsData)
+          setCommentsData(newCommentsData)
+        })
+    } catch (error) {
+      console.error("コメントの削除でエラーが発生しました:", error);
+    }
   }
 
   const handleSubmit = React.useCallback<React.FormEventHandler>(async (event) => {
@@ -50,6 +90,8 @@ export const Thread = () => {
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addNewComment])
 
   // スレッドデータの取得
@@ -66,6 +108,7 @@ export const Thread = () => {
       }
     }
     fetchThreadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId])
 
   useEffect(() => {
@@ -81,6 +124,7 @@ export const Thread = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -99,7 +143,8 @@ export const Thread = () => {
                 {commentsData.map((comment, index) => (
                   <li key={index}>
                     <div>
-                      {comment.commentNo}: {comment.responder} : {formatDateTime(comment.createdAt)}
+                      <span>{comment.commentNo}: {comment.responder} : {formatDateTime(comment.createdAt)}</span>
+                      <button onClick={(e) => handleDelete(comment.id, e)}>削除</button>
                     </div>
                     <div>
                       {comment.commentContent}
