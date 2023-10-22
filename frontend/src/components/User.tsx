@@ -13,6 +13,7 @@ type Thread = {
   commentTotal: number,
   builder: string
 }
+
 export const User = () => {
   const navigate = useNavigate()
   const [threadsData, setThreadsData] = useState<null | Thread[]>(null);
@@ -28,7 +29,19 @@ export const User = () => {
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
+
     const fetchedUser = async () => {
+      const inputedName = userNameRef.current?.value
+      const inputedPassword = passwordRef.current?.value
+
+      if (!inputedName) {
+        setInputError("ユーザー名を入力してください。")
+      }
+      if (!inputedPassword) {
+        setInputError((prevError) => prevError ? prevError + "パスワードを入力してください。" : "パスワードを入力してください。")
+      }
+      if (!inputedName || !inputedPassword) return
+
       try {
         await axios.post("http://127.0.0.1:8000/users/signin", {
           name: userNameRef.current?.value,
@@ -56,10 +69,21 @@ export const User = () => {
     event.preventDefault();
     setInputError(null)
     const fetchedUser = async () => {
+      const inputedName = userNameRef.current?.value
+      const inputedPassword = passwordRef.current?.value
+
+      if (!inputedName) {
+        setInputError("ユーザー名を入力してください。")
+      }
+      if (!inputedPassword) {
+        setInputError((prevError) => prevError ? prevError + "パスワードを入力してください。" : "パスワードを入力してください。")
+      }
+      if (!inputedName || !inputedPassword) return
+
       try {
         await axios.post("http://127.0.0.1:8000/users/register", {
-          name: userNameRef.current?.value,
-          password: passwordRef.current?.value
+          name: inputedName,
+          password: inputedPassword
         }, {
           withCredentials: true
         }).then(function (response) {
@@ -137,9 +161,9 @@ export const User = () => {
         null
       ) : (
         <>
-          <h2>ユーザープロフィール</h2>
           {user ? (
             <>
+              <h2>ユーザープロフィール</h2>
               <dl>
                 <dt>ユーザー名</dt>
                 <dd>{user.name}</dd>
@@ -165,7 +189,7 @@ export const User = () => {
             </>
           ) : (
             <>
-              {inputError ? <p>{inputError}</p> : null}
+              {inputError ? <p className="error">{inputError}</p> : null}
               <form ref={formRef}>
                 <div>
                   <label htmlFor="userName">ユーザー名</label>

@@ -80,8 +80,8 @@ export const Thread = () => {
       ) : (
         <div className="thread-wrapper content-wrapper">
           <section>
-            <h2>{threadData?.title}</h2>
-            <div>{threadData?.topic}</div>
+            <p className="thread_title">{threadData?.title}</p>
+            <p>{threadData?.topic}</p>
           </section>
           <section>
             {commentsData ? (
@@ -101,8 +101,8 @@ export const Thread = () => {
               <div>コメントはまだありません</div>}
           </section>
           <section>
+            <h2>コメント投稿</h2>
             {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
-            <p>コメント投稿</p>
             <form ref={formRef} onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="responder">投稿者</label>

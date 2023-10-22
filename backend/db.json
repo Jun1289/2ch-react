@@ -4,8 +4,8 @@
       "title": "初スレッド",
       "topic": "コメント投稿数の反映",
       "createdAt": "2023-10-11T11:36:01.135Z",
-      "updatedAt": "2023-10-17T09:04:45.645Z",
-      "commentTotal": 5,
+      "updatedAt": "2023-10-21T11:38:49.702Z",
+      "commentTotal": 6,
       "builder": "名無し",
       "id": 1
     },
@@ -14,9 +14,27 @@
       "title": "二番目のスレッド",
       "topic": "話題です",
       "createdAt": "2023-10-11T23:19:14.820Z",
-      "updatedAt": "2023-10-11T23:19:32.990Z",
-      "commentTotal": 1,
+      "updatedAt": "2023-10-22T02:15:53.175Z",
+      "commentTotal": 2,
       "id": 2
+    },
+    {
+      "builder": "主",
+      "title": "こんちゃ",
+      "topic": "なし",
+      "createdAt": "2023-10-22T01:20:58.002Z",
+      "updatedAt": "2023-10-22T01:21:30.132Z",
+      "commentTotal": 1,
+      "id": 3
+    },
+    {
+      "builder": "スレ主",
+      "title": "四番目",
+      "topic": "こんにちは",
+      "createdAt": "2023-10-22T02:12:59.634Z",
+      "updatedAt": "2023-10-22T02:13:14.614Z",
+      "commentTotal": 1,
+      "id": 4
     }
   ],
   "comments": [
@@ -67,20 +85,50 @@
       "commentNo": 5,
       "threadId": "1",
       "id": 6
+    },
+    {
+      "responder": "初めて投稿します",
+      "commentContent": "こんにちは\n",
+      "createdAt": "2023-10-21T11:38:49.702Z",
+      "commentNo": 6,
+      "threadId": "1",
+      "id": 7
+    },
+    {
+      "responder": "名無し",
+      "commentContent": "コメント",
+      "createdAt": "2023-10-22T01:21:30.132Z",
+      "commentNo": 1,
+      "threadId": "3",
+      "id": 8
+    },
+    {
+      "responder": "こんちゃ",
+      "commentContent": "よろしゅう",
+      "createdAt": "2023-10-22T02:13:14.614Z",
+      "commentNo": 1,
+      "threadId": "4",
+      "id": 9
+    },
+    {
+      "responder": "更新",
+      "commentContent": "更新する",
+      "createdAt": "2023-10-22T02:15:53.175Z",
+      "commentNo": 2,
+      "threadId": "2",
+      "id": 10
     }
   ],
   "users": [
     {
-      "user": {
-        "name": "user",
-        "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
-        "likes": [
-          "1",
-          "2"
-        ],
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk3NTQ0NzY0LCJleHAiOjE2OTc2MzExNjR9.9Q73p3GCNIUhcCyIZT7WY-pgGryNWN3n08MPoNXTJlQ",
-        "id": 1
-      },
+      "name": "user",
+      "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
+      "likes": [
+        "1",
+        "2",
+        "4"
+      ],
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk3OTQwODQ2LCJleHAiOjE2OTgwMjcyNDZ9.YYOE4mZmbTjoFpv-Lr5kU2Bv_rZATBxm_DNaVD_LeGQ",
       "id": 1
     },
     {

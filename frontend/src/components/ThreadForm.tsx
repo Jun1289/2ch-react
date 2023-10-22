@@ -39,8 +39,8 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
 
   return (
     <section>
-      {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
-      <p>スレッドの新規作成</p>
+      {inputError && <p className="error">{inputError}</p>}
+      <h2>スレッドの新規作成</h2>
       <form ref={formRef} onSubmit={handleSubmit}>
         <div>
           <label htmlFor="builder">スレ主</label>

@@ -15,6 +15,7 @@ export const Home = () => {
     setThreadsData(prevThreads => [...(prevThreads || []), newThread]);
   }
 
+
   const getCommentCnt = async (threadId: number): Promise<number> => {
     const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
     const comments = response.data
@@ -104,27 +105,29 @@ export const Home = () => {
         loadingThread || loadingComment ? (
           null
         ) : (
-          threadsData ? (
-            <ul>
-              {
-                threadsData.map(thread => (
-                  <li key={thread.id}>
-                    <Link to={`/threads/${thread.id}`}>
-                      <span>{thread.id}: {thread.title} ({commentCounts[thread.id] || 0})</span>
-                    </Link>
-                    {user ? (
-                      <a href="#" className={user.likes.includes(thread.id.toString()) ? "added" : ""} onClick={(event) => handleFavorite(event, thread.id)}>★</a>
-                    ) : (
-                      null
-                    )}
-                  </li>
-                ))
-              }
-            </ul>
-          ) : (
-            <div>スレッドはまだありません</div>
-          )
-        )}
+          <section>
+            <h2>スレッド一覧</h2>
+            {threadsData ? (
+              <ul>
+                {
+                  threadsData.map(thread => (
+                    <li key={thread.id}>
+                      <Link to={`/threads/${thread.id}`}>
+                        <span>{thread.id}: {thread.title} ({commentCounts[thread.id] || 0})</span>
+                      </Link>
+                      {user ? (
+                        <a href="#" className={user.likes.includes(thread.id.toString()) ? "added" : ""} onClick={(event) => handleFavorite(event, thread.id)}>★</a>
+                      ) : (
+                        null
+                      )}
+                    </li>
+                  ))
+                }
+              </ul>
+            ) : (
+              <div>スレッドはまだありません</div>
+            )}
+          </section>)}
     </div >
   )
 }

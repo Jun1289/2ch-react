@@ -7,6 +7,15 @@ li {
   list-style: none;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
 .content-wrapper {
   margin: 0 auto;
 }
@@ -15,11 +24,15 @@ li {
   border: none;
 }
 
-a {
-  text-decoration: none;
-  color: black;
+.added {
+  color: yellow;
 }
 
-.added {
-  color: rgb(239, 239, 98);
+.error {
+  color: red;
+}
+
+.thread_title {
+  font-size: 1.25rem;
+  font-weight: bold;
 }

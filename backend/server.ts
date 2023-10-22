@@ -183,6 +183,9 @@ server.post("/users/register", async (req, res) => {
     if (user) {
       return res.status(400).json({ message: "既に使用されているユーザ名です。他のユーザ名を入力してください" })
     }
+    if (!name || !password) {
+      return res.status(400).json({ message: "ユーザー名かパスワードが未入力です" })
+    }
 
     // jwt.sign の第一引数は トークンのペイロード（ユーザの認証情報）、第二引数は秘密鍵の情報、第三引数はオプション（今回はトークンの有効期限を10分に設定）
     const token = jwt.sign({ name }, process.env.ACCESS_TOKEN_SECRET, {
