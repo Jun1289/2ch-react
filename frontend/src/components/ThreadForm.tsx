@@ -8,7 +8,6 @@ interface ThreadFormProps {
 export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
   const [inputError, setInputError] = React.useState<null | string>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
-  const threadBuilderRef = React.useRef<HTMLInputElement>(null)
   const threadTitleRef = React.useRef<HTMLInputElement>(null)
   const threadTopicRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -26,7 +25,6 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
 
     try {
       const response = await axios.post("http://localhost:8000/threads", {
-        builder: threadBuilderRef.current?.value,
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })
@@ -42,15 +40,6 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
       {inputError && <p className="error">{inputError}</p>}
       <h2>スレッドの新規作成</h2>
       <form ref={formRef} onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="builder">スレ主</label>
-          <input
-            id="builder"
-            name="builder"
-            type="text"
-            ref={threadBuilderRef}
-          />
-        </div>
         <div>
           <label htmlFor="title">タイトル</label>
           <input

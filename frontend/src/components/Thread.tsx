@@ -18,6 +18,17 @@ export const Thread = () => {
     setCommentsData(prevComments => [...(prevComments || []), newComment]);
   }
 
+  const formatDateTime = (dateString: string) => {
+    const dateObj = new Date(dateString);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+    return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
+  }
 
   const handleSubmit = React.useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
@@ -72,7 +83,6 @@ export const Thread = () => {
     fetchData();
   }, [])
 
-
   return (
     <>{
       (loadingThread || loadingComment) ? (
@@ -89,7 +99,7 @@ export const Thread = () => {
                 {commentsData.map((comment, index) => (
                   <li key={index}>
                     <div>
-                      {comment.commentNo} : {comment.responder} : {comment.createdAt}
+                      {comment.commentNo}: {comment.responder} : {formatDateTime(comment.createdAt)}
                     </div>
                     <div>
                       {comment.commentContent}

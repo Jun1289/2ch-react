@@ -124,9 +124,6 @@ server.post('/threads', (req, res, next) => {
   req.body.updatedAt = now
 
   req.body.commentTotal = 0
-  if (!req.body.builder) {
-    req.body.builder = '名無し'
-  }
 
   next()
 })
