@@ -140,8 +140,8 @@ export const Thread = () => {
           <section>
             {commentsData ? (
               <ul>
-                {commentsData.map((comment, index) => (
-                  <li key={index}>
+                {commentsData.map((comment) => (
+                  <li key={comment.id}>
                     <div>
                       <span>{comment.commentNo}: {comment.responder} : {formatDateTime(comment.createdAt)}</span>
                       <button onClick={(e) => handleDelete(comment.id, e)}>削除</button>

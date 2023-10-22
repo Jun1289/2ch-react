@@ -121,12 +121,15 @@ export const User = () => {
       try {
         await axios.get(`http://localhost:8000/users/${user?.id}`)
           .then(function (response) {
-            let fetchedUser = response.data
+            const fetchedUser = response.data
             console.log("before filter", fetchedUser)
-            fetchedUser = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
+            const newLikes = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
             console.log("after filter", fetchedUser)
 
-            setUser(fetchedUser)
+            setUser({
+              ...fetchedUser,
+              likes: newLikes
+            })
           })
       } catch (error) {
         console.error("お気に入りの切り替えに失敗しました。", error)
@@ -144,6 +147,7 @@ export const User = () => {
         if (user && user.likes.length > 0) {
           for (const like of user.likes) {
             const response = await axios.get(`http://localhost:8000/threads/${like}`);
+            console.log("fetched like thread", response.data)
             fetchedThreadsData.push(response.data)
           }
           setThreadsData(fetchedThreadsData);

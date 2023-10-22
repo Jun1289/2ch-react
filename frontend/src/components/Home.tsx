@@ -38,6 +38,19 @@ export const Home = () => {
           }) || null;
           console.log(newThreadsData)
           setThreadsData(newThreadsData)
+          if (user) {
+            setUser((prevUser) => {
+              if (!prevUser) return null;
+              const islikes = prevUser?.likes.filter((like) => {
+                return like !== threadId.toString()
+              })
+              console.log("after toggle : ", islikes)
+              return ({
+                ...prevUser,
+                likes: islikes
+              })
+            })
+          }
         })
     } catch (error) {
       console.error("コメントの削除でエラーが発生しました:", error);
@@ -63,31 +76,9 @@ export const Home = () => {
             setUser(response.data.user)
             const islike = user?.likes.includes(threadId.toString())
             if (islike) {
-              // event.currentTarget.classList.remove('added')
               target.classList.remove('added')
-              setUser((prevUser) => {
-                if (!prevUser) return null;
-                const islikes = prevUser?.likes.filter((like) => {
-                  return like !== threadId.toString()
-                })
-                console.log("after toggle : ", islikes)
-                return ({
-                  ...prevUser,
-                  likes: islikes
-                })
-              })
             } else if (!islike) {
-              // event.currentTarget.classList?.add('added')
               target.classList?.add('added')
-              setUser((prevUser) => {
-                if (!prevUser) return null;
-                const islikes = [...prevUser.likes, threadId.toString()]
-                console.log("after toggle : ", islikes)
-                return ({
-                  ...prevUser,
-                  likes: islikes
-                })
-              })
             }
           })
       } catch (error) {

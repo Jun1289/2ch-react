@@ -280,6 +280,35 @@ server.post("/users/logout", (req, res) => {
   res.status(200).json({ message: "ログアウトに成功しました" });
 });
 
+server.use("/threads/:id", (req, res, next) => {
+  if (req.method === "DELETE") {
+    const threadId = req.params.id
+    const users = router.db.get('users') as any;
+    const threadFan = users.filter((user) => user.likes.includes(threadId.toString())).value()
+
+    console.log(threadFan)
+    console.log(users.value())
+    threadFan.forEach(user => {
+      if (user.likes) {
+        const index = user.likes.indexOf(threadId);
+        if (index !== -1) {
+          user.likes.splice(index, 1);
+          console.log("sliced done")
+        } else {
+          console.log("index not found")
+        }
+      }
+    });
+    // console.log("threadsFan", threadFan)
+    threadFan.forEach(updatedUser => {
+      router.db.get('users')
+        .find({ id: updatedUser.id })
+        .assign(updatedUser)
+        .write();
+    });
+  }
+  next()
+})
 
 // 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {
