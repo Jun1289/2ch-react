@@ -1,18 +1,7 @@
 import axios from "axios"
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import { CommentForm } from "./CommentForm";
 import { useReducer } from "react";
-
-type Thread = {
-  id: number,
-  title: string,
-  topic: string,
-  createdAt: string,
-  updatedAt: string,
-  commentTotal: number,
-  builder: string
-}
 
 type Comment = {
   id: number,
@@ -26,11 +15,12 @@ type Comment = {
 
 type CommentsState = {
   comments: Comment[],
-  commentsIsLoading: boolean,
-  error: null | string
+  isLoading: boolean,
+  currentComment: null | Comment
+  error: null | string,
 }
 
-type Action =
+type CommentAction =
   | {
     type: "delete_comment";
     commentId: number;
@@ -48,13 +38,17 @@ type Action =
     error: string | null;
   }
 
+const commentsInitialState: CommentsState = {
+  comments: [],
+  isLoading: true,
+  currentComment: null,
+  error: null
+}
 
-
-const commentReducer = (commentsState: CommentsState, action: Action) => {
+const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
   // const { comments, commentsIsLoading, error } = commentsState
   switch (action.type) {
     case 'delete_comment': {
-      console.log("commentsData", action.commentId)
       const newCommentsData = commentsState.comments?.filter((comment) => {
         return comment.id !== action.commentId
       }) || null;
@@ -77,7 +71,7 @@ const commentReducer = (commentsState: CommentsState, action: Action) => {
       return {
         ...commentsState,
         comments: action.comments,
-        commentsIsLoading: false,
+        isLoading: false,
         error: null
       }
       break;
@@ -91,39 +85,121 @@ const commentReducer = (commentsState: CommentsState, action: Action) => {
   }
 }
 
-const commentsInitialState: CommentsState = {
-  comments: [],
-  commentsIsLoading: true,
-  error: null
 
+type Thread = {
+  id: number,
+  title: string,
+  topic: string,
+  createdAt: string,
+  updatedAt: string,
+  commentTotal: number,
+  builder: string
+}
+
+type ThreadsState = {
+  threads: Thread[],
+  isLoading: boolean,
+  currentThread: null | Thread,
+  error: null | string
+}
+
+type ThreadAction =
+  | {
+    type: "delete_thread";
+    threadId: number;
+  }
+  | {
+    type: "add_thread";
+    newthread: Thread;
+  }
+  | {
+    type: "set_threads";
+    threads: Thread[];
+  }
+  | {
+    type: "set_thread";
+    currentThread: Thread;
+  }
+  | {
+    type: "set_error";
+    error: string | null;
+  }
+
+const threadsInitialState: ThreadsState = {
+  threads: [],
+  isLoading: true,
+  currentThread: null,
+  error: null
+}
+
+const threadReducer = (threadsState: ThreadsState, action: ThreadAction) => {
+  // const { threads, threadsIsLoading, error } = threadsState
+  switch (action.type) {
+    case 'delete_thread': {
+      const newthreadsData = threadsState.threads?.filter((thread) => {
+        return thread.id !== action.threadId
+      }) || null;
+      return {
+        ...threadsState,
+        threads: [...newthreadsData]
+      }
+      break;
+    }
+    case 'add_thread':
+      return {
+        ...threadsState,
+        threads: [...threadsState.threads, action.newthread],
+        error: null
+      }
+      break;
+    case 'set_threads':
+      return {
+        ...threadsState,
+        threads: action.threads,
+        isLoading: false,
+        error: null
+      }
+      break;
+    case 'set_thread':
+      return {
+        ...threadsState,
+        currentThread: action.currentThread,
+        isLoading: false,
+      }
+      break;
+    case 'set_error':
+      return {
+        ...threadsState,
+        error: action.error
+      }
+      break;
+  }
+}
+
+const formatDateTime = (dateString: string) => {
+  const dateObj = new Date(dateString);
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const hours = String(dateObj.getHours()).padStart(2, '0');
+  const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+  return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
 }
 
 export const Thread = () => {
   const { threadId } = useParams()
-  const [threadData, setThreadData] = useState<null | Thread>(null);
   const [inputError, setInputError] = React.useState<null | string>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
   const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
-  const [loadingThread, setLoadingThread] = useState(true)
 
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
-
-  const formatDateTime = (dateString: string) => {
-    const dateObj = new Date(dateString);
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const hours = String(dateObj.getHours()).padStart(2, '0');
-    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
-
-    return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
-  }
+  const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
 
   const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
-    console.log(commentId)
     try {
       await axios.delete(`http://localhost:8000/comments/${commentId}`)
         .then(() => {
@@ -153,7 +229,6 @@ export const Thread = () => {
     } catch (error) {
       commentDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -162,12 +237,9 @@ export const Thread = () => {
     const fetchThreadData = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/threads/${threadId}`)
-        console.log(response.data)
-        setThreadData(response.data)
-        setLoadingThread(false)
+        threadDispatch({ type: 'set_thread', currentThread: response.data })
       } catch (error) {
-        console.error("スレッドデータの取得でエラーが発生しました")
-        setLoadingThread(false)
+        threadDispatch({ type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}` })
       }
     }
     fetchThreadData()
@@ -175,15 +247,12 @@ export const Thread = () => {
   }, [threadId])
 
   useEffect(() => {
-    // ここで非同期データを取得
     const fetchData = async () => {
       try {
         const commentsData = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
         commentDispatch({ type: 'set_comments', comments: commentsData.data })
-        // setLoadingComment(false)
       } catch (error) {
-        console.error("コメントの取得でエラーが発生しました:", error);
-        // setLoadingComment(false)
+        commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
       }
     };
     fetchData();
@@ -192,18 +261,16 @@ export const Thread = () => {
 
   return (
     <>{
-      (loadingThread || commentsState.commentsIsLoading) ? (
+      (threadsState.isLoading || commentsState.isLoading) ? (
         null
       ) : (
         <div className="thread-wrapper content-wrapper">
           <section>
-            <p className="thread_title">{threadData?.title}</p>
-            <p>{threadData?.topic}</p>
+            <p className="thread_title">{threadsState.currentThread?.title}</p>
+            <p>{threadsState.currentThread?.topic}</p>
           </section>
           <section>
             {(commentsState.comments && commentsState.comments.length != 0) ? (
-              console.log("commentsState", commentsState),
-              console.log("commentsState.length", commentsState.comments.length),
               <ul>
                 {commentsState.comments.map((comment) => (
                   <li key={comment.id}>
