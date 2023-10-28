@@ -4,12 +4,21 @@
       "title": "dd",
       "topic": "dd",
       "createdAt": "2023-10-22T06:15:13.362Z",
-      "updatedAt": "2023-10-22T06:15:13.362Z",
-      "commentTotal": 0,
+      "updatedAt": "2023-10-28T06:09:46.343Z",
+      "commentTotal": 15,
       "id": 2
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "responder": "poste",
+      "commentContent": "dd",
+      "createdAt": "2023-10-28T04:53:25.268Z",
+      "commentNo": 13,
+      "threadId": "2",
+      "id": 3
+    }
+  ],
   "users": [
     {
       "name": "user",
