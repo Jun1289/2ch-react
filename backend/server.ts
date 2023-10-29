@@ -134,7 +134,9 @@ server.use((req, res, next) => {
       req.user = user;
       console.log("ログインチェックを通りました。")
     } catch (err) {
-      res.status(401).json({ message: '無効なトークンです' });
+      res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
+      // res.status(401).json({ message: '無効なトークンです' });
+      console.log("無効なトークンです。", err)
     }
   }
   next();
