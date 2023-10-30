@@ -11,8 +11,30 @@ type Thread = {
   builder: string
 }
 
+type ThreadAction =
+  | {
+    type: "delete_thread";
+    threadId: number;
+  }
+  | {
+    type: "add_thread";
+    newThread: Thread;
+  }
+  | {
+    type: "set_threads";
+    threads: Thread[];
+  }
+  | {
+    type: "set_thread";
+    currentThread: Thread;
+  }
+  | {
+    type: "set_error";
+    error: string | null;
+  }
+
 interface ThreadFormProps {
-  onThreadCreated: (newThread: Pick<Thread, "id" | "title">) => void;
+  onThreadCreated: React.Dispatch<ThreadAction>;
 }
 
 export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
@@ -38,12 +60,12 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })
-      onThreadCreated(response.data)
+      onThreadCreated({ type: "add_thread", newThread: response.data })
       formRef.current?.reset()
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);
     }
-  }, [onThreadCreated])
+  }, [])
 
   return (
     <section>
