@@ -2,7 +2,6 @@ import axios from "axios"
 import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
-import { useUserContext } from "../state/userContext";
 import { useReducer } from "react";
 
 type Comment = {
@@ -180,8 +179,6 @@ const threadsReducer = (threadsState: ThreadsState, action: ThreadAction) => {
 
 export const Home = () => {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
-  const { userState, userDispatch } = useUserContext()
-  const { user, isLoading } = userState
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadsReducer, threadsInitialState);
 
@@ -191,19 +188,6 @@ export const Home = () => {
       await axios.delete(`http://localhost:8000/threads/${threadId}`)
         .then(function () {
           threadsDispatch({ type: "delete_thread", threadId })
-          // if (userState) {
-          //   setUser((prevUser) => {
-          //     if (!prevUser) return null;
-          //     const islikes = prevUser?.likes.filter((like) => {
-          //       return like !== threadId.toString()
-          //     })
-          //     console.log("after toggle : ", islikes)
-          //     return ({
-          //       ...prevUser,
-          //       likes: islikes
-          //     })
-          //   })
-          // }
         })
     } catch (error) {
       console.error("コメントの削除でエラーが発生しました:", error);
@@ -216,56 +200,26 @@ export const Home = () => {
     return comments.length
   }
 
-  // const handleFavorite = (event: React.MouseEvent<Element, MouseEvent>, threadId: number) => {
-  //   console.log(threadId)
-  //   const target = event.currentTarget
-
-  //   const toggleFavorite = async () => {
-  //     try {
-  //       await axios.post(`http://localhost:8000/users/${user?.id}/toggle-favorite/${threadId}`)
-  //         .then(function (response) {
-  //           console.log(response.data.user)
-  //           setUser(response.data.user)
-  //           const islike = user?.likes.includes(threadId.toString())
-  //           if (islike) {
-  //             target.classList.remove('added')
-  //           } else if (!islike) {
-  //             target.classList?.add('added')
-  //           }
-  //         })
-  //     } catch (error) {
-  //       console.error("お気に入りの切り替えに失敗しました。", error)
-  //     }
-  //   }
-  //   toggleFavorite()
-  // }
-
   useEffect(() => {
-    // ここで非同期データを取得
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/threads');
-        threadsDispatch({ type: 'set_threads', threads: response.data })
+        const threads = response.data
+        threadsDispatch({ type: 'set_threads', threads })
+        if (threads && threads.length > 0) {
+          const counts: Record<number, number> = {};
+          for (const thread of threads) {
+            counts[thread.id] = await getCommentCnt(thread.id);
+          }
+          setCommentCounts(counts);
+        }
+        commentDispatch({ type: 'set_comments', comments: [] })
       } catch (error) {
         console.error("Error fetching threads:", error);
       }
     };
     fetchData();
   }, [])
-
-  useEffect(() => {
-    const fetchCommentCounts = async () => {
-      if (threadsState.threads) {
-        const counts: Record<number, number> = {};
-        for (const thread of threadsState.threads) {
-          counts[thread.id] = await getCommentCnt(thread.id);
-        }
-        setCommentCounts(counts);
-      }
-      commentDispatch({ type: 'set_comments', comments: [] })
-    };
-    fetchCommentCounts();
-  }, []);
 
   return (
     <div>
@@ -284,11 +238,6 @@ export const Home = () => {
                       <Link to={`/threads/${thread.id}`}>
                         <span>{thread.id}: {thread.title} ({commentCounts[thread.id] || 0})</span>
                       </Link>
-                      {/*user ? (
-                        <a href="#" className={user.likes.includes(thread.id.toString()) ? "added" : ""} onClick={(event) => handleFavorite(event, thread.id)}>★</a>
-                      ) : (
-                        null
-                      )} */}
                       <button onClick={(e) => handleDelete(thread.id, e)}>削除</button>
                     </li>
                   ))

@@ -193,7 +193,7 @@ export const Thread = () => {
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
   const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
   const { userState, userDispatch } = useUserContext()
-  const { user, isLoading } = userState
+  const { user } = userState
 
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);

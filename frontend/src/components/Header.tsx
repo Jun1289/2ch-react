@@ -3,7 +3,7 @@ import "../styles/styles.css"
 import { useUserContext } from "../state/userContext"
 
 export const Header = () => {
-  const { userState, userDispatch } = useUserContext()
+  const { userState } = useUserContext()
   const { user, isLoading } = userState
 
   return (
