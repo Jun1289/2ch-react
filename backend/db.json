@@ -12,16 +12,16 @@
       "title": "comment",
       "topic": "wadaoi",
       "createdAt": "2023-10-30T22:31:00.585Z",
-      "updatedAt": "2023-11-01T05:19:09.296Z",
-      "commentTotal": 8,
+      "updatedAt": "2023-11-01T05:59:28.160Z",
+      "commentTotal": 9,
       "id": 3
     },
     {
       "title": "title",
       "topic": "wadai",
       "createdAt": "2023-10-30T22:33:48.702Z",
-      "updatedAt": "2023-11-01T01:49:45.831Z",
-      "commentTotal": 1,
+      "updatedAt": "2023-11-01T06:02:11.253Z",
+      "commentTotal": 2,
       "id": 4
     },
     {
@@ -36,8 +36,8 @@
       "title": "っっd",
       "topic": "っd",
       "createdAt": "2023-10-30T22:47:47.730Z",
-      "updatedAt": "2023-10-30T22:47:47.730Z",
-      "commentTotal": 0,
+      "updatedAt": "2023-11-01T06:33:58.515Z",
+      "commentTotal": 2,
       "id": 6
     }
   ],
@@ -193,6 +193,38 @@
       "commentNo": 8,
       "threadId": "3",
       "id": 19
+    },
+    {
+      "responder": "poste",
+      "commentContent": "com",
+      "createdAt": "2023-11-01T05:59:28.160Z",
+      "commentNo": 9,
+      "threadId": "3",
+      "id": 20
+    },
+    {
+      "responder": "poster",
+      "commentContent": "comment",
+      "createdAt": "2023-11-01T06:02:11.253Z",
+      "commentNo": 2,
+      "threadId": "4",
+      "id": 21
+    },
+    {
+      "responder": "ぽすて",
+      "commentContent": "ニューコメント",
+      "createdAt": "2023-11-01T06:32:27.594Z",
+      "commentNo": 1,
+      "threadId": "6",
+      "id": 22
+    },
+    {
+      "responder": "ポスター",
+      "commentContent": "コメント",
+      "createdAt": "2023-11-01T06:33:58.515Z",
+      "commentNo": 2,
+      "threadId": "6",
+      "id": 23
     }
   ],
   "users": [
@@ -340,7 +372,11 @@
       "likes": [],
       "comments": [
         18,
-        19
+        19,
+        20,
+        21,
+        22,
+        23
       ],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdDMiLCJpYXQiOjE2OTg4MDUwOTcsImV4cCI6MTY5ODg5MTQ5N30.S4U1nHVERf-y_BDbzSLNeNn5ton5jIgbAWAPbZJ4xKM",
       "id": 21

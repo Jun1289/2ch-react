@@ -1,30 +1,97 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useCallback, useEffect, useReducer, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../state/userContext"
 import Cookies from 'js-cookie';
 
-type Thread = {
+type Comment = {
   id: number,
-  title: string,
-  topic: string,
+  commentNo: number,
+  responder: string,
+  commentContent: string,
   createdAt: string,
   updatedAt: string,
-  commentTotal: number,
-  builder: string
+  threadId: number
 }
 
+type CommentsState = {
+  comments: Comment[],
+  isLoading: boolean,
+  currentComment: null | Comment
+  error: null | string,
+}
+
+type CommentAction =
+  | {
+    type: "delete_comment";
+    commentId: number;
+  }
+  | {
+    type: "add_comment";
+    newComment: Comment;
+  }
+  | {
+    type: "set_comments";
+    comments: Comment[];
+  }
+  | {
+    type: "set_error";
+    error: string | null;
+  }
+
+const commentsInitialState: CommentsState = {
+  comments: [],
+  isLoading: true,
+  currentComment: null,
+  error: null
+}
+
+const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
+  // const { comments, commentsIsLoading, error } = commentsState
+  switch (action.type) {
+    case 'delete_comment': {
+      const newCommentsData = commentsState.comments?.filter((comment) => {
+        return comment.id !== action.commentId
+      }) || null;
+      return {
+        ...commentsState,
+        comments: [...newCommentsData]
+      }
+      break;
+    }
+    case 'add_comment':
+      return {
+        ...commentsState,
+        comments: [...commentsState.comments, action.newComment],
+        error: null
+      }
+      break;
+    case 'set_comments':
+      return {
+        ...commentsState,
+        comments: action.comments,
+        isLoading: false,
+        error: null
+      }
+      break;
+    case 'set_error':
+      return {
+        ...commentsState,
+        error: action.error
+      }
+      break;
+  }
+}
 export const User = () => {
   const navigate = useNavigate()
-  // const [threadsData, setThreadsData] = useState<null | Thread[]>(null);
-  // const [userInfo, setUserInfo] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
-  // const [loading, setLoading] = useState(true);
   const userNameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const { userState, userDispatch } = useUserContext()
   const { user, isLoading } = userState
+  const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
+
 
   // console.log(user)
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
@@ -117,48 +184,25 @@ export const User = () => {
     }
   }
 
-  // const handleFavorite = (event: React.MouseEvent<Element, MouseEvent>, threadId: number) => {
-  //   const deleteFavorite = async () => {
-  //     try {
-  //       await axios.get(`http://localhost:8000/users/${user?.id}`)
-  //         .then(function (response) {
-  //           const fetchedUser = response.data
-  //           console.log("before filter", fetchedUser)
-  //           const newLikes = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
-  //           console.log("after filter", fetchedUser)
-
-  //           setUser({
-  //             ...fetchedUser,
-  //             likes: newLikes
-  //           })
-  //         })
-  //     } catch (error) {
-  //       console.error("お気に入りの切り替えに失敗しました。", error)
-  //     }
-  //   }
-  //   deleteFavorite()
-  // }
-
-
-  // useEffect(() => {
-  //   // ここで非同期データを取得
-  //   const fetchedThreadsData: Thread[] = []
-  //   const fetchThreadsData = async () => {
-  //     try {
-  //       if (user && user.likes.length > 0) {
-  //         for (const like of user.likes) {
-  //           const response = await axios.get(`http://localhost:8000/threads/${like}`);
-  //           console.log("fetched like thread", response.data)
-  //           fetchedThreadsData.push(response.data)
-  //         }
-  //         setThreadsData(fetchedThreadsData);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching threads:", error);
-  //     }
-  //   };
-  //   fetchThreadsData();
-  // }, [userState.user])
+  useEffect(() => {
+    const fetchedCommentsData = async () => {
+      if (!user) return
+      try {
+        console.log("comments", user.comments)
+        console.log("user", user)
+        if (user.comments === undefined) return
+        const commentsByUser = []
+        for (const commentId of user.comments) {
+          const response = await axios.get(`http://localhost:8000/comments/${commentId}`);
+          commentsByUser.push(response.data)
+        }
+        commentDispatch({ type: 'set_comments', comments: commentsByUser })
+      } catch (error) {
+        console.error("コメントの取得でエラーが発生しました。", error);
+      }
+    }
+    fetchedCommentsData()
+  }, [user])
 
   return (
     <>
@@ -172,23 +216,21 @@ export const User = () => {
               <dl>
                 <dt>ユーザー名</dt>
                 <dd>{user.name}</dd>
-                {/* <dt>お気に入りスレッド一覧</dt>
-                <dd> */}
-                {/* {threadsData && threadsData.length > 0 ? (
-                    <ul>
-                      {threadsData.map(thread => (
-                        <li key={thread.id}>
-                          <Link to={`/threads/${thread.id}`}>
-                            {thread.title}
-                          </Link>
-                          <a href="#" className="added" onClick={(event) => handleFavorite(event, thread.id)}>★</a>
-                        </li>
-                      ))}
-                    </ul>
+                <dt>コメント履歴</dt>
+                <dd>
+                  {commentsState.isLoading ? (
+                    null
                   ) : (
-                    "お気に入りのスレッドはまだありません。"
-                  )} */}
-                {/* </dd> */}
+                    commentsState.comments && commentsState.comments.length > 0 ? (
+                      <ul>
+                        {commentsState.comments.map(comment => (
+                          <li key={comment.id}>{comment.commentContent}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div>投稿したコメントはありません。</div>
+                    ))}
+                </dd>
               </dl>
               <button onClick={toLogout}>ログアウト</button>
             </>

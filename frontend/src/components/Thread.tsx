@@ -53,7 +53,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       const newCommentsData = commentsState.comments?.filter((comment) => {
         return comment.id !== action.commentId
       }) || null;
-      console.log("newCommentsData", newCommentsData)
       return {
         ...commentsState,
         comments: [...newCommentsData]
@@ -68,7 +67,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       }
       break;
     case 'set_comments':
-      console.log("payload", action.comments)
       return {
         ...commentsState,
         comments: action.comments,
@@ -77,7 +75,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       }
       break;
     case 'set_error':
-      console.log("error", action.error)
       return {
         ...commentsState,
         error: action.error
