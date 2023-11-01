@@ -40,9 +40,26 @@ server.use(cors({
   credentials: true
 }));
 
-
+// ユーザがログインしているかチェック
+server.use((req, res, next) => {
+  console.log("ログインチェックを行います。")
+  console.log("cookie", req.cookies)
+  if (req.cookies.token) {
+    try {
+      const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
+      req.user = user;
+      console.log("ログインチェックを通りました。")
+    } catch (err) {
+      // res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
+      // res.status(401).json({ message: '無効なトークンです' });
+      console.log("無効なトークンです。", err)
+    }
+  }
+  next();
+});
 // コメント投稿
 server.post('/threads/:threadId/comments', async (req, res, next) => {
+  console.log("ログインしているユーザー", req.user)
   const threadId = req.params.threadId;
   if (isNaN(Number(threadId))) {
     return res.status(400).json({
@@ -126,21 +143,7 @@ server.post('/threads', (req, res, next) => {
   next()
 })
 
-// ユーザがログインしているかチェック
-server.use((req, res, next) => {
-  if (req.cookies.token) {
-    try {
-      const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
-      req.user = user;
-      console.log("ログインチェックを通りました。")
-    } catch (err) {
-      res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
-      // res.status(401).json({ message: '無効なトークンです' });
-      console.log("無効なトークンです。", err)
-    }
-  }
-  next();
-});
+
 
 // スレッドをお気に入りに登録・登録削除
 server.post('/users/:id/toggle-favorite/:threadId', (req, res) => {
@@ -200,13 +203,14 @@ server.post("/users/register", async (req, res) => {
         name,
         hashedPassword,
         likes: [],
+        comments: [],
         token
       }),
     });
 
     const newUser = await response.json();
 
-    res.cookie("token", token, { httpOnly: false, secure: false, path: '/' })
+    res.cookie("token", token, { sameSite: "lax", httpOnly: false, secure: false, path: '/' })
 
     res.status(200).json({
       ...newUser,
@@ -241,7 +245,7 @@ server.post("/users/signin", async (req, res) => {
     )
 
     res.cookie("token", token, { sameSite: "lax", secure: false, httpOnly: false, path: '/' })
-    console.log('cookie created successfully');
+    console.log('cookie created successfully', token);
 
     await nfetch(`http://localhost:8000/users/${user.id}`, {
       method: 'PATCH',

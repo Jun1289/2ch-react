@@ -6,6 +6,7 @@ type User = {
   name: string,
   hashedPassword: string,
   likes: string[],
+  comments: string[],
   token: string,
   id: number
 }

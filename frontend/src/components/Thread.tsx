@@ -2,6 +2,7 @@ import axios from "axios"
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReducer } from "react";
+import { useUserContext } from "../state/userContext";
 
 type Comment = {
   id: number,
@@ -194,6 +195,8 @@ export const Thread = () => {
   const formRef = React.useRef<HTMLFormElement>(null);
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
   const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
+  const { user, setUser } = useUserContext()
+
 
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
@@ -225,6 +228,20 @@ export const Thread = () => {
         commentContent: commentContentRef.current?.value,
       })
       commentDispatch({ type: 'add_comment', newComment: response.data })
+      const commentId = response.data.id
+
+      if (user) {
+        const newUser = {
+          ...user,
+          comments: [
+            ...user.comments,
+            commentId
+          ]
+        }
+        setUser(newUser)
+        console.log(newUser)
+        await axios.put(`http://localhost:8000/users/${user?.id}`, { ...newUser })
+      }
       formRef.current?.reset()
     } catch (error) {
       commentDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
