@@ -47,7 +47,6 @@ const commentsInitialState: CommentsState = {
 }
 
 const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
-  // const { comments, commentsIsLoading, error } = commentsState
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
@@ -82,7 +81,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       break;
   }
 }
-
 
 type Thread = {
   id: number,
@@ -131,7 +129,6 @@ const threadsInitialState: ThreadsState = {
 }
 
 const threadReducer = (threadsState: ThreadsState, action: ThreadAction) => {
-  // const { threads, threadsIsLoading, error } = threadsState
   switch (action.type) {
     case 'delete_thread': {
       const newthreadsData = threadsState.threads?.filter((thread) => {

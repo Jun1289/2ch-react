@@ -50,8 +50,6 @@ server.use((req, res, next) => {
       req.user = user;
       console.log("ログインチェックを通りました。")
     } catch (err) {
-      // res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
-      // res.status(401).json({ message: '無効なトークンです' });
       console.log("無効なトークンです。", err)
     }
   }
@@ -143,37 +141,6 @@ server.post('/threads', (req, res, next) => {
   next()
 })
 
-
-
-// スレッドをお気に入りに登録・登録削除
-server.post('/users/:id/toggle-favorite/:threadId', (req, res) => {
-  const userId = parseInt(req.params.id, 10);
-  const threadId = req.params.threadId;
-
-  const users = router.db.get('users').value();
-  const user = users.find(user => user.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ message: 'ユーザが見つかりませんでした' });
-  }
-
-  // like 配列に threadId が存在するか確認し、存在すれば削除、存在しなければ追加
-  const index = user.likes.indexOf(threadId);
-  if (index > -1) {
-    user.likes.splice(index, 1);
-  } else {
-    user.likes.push(threadId);
-  }
-
-  // 更新したユーザデータで元のユーザデータを更新
-  router.db.get('users')
-    .find({ id: userId })
-    .assign(user)
-    .write();
-
-  res.status(200).json({ message: 'お気に入りの切り替えに成功しました', user });
-});
-
 // ユーザ新規登録
 server.post("/users/register", async (req, res) => {
   try {
@@ -202,7 +169,6 @@ server.post("/users/register", async (req, res) => {
       body: JSON.stringify({
         name,
         hashedPassword,
-        likes: [],
         comments: [],
         token
       }),
@@ -274,12 +240,6 @@ server.post("/users/signin", async (req, res) => {
 })
 
 // ログアウト
-// server.post('/users/logout', (req, res) => {
-//   res.clearCookie('token', { path: '/' });
-//   res.status(200).json({ message: 'ログアウトしました' });
-// });
-
-// ログアウト
 server.post("/users/logout", (req, res) => {
   // トークンを削除することでログアウトを行う
   res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
@@ -305,7 +265,6 @@ server.use("/threads/:id", (req, res, next) => {
         }
       }
     });
-    // console.log("threadsFan", threadFan)
     threadFan.forEach(updatedUser => {
       router.db.get('users')
         .find({ id: updatedUser.id })

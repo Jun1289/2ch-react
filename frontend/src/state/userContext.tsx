@@ -26,8 +26,6 @@ type UserAction =
     user: User | null;
   }
 
-
-
 const userInitialState: UserState = {
   user: {
     name: "",
@@ -40,9 +38,7 @@ const userInitialState: UserState = {
   isLoading: true
 }
 
-
 const userReducer = (userState: UserState, action: UserAction): UserState => {
-  // const { threads, threadsIsLoading, error } = threadsState
   switch (action.type) {
     case 'add_comment':
       if (userState.user === null) return userState
@@ -68,7 +64,6 @@ const userReducer = (userState: UserState, action: UserAction): UserState => {
 
 type UserContextType = {
   userState: UserState;
-  // setUser: React.Dispatch<React.SetStateAction<User | null>>;
   userDispatch: React.Dispatch<UserAction>;
 };
 
@@ -77,14 +72,6 @@ const UserContext = createContext<UserContextType | null>(null);
 interface UserProviderProps {
   children: ReactNode;
 }
-// export const userContext = () => {
-//   const Context = useContext(UserContext);
-//   if (onboardingContext === undefined) {
-//     throw new Error('useOnboardingContext must be inside a 
-//     OnboardingProvider');
-//   }
-//   return onboardingContext;
-// };
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, userInitialState)

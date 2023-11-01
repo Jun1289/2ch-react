@@ -47,7 +47,6 @@ const commentsInitialState: CommentsState = {
 }
 
 const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
-  // const { comments, commentsIsLoading, error } = commentsState
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
@@ -92,8 +91,6 @@ export const User = () => {
   const { user, isLoading } = userState
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
 
-
-  // console.log(user)
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
@@ -119,7 +116,6 @@ export const User = () => {
         }).then(function (response) {
           const status = response.status
           if (status == 200) {
-            // setUserInfo(response.data)
             userDispatch({ type: "set_user", user: response.data })
             navigate(`/user/${response.data.id}`)
           } else {
@@ -133,6 +129,7 @@ export const User = () => {
     fetchedUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   const hundleSignup = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
@@ -176,7 +173,6 @@ export const User = () => {
       await axios.post("http://127.0.0.1:8000/users/logout", null, {
         withCredentials: true
       })
-      console.log("ログアウトのボタンが押されました")
       Cookies.remove('token')
       userDispatch({ type: "set_user", user: null })
     } catch (error) {
@@ -188,8 +184,6 @@ export const User = () => {
     const fetchedCommentsData = async () => {
       if (!user) return
       try {
-        console.log("comments", user.comments)
-        console.log("user", user)
         if (user.comments === undefined) return
         const commentsByUser = []
         for (const commentId of user.comments) {

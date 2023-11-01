@@ -47,13 +47,11 @@ const commentsInitialState: CommentsState = {
 }
 
 const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
-  // const { comments, commentsIsLoading, error } = commentsState
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
         return comment.id !== action.commentId
       }) || null;
-      console.log("newCommentsData", newCommentsData)
       return {
         ...commentsState,
         comments: [...newCommentsData]
@@ -76,7 +74,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       }
       break;
     case 'set_error':
-      console.log("error", action.error)
       return {
         ...commentsState,
         error: action.error
@@ -84,7 +81,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       break;
   }
 }
-
 
 type Thread = {
   id: number,
@@ -133,7 +129,6 @@ const threadsInitialState: ThreadsState = {
 }
 
 const threadsReducer = (threadsState: ThreadsState, action: ThreadAction) => {
-  // const { threads, threadsIsLoading, error } = threadsState
   switch (action.type) {
     case 'delete_thread': {
       const newthreadsData = threadsState.threads?.filter((thread) => {
@@ -146,7 +141,6 @@ const threadsReducer = (threadsState: ThreadsState, action: ThreadAction) => {
       break;
     }
     case 'add_thread':
-      console.log("add_payload : ", action.newThread)
       return {
         ...threadsState,
         threads: [...threadsState.threads, action.newThread],
