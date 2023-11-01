@@ -12,8 +12,8 @@
       "title": "comment",
       "topic": "wadaoi",
       "createdAt": "2023-10-30T22:31:00.585Z",
-      "updatedAt": "2023-11-01T02:18:37.874Z",
-      "commentTotal": 7,
+      "updatedAt": "2023-11-01T05:19:09.296Z",
+      "commentTotal": 8,
       "id": 3
     },
     {
@@ -185,6 +185,14 @@
       "commentNo": 7,
       "threadId": "3",
       "id": 18
+    },
+    {
+      "responder": "poster ",
+      "commentContent": "comment",
+      "createdAt": "2023-11-01T05:19:09.296Z",
+      "commentNo": 8,
+      "threadId": "3",
+      "id": 19
     }
   ],
   "users": [
@@ -331,7 +339,8 @@
       "hashedPassword": "$2b$10$rB5BI/E32yEmL/bsTvQwRu9DzG3DdjEOSaI.irFr/VvECz7QCodIC",
       "likes": [],
       "comments": [
-        18
+        18,
+        19
       ],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdDMiLCJpYXQiOjE2OTg4MDUwOTcsImV4cCI6MTY5ODg5MTQ5N30.S4U1nHVERf-y_BDbzSLNeNn5ton5jIgbAWAPbZJ4xKM",
       "id": 21

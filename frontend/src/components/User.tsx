@@ -16,14 +16,15 @@ type Thread = {
 
 export const User = () => {
   const navigate = useNavigate()
-  const [threadsData, setThreadsData] = useState<null | Thread[]>(null);
+  // const [threadsData, setThreadsData] = useState<null | Thread[]>(null);
   // const [userInfo, setUserInfo] = useState<null | { id: number, name: string, hashedPassword: string, likes: string[] }>(null);
   const [inputError, setInputError] = useState<null | string>(null)
   // const [loading, setLoading] = useState(true);
   const userNameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
-  const { user, setUser, loading } = useUserContext()
+  const { userState, userDispatch } = useUserContext()
+  const { user, isLoading } = userState
 
   // console.log(user)
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
@@ -52,7 +53,7 @@ export const User = () => {
           const status = response.status
           if (status == 200) {
             // setUserInfo(response.data)
-            setUser(response.data)
+            userDispatch({ type: "set_user", user: response.data })
             navigate(`/user/${response.data.id}`)
           } else {
             setInputError("ユーザー名かパスワードが間違っています")
@@ -89,7 +90,7 @@ export const User = () => {
         }).then(function (response) {
           const status = response.status
           if (status == 200) {
-            setUser(response.data)
+            userDispatch({ type: "set_user", user: response.data })
             navigate(`/user/${response.data.id}`)
           } else {
             setInputError("ユーザー名かパスワードが間違っています")
@@ -110,58 +111,58 @@ export const User = () => {
       })
       console.log("ログアウトのボタンが押されました")
       Cookies.remove('token')
-      setUser(null)
+      userDispatch({ type: "set_user", user: null })
     } catch (error) {
       console.error("ログアウト時にエラーが発生しました。", error)
     }
   }
 
-  const handleFavorite = (event: React.MouseEvent<Element, MouseEvent>, threadId: number) => {
-    const deleteFavorite = async () => {
-      try {
-        await axios.get(`http://localhost:8000/users/${user?.id}`)
-          .then(function (response) {
-            const fetchedUser = response.data
-            console.log("before filter", fetchedUser)
-            const newLikes = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
-            console.log("after filter", fetchedUser)
+  // const handleFavorite = (event: React.MouseEvent<Element, MouseEvent>, threadId: number) => {
+  //   const deleteFavorite = async () => {
+  //     try {
+  //       await axios.get(`http://localhost:8000/users/${user?.id}`)
+  //         .then(function (response) {
+  //           const fetchedUser = response.data
+  //           console.log("before filter", fetchedUser)
+  //           const newLikes = fetchedUser.likes?.filter((id: string) => parseInt(id, 10) != threadId)
+  //           console.log("after filter", fetchedUser)
 
-            setUser({
-              ...fetchedUser,
-              likes: newLikes
-            })
-          })
-      } catch (error) {
-        console.error("お気に入りの切り替えに失敗しました。", error)
-      }
-    }
-    deleteFavorite()
-  }
+  //           setUser({
+  //             ...fetchedUser,
+  //             likes: newLikes
+  //           })
+  //         })
+  //     } catch (error) {
+  //       console.error("お気に入りの切り替えに失敗しました。", error)
+  //     }
+  //   }
+  //   deleteFavorite()
+  // }
 
 
-  useEffect(() => {
-    // ここで非同期データを取得
-    const fetchedThreadsData: Thread[] = []
-    const fetchThreadsData = async () => {
-      try {
-        if (user && user.likes.length > 0) {
-          for (const like of user.likes) {
-            const response = await axios.get(`http://localhost:8000/threads/${like}`);
-            console.log("fetched like thread", response.data)
-            fetchedThreadsData.push(response.data)
-          }
-          setThreadsData(fetchedThreadsData);
-        }
-      } catch (error) {
-        console.error("Error fetching threads:", error);
-      }
-    };
-    fetchThreadsData();
-  }, [user])
+  // useEffect(() => {
+  //   // ここで非同期データを取得
+  //   const fetchedThreadsData: Thread[] = []
+  //   const fetchThreadsData = async () => {
+  //     try {
+  //       if (user && user.likes.length > 0) {
+  //         for (const like of user.likes) {
+  //           const response = await axios.get(`http://localhost:8000/threads/${like}`);
+  //           console.log("fetched like thread", response.data)
+  //           fetchedThreadsData.push(response.data)
+  //         }
+  //         setThreadsData(fetchedThreadsData);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching threads:", error);
+  //     }
+  //   };
+  //   fetchThreadsData();
+  // }, [userState.user])
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         null
       ) : (
         <>
@@ -171,9 +172,9 @@ export const User = () => {
               <dl>
                 <dt>ユーザー名</dt>
                 <dd>{user.name}</dd>
-                <dt>お気に入りスレッド一覧</dt>
-                <dd>
-                  {threadsData && threadsData.length > 0 ? (
+                {/* <dt>お気に入りスレッド一覧</dt>
+                <dd> */}
+                {/* {threadsData && threadsData.length > 0 ? (
                     <ul>
                       {threadsData.map(thread => (
                         <li key={thread.id}>
@@ -186,8 +187,8 @@ export const User = () => {
                     </ul>
                   ) : (
                     "お気に入りのスレッドはまだありません。"
-                  )}
-                </dd>
+                  )} */}
+                {/* </dd> */}
               </dl>
               <button onClick={toLogout}>ログアウト</button>
             </>
@@ -212,7 +213,8 @@ export const User = () => {
               </form>
             </>
           )}
-        </>)}
+        </>)
+      }
     </>
   )
 }

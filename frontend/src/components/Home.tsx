@@ -180,7 +180,8 @@ const threadsReducer = (threadsState: ThreadsState, action: ThreadAction) => {
 
 export const Home = () => {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
-  const { user, setUser } = useUserContext()
+  const { userState, userDispatch } = useUserContext()
+  const { user, isLoading } = userState
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadsReducer, threadsInitialState);
 
@@ -190,19 +191,19 @@ export const Home = () => {
       await axios.delete(`http://localhost:8000/threads/${threadId}`)
         .then(function () {
           threadsDispatch({ type: "delete_thread", threadId })
-          if (user) {
-            setUser((prevUser) => {
-              if (!prevUser) return null;
-              const islikes = prevUser?.likes.filter((like) => {
-                return like !== threadId.toString()
-              })
-              console.log("after toggle : ", islikes)
-              return ({
-                ...prevUser,
-                likes: islikes
-              })
-            })
-          }
+          // if (userState) {
+          //   setUser((prevUser) => {
+          //     if (!prevUser) return null;
+          //     const islikes = prevUser?.likes.filter((like) => {
+          //       return like !== threadId.toString()
+          //     })
+          //     console.log("after toggle : ", islikes)
+          //     return ({
+          //       ...prevUser,
+          //       likes: islikes
+          //     })
+          //   })
+          // }
         })
     } catch (error) {
       console.error("コメントの削除でエラーが発生しました:", error);

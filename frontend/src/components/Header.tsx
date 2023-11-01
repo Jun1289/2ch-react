@@ -3,14 +3,15 @@ import "../styles/styles.css"
 import { useUserContext } from "../state/userContext"
 
 export const Header = () => {
-  const { user, loading } = useUserContext()
+  const { userState, userDispatch } = useUserContext()
+  const { user, isLoading } = userState
 
   return (
     <header>
       <Link to="/">
         <h1>掲示板</h1>
       </Link>
-      {loading ?
+      {isLoading ?
         (
           null
         ) :

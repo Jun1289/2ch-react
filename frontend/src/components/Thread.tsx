@@ -195,8 +195,8 @@ export const Thread = () => {
   const formRef = React.useRef<HTMLFormElement>(null);
   const commentResponderRef = React.useRef<HTMLInputElement>(null)
   const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
-  const { user, setUser } = useUserContext()
-
+  const { userState, userDispatch } = useUserContext()
+  const { user, isLoading } = userState
 
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
@@ -238,9 +238,9 @@ export const Thread = () => {
             commentId
           ]
         }
-        setUser(newUser)
+        userDispatch({ type: 'add_comment', 'newComment': commentId })
         console.log(newUser)
-        await axios.put(`http://localhost:8000/users/${user?.id}`, { ...newUser })
+        await axios.put(`http://localhost:8000/users/${userState.user?.id}`, { ...newUser })
       }
       formRef.current?.reset()
     } catch (error) {
