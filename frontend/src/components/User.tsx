@@ -3,46 +3,12 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../state/userContext"
 import Cookies from 'js-cookie';
-
-type Comment = {
-  id: number,
-  commentNo: number,
-  responder: string,
-  commentContent: string,
-  createdAt: string,
-  updatedAt: string,
-  threadId: number
-}
-
-type CommentsState = {
-  comments: Comment[],
-  isLoading: boolean,
-  currentComment: null | Comment
-  error: null | string,
-}
-
-type CommentAction =
-  | {
-    type: "delete_comment";
-    commentId: number;
-  }
-  | {
-    type: "add_comment";
-    newComment: Comment;
-  }
-  | {
-    type: "set_comments";
-    comments: Comment[];
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
+import { CommentsState } from "../types/state";
+import { CommentAction } from "../types/action";
 
 const commentsInitialState: CommentsState = {
   comments: [],
   isLoading: true,
-  currentComment: null,
   error: null
 }
 

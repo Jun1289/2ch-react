@@ -3,50 +3,16 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-
-type Comment = {
-  id: number,
-  commentNo: number,
-  responder: string,
-  commentContent: string,
-  createdAt: string,
-  updatedAt: string,
-  threadId: number
-}
-
-type CommentsState = {
-  comments: Comment[],
-  isLoading: boolean,
-  currentComment: null | Comment
-  error: null | string,
-}
-
-type CommentAction =
-  | {
-    type: "delete_comment";
-    commentId: number;
-  }
-  | {
-    type: "add_comment";
-    newComment: Comment;
-  }
-  | {
-    type: "set_comments";
-    comments: Comment[];
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
+import { CommentsState, ThreadsState } from "../types/state";
+import { CommentAction, ThreadAction } from "../types/action";
 
 const commentsInitialState: CommentsState = {
   comments: [],
   isLoading: true,
-  currentComment: null,
   error: null
 }
 
-const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
+const commentReducer = (commentsState: CommentsState, action: CommentAction): CommentsState => {
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
@@ -62,6 +28,7 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       return {
         ...commentsState,
         comments: [...commentsState.comments, action.newComment],
+        isLoading: false,
         error: null
       }
       break;
@@ -81,45 +48,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
       break;
   }
 }
-
-type Thread = {
-  id: number,
-  title: string,
-  topic: string,
-  createdAt: string,
-  updatedAt: string,
-  commentTotal: number,
-  builder: string
-}
-
-type ThreadsState = {
-  threads: Thread[],
-  isLoading: boolean,
-  currentThread: null | Thread,
-  error: null | string
-}
-
-type ThreadAction =
-  | {
-    type: "delete_thread";
-    threadId: number;
-  }
-  | {
-    type: "add_thread";
-    newThread: Thread;
-  }
-  | {
-    type: "set_threads";
-    threads: Thread[];
-  }
-  | {
-    type: "set_thread";
-    currentThread: Thread;
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
 
 const threadsInitialState: ThreadsState = {
   threads: [],

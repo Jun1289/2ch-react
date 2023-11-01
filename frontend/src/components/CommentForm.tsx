@@ -2,38 +2,8 @@ import axios from "axios";
 import React, { useCallback, useRef, useState } from "react";
 import { useUserContext } from "../state/userContext";
 import { useParams } from "react-router-dom";
+import { CommentFormProps } from "../types/props";
 
-type Comment = {
-  id: number,
-  commentNo: number,
-  responder: string,
-  commentContent: string,
-  createdAt: string,
-  updatedAt: string,
-  threadId: number
-}
-
-type CommentAction =
-  | {
-    type: "delete_comment";
-    commentId: number;
-  }
-  | {
-    type: "add_comment";
-    newComment: Comment;
-  }
-  | {
-    type: "set_comments";
-    comments: Comment[];
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
-
-interface CommentFormProps {
-  commentDispatch: React.Dispatch<CommentAction>;
-}
 
 export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => {
   const { threadId } = useParams()

@@ -3,46 +3,12 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
-
-type Comment = {
-  id: number,
-  commentNo: number,
-  responder: string,
-  commentContent: string,
-  createdAt: string,
-  updatedAt: string,
-  threadId: number
-}
-
-type CommentsState = {
-  comments: Comment[],
-  isLoading: boolean,
-  currentComment: null | Comment
-  error: null | string,
-}
-
-type CommentAction =
-  | {
-    type: "delete_comment";
-    commentId: number;
-  }
-  | {
-    type: "add_comment";
-    newComment: Comment;
-  }
-  | {
-    type: "set_comments";
-    comments: Comment[];
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
+import { CommentsState, ThreadsState } from "../types/state";
+import { CommentAction, ThreadAction } from "../types/action";
 
 const commentsInitialState: CommentsState = {
   comments: [],
   isLoading: true,
-  currentComment: null,
   error: null
 }
 
@@ -82,45 +48,6 @@ const commentReducer = (commentsState: CommentsState, action: CommentAction) => 
   }
 }
 
-type Thread = {
-  id: number,
-  title: string,
-  topic: string,
-  createdAt: string,
-  updatedAt: string,
-  commentTotal: number,
-  builder: string
-}
-
-type ThreadsState = {
-  threads: Thread[],
-  isLoading: boolean,
-  currentThread: null | Thread,
-  error: null | string
-}
-
-type ThreadAction =
-  | {
-    type: "delete_thread";
-    threadId: number;
-  }
-  | {
-    type: "add_thread";
-    newthread: Thread;
-  }
-  | {
-    type: "set_threads";
-    threads: Thread[];
-  }
-  | {
-    type: "set_thread";
-    currentThread: Thread;
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
-
 const threadsInitialState: ThreadsState = {
   threads: [],
   isLoading: true,
@@ -143,7 +70,7 @@ const threadReducer = (threadsState: ThreadsState, action: ThreadAction) => {
     case 'add_thread':
       return {
         ...threadsState,
-        threads: [...threadsState.threads, action.newthread],
+        threads: [...threadsState.threads, action.newThread],
         error: null
       }
       break;

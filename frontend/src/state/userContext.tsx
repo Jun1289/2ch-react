@@ -1,35 +1,9 @@
 import axios from 'axios';
-import { ReactNode, createContext, useContext, useEffect, useReducer } from 'react'
+import { createContext, useContext, useEffect, useReducer } from 'react'
 import Cookies from 'js-cookie';
-
-type User = {
-  name: string,
-  hashedPassword: string,
-  likes: string[],
-  comments: number[],
-  token: string,
-  id: number
-} | null
-
-type UserState = {
-  user: User,
-  isLoading: boolean,
-  error: null | string,
-}
-
-type UserAction =
-  | {
-    type: "add_comment";
-    newComment: number;
-  }
-  | {
-    type: 'set_user';
-    user: User | null;
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
+import { UserState } from '../types/state';
+import { UserAction } from '../types/action';
+import { UserProviderProps } from '../types/props';
 
 const userInitialState: UserState = {
   user: {
@@ -81,11 +55,8 @@ type UserContextType = {
   userDispatch: React.Dispatch<UserAction>;
 };
 
-const UserContext = createContext<UserContextType | null>(null);
 
-interface UserProviderProps {
-  children: ReactNode;
-}
+const UserContext = createContext<UserContextType | null>(null);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, userInitialState)

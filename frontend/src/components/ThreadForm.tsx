@@ -1,41 +1,6 @@
 import axios from "axios"
 import React from "react";
-
-type Thread = {
-  id: number,
-  title: string,
-  topic: string,
-  createdAt: string,
-  updatedAt: string,
-  commentTotal: number,
-  builder: string
-}
-
-type ThreadAction =
-  | {
-    type: "delete_thread";
-    threadId: number;
-  }
-  | {
-    type: "add_thread";
-    newThread: Thread;
-  }
-  | {
-    type: "set_threads";
-    threads: Thread[];
-  }
-  | {
-    type: "set_thread";
-    currentThread: Thread;
-  }
-  | {
-    type: "set_error";
-    error: string | null;
-  }
-
-interface ThreadFormProps {
-  onThreadCreated: React.Dispatch<ThreadAction>;
-}
+import { ThreadFormProps } from "../types/props";
 
 export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
   const [inputError, setInputError] = React.useState<null | string>(null);
