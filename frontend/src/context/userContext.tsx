@@ -4,57 +4,12 @@ import Cookies from 'js-cookie';
 import { UserState } from '../types/state';
 import { UserAction } from '../types/action';
 import { UserProviderProps } from '../types/props';
-
-const userInitialState: UserState = {
-  user: {
-    name: "",
-    hashedPassword: "",
-    likes: [],
-    comments: [],
-    token: "",
-    id: 0
-  },
-  isLoading: true,
-  error: null
-}
-
-const userReducer = (userState: UserState, action: UserAction): UserState => {
-  switch (action.type) {
-    case 'add_comment':
-      if (userState.user === null) return userState
-      return {
-        user: {
-          ...(userState.user),
-          comments: [...userState!.user!.comments, action.newComment]
-        },
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_user':
-      return {
-        user: action.user,
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_error':
-      return {
-        ...userState,
-        error: action.error
-      }
-      break;
-    default:
-      return userState;
-
-  }
-}
+import { userInitialState, userReducer } from '../reducers/reducer';
 
 type UserContextType = {
   userState: UserState;
   userDispatch: React.Dispatch<UserAction>;
 };
-
 
 const UserContext = createContext<UserContextType | null>(null);
 

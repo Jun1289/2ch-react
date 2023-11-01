@@ -3,106 +3,12 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-import { CommentsState, ThreadsState } from "../types/state";
-import { CommentAction, ThreadAction } from "../types/action";
-
-const commentsInitialState: CommentsState = {
-  comments: [],
-  isLoading: true,
-  error: null
-}
-
-const commentReducer = (commentsState: CommentsState, action: CommentAction): CommentsState => {
-  switch (action.type) {
-    case 'delete_comment': {
-      const newCommentsData = commentsState.comments?.filter((comment) => {
-        return comment.id !== action.commentId
-      }) || null;
-      return {
-        ...commentsState,
-        comments: [...newCommentsData]
-      }
-      break;
-    }
-    case 'add_comment':
-      return {
-        ...commentsState,
-        comments: [...commentsState.comments, action.newComment],
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_comments':
-      return {
-        ...commentsState,
-        comments: action.comments,
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_error':
-      return {
-        ...commentsState,
-        error: action.error
-      }
-      break;
-  }
-}
-
-const threadsInitialState: ThreadsState = {
-  threads: [],
-  isLoading: true,
-  currentThread: null,
-  error: null
-}
-
-const threadsReducer = (threadsState: ThreadsState, action: ThreadAction) => {
-  switch (action.type) {
-    case 'delete_thread': {
-      const newthreadsData = threadsState.threads?.filter((thread) => {
-        return thread.id !== action.threadId
-      }) || null;
-      return {
-        ...threadsState,
-        threads: [...newthreadsData]
-      }
-      break;
-    }
-    case 'add_thread':
-      return {
-        ...threadsState,
-        threads: [...threadsState.threads, action.newThread],
-        error: null
-      }
-      break;
-    case 'set_threads':
-      return {
-        ...threadsState,
-        threads: action.threads,
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_thread':
-      return {
-        ...threadsState,
-        currentThread: action.currentThread,
-        isLoading: false,
-      }
-      break;
-    case 'set_error':
-      return {
-        ...threadsState,
-        error: action.error
-      }
-      break;
-  }
-}
+import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducer";
 
 export const Home = () => {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
-  const [threadsState, threadsDispatch] = useReducer(threadsReducer, threadsInitialState);
+  const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
 
   const handleDelete = async (threadId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();

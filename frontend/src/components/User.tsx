@@ -1,52 +1,10 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { useUserContext } from "../state/userContext"
+import { useUserContext } from "../context/userContext"
 import Cookies from 'js-cookie';
-import { CommentsState } from "../types/state";
-import { CommentAction } from "../types/action";
+import { commentReducer, commentsInitialState } from "../reducers/reducer";
 
-const commentsInitialState: CommentsState = {
-  comments: [],
-  isLoading: true,
-  error: null
-}
-
-const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
-  switch (action.type) {
-    case 'delete_comment': {
-      const newCommentsData = commentsState.comments?.filter((comment) => {
-        return comment.id !== action.commentId
-      }) || null;
-      return {
-        ...commentsState,
-        comments: [...newCommentsData]
-      }
-      break;
-    }
-    case 'add_comment':
-      return {
-        ...commentsState,
-        comments: [...commentsState.comments, action.newComment],
-        error: null
-      }
-      break;
-    case 'set_comments':
-      return {
-        ...commentsState,
-        comments: action.comments,
-        isLoading: false,
-        error: null
-      }
-      break;
-    case 'set_error':
-      return {
-        ...commentsState,
-        error: action.error
-      }
-      break;
-  }
-}
 export const User = () => {
   const navigate = useNavigate()
   const [inputError, setInputError] = useState<null | string>(null)

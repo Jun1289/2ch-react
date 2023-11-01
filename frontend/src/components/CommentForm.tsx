@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useCallback, useRef, useState } from "react";
-import { useUserContext } from "../state/userContext";
+import { useUserContext } from "../context/userContext";
 import { useParams } from "react-router-dom";
 import { CommentFormProps } from "../types/props";
-
 
 export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => {
   const { threadId } = useParams()

@@ -4,7 +4,7 @@ import { Header } from './components/Header';
 import { Thread } from './components/Thread';
 import "./styles/global.css"
 import { User } from './components/User';
-import { UserProvider } from './state/userContext';
+import { UserProvider } from './context/userContext';
 
 
 function App() {

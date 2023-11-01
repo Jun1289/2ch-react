@@ -36,8 +36,8 @@
       "title": "っっd",
       "topic": "っd",
       "createdAt": "2023-10-30T22:47:47.730Z",
-      "updatedAt": "2023-11-01T06:33:58.515Z",
-      "commentTotal": 2,
+      "updatedAt": "2023-11-01T22:56:58.370Z",
+      "commentTotal": 4,
       "id": 6
     }
   ],
@@ -241,6 +241,22 @@
       "commentNo": 1,
       "threadId": "5",
       "id": 25
+    },
+    {
+      "responder": "poster ",
+      "commentContent": "comment",
+      "createdAt": "2023-11-01T22:56:44.553Z",
+      "commentNo": 3,
+      "threadId": "6",
+      "id": 26
+    },
+    {
+      "responder": "poster",
+      "commentContent": "comment",
+      "createdAt": "2023-11-01T22:56:58.370Z",
+      "commentNo": 4,
+      "threadId": "6",
+      "id": 27
     }
   ],
   "users": [
@@ -394,7 +410,9 @@
         22,
         23,
         24,
-        25
+        25,
+        26,
+        27
       ],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdDMiLCJpYXQiOjE2OTg4MDUwOTcsImV4cCI6MTY5ODg5MTQ5N30.S4U1nHVERf-y_BDbzSLNeNn5ton5jIgbAWAPbZJ4xKM",
       "id": 21
