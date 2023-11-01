@@ -13,7 +13,8 @@ type User = {
 
 type UserState = {
   user: User,
-  isLoading: boolean
+  isLoading: boolean,
+  error: null | string,
 }
 
 type UserAction =
@@ -25,6 +26,10 @@ type UserAction =
     type: 'set_user';
     user: User | null;
   }
+  | {
+    type: "set_error";
+    error: string | null;
+  }
 
 const userInitialState: UserState = {
   user: {
@@ -35,7 +40,8 @@ const userInitialState: UserState = {
     token: "",
     id: 0
   },
-  isLoading: true
+  isLoading: true,
+  error: null
 }
 
 const userReducer = (userState: UserState, action: UserAction): UserState => {
@@ -47,13 +53,21 @@ const userReducer = (userState: UserState, action: UserAction): UserState => {
           ...(userState.user),
           comments: [...userState!.user!.comments, action.newComment]
         },
-        isLoading: false
+        isLoading: false,
+        error: null
       }
       break;
     case 'set_user':
       return {
         user: action.user,
-        isLoading: false
+        isLoading: false,
+        error: null
+      }
+      break;
+    case 'set_error':
+      return {
+        ...userState,
+        error: action.error
       }
       break;
     default:

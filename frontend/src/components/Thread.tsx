@@ -2,7 +2,7 @@ import axios from "axios"
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReducer } from "react";
-import { useUserContext } from "../state/userContext";
+import { CommentForm } from "./CommentForm";
 
 type Comment = {
   id: number,
@@ -185,13 +185,6 @@ const formatDateTime = (dateString: string) => {
 
 export const Thread = () => {
   const { threadId } = useParams()
-  const [inputError, setInputError] = React.useState<null | string>(null);
-  const formRef = React.useRef<HTMLFormElement>(null);
-  const commentResponderRef = React.useRef<HTMLInputElement>(null)
-  const commentContentRef = React.useRef<HTMLTextAreaElement>(null)
-  const { userState, userDispatch } = useUserContext()
-  const { user } = userState
-
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
 
@@ -206,42 +199,6 @@ export const Thread = () => {
       commentDispatch({ type: 'set_error', error: `コメントの削除中にエラーが起きました。${error}` })
     }
   }
-
-  const handleSubmit = React.useCallback<React.FormEventHandler>(async (event) => {
-    event.preventDefault();
-
-    setInputError(null)
-    if (!commentContentRef.current?.value) {
-      setInputError("コメントを入力してください。")
-    }
-    if (inputError) return
-
-    try {
-      const response = await axios.post(`http://localhost:8000/threads/${threadId}/comments`, {
-        responder: commentResponderRef.current?.value,
-        commentContent: commentContentRef.current?.value,
-      })
-      commentDispatch({ type: 'add_comment', newComment: response.data })
-      const commentId = response.data.id
-
-      if (user) {
-        const newUser = {
-          ...user,
-          comments: [
-            ...user.comments,
-            commentId
-          ]
-        }
-        userDispatch({ type: 'add_comment', 'newComment': commentId })
-        console.log(newUser)
-        await axios.put(`http://localhost:8000/users/${userState.user?.id}`, { ...newUser })
-      }
-      formRef.current?.reset()
-    } catch (error) {
-      commentDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // スレッドデータの取得
   useEffect(() => {
@@ -298,30 +255,7 @@ export const Thread = () => {
             ) :
               <div>コメントはまだありません</div>}
           </section>
-          <section>
-            <h2>コメント投稿</h2>
-            {inputError && <div style={{ color: 'red' }}>{inputError}</div>}
-            <form ref={formRef} onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="responder">投稿者</label>
-                <input
-                  id="responder"
-                  name="responder"
-                  type="text"
-                  ref={commentResponderRef}
-                />
-              </div>
-              <div>
-                <label htmlFor="commentContent">コメント</label>
-                <textarea
-                  id="commentContent"
-                  name="commentContent"
-                  ref={commentContentRef}
-                />
-              </div>
-              <input type="submit" value="送信" />
-            </form>
-          </section>
+          <CommentForm commentDispatch={commentDispatch} />
         </div>
       )
     }
