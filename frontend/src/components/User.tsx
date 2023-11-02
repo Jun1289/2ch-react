@@ -4,6 +4,7 @@ import axios from "axios"
 import { useUserContext } from "../context/userContext"
 import Cookies from 'js-cookie';
 import { commentReducer, commentsInitialState } from "../reducers/reducers";
+import { Comment } from "../types/types";
 
 export const User = () => {
   const navigate = useNavigate()
@@ -109,10 +110,11 @@ export const User = () => {
       if (!user) return
       try {
         if (user.comments === undefined) return
-        const commentsByUser = []
+        const commentsByUser: Comment[] = []
         for (const commentId of user.comments) {
-          const response = await axios.get(`http://localhost:8000/comments/${commentId}`);
-          commentsByUser.push(response.data)
+          await axios.get(`http://localhost:8000/comments/${commentId}`).then((response) => {
+            commentsByUser.push(response.data)
+          })
         }
         commentDispatch({ type: 'set_comments', comments: commentsByUser })
       } catch (error) {

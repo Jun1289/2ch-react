@@ -2,14 +2,7 @@ import { CommentAction, ThreadAction, UserAction } from "../types/types";
 import { CommentsState, ThreadsState, UserState } from "../types/types";
 
 export const userInitialState: UserState = {
-  user: {
-    name: "",
-    hashedPassword: "",
-    likes: [],
-    comments: [],
-    token: "",
-    id: 0
-  },
+  user: null,
   isLoading: true,
   error: null
 }
@@ -27,6 +20,21 @@ export const userReducer = (userState: UserState, action: UserAction): UserState
         error: null
       }
       break;
+    case 'delete_comment': {
+      if (userState.user === null) return userState
+      const newCommentsData = userState.user.comments?.filter((comment) => {
+        return comment !== action.commentId
+      }) || null;
+      return {
+        user: {
+          ...userState.user,
+          comments: newCommentsData
+        },
+        isLoading: false,
+        error: null
+      }
+      break;
+    }
     case 'set_user':
       return {
         user: action.user,

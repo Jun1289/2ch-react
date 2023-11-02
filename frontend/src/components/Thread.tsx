@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
+import { useUserContext } from "../context/userContext";
 
 const formatDateTime = (dateString: string) => {
   const dateObj = new Date(dateString);
@@ -21,14 +22,23 @@ export const Thread = () => {
   const { threadId } = useParams()
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
+  const { userState, userDispatch } = useUserContext()
 
   const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     try {
-      await axios.delete(`http://localhost:8000/comments/${commentId}`)
+      await axios.delete(`http://localhost:8000/comments/${commentId}`, {
+        withCredentials: true
+      })
         .then(() => {
           commentDispatch({ type: 'delete_comment', commentId })
+          userDispatch({ type: 'delete_comment', commentId })
         })
+      console.log(userState.user)
+      await axios.put(`http://localhost:8000/users/${userState.user?.id}`, {
+        ...userState.user,
+        comments: userState.user?.comments.filter((comment) => comment !== commentId)
+      })
     } catch (error: unknown) {
       commentDispatch({ type: 'set_error', error: `コメントの削除中にエラーが起きました。${error}` })
     }

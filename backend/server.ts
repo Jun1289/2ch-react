@@ -118,6 +118,34 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
   next()
 })
 
+// コメントの削除
+server.use('/comments/:commentId', async (req, res, next) => {
+  const commentId = req.params.commentId
+  console.log("commentId", commentId)
+  if (req.method === 'DELETE') {
+    if (!req.user) return next()
+    console.log("req.user", req.user)
+    const userId = req.user.id
+    const updatedComments = req.user.comments.fileter((comment) => {
+      return comment != commentId
+    })
+    nfetch(`/user/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...req.user, updatedComments })  // ここでtokenのみをJSONとして送信
+    })
+      .then(updatedUser => {
+        console.log("Updated Comments:", updatedUser.comments);
+      })
+      .catch(error => {
+        console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
+      });
+  }
+  next()
+})
+
 // スレッドの新規作成
 server.post('/threads', (req, res, next) => {
   if (!req.body.title) {
@@ -245,35 +273,6 @@ server.post("/users/logout", (req, res) => {
   res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
   res.status(200).json({ message: "ログアウトに成功しました" });
 });
-
-server.use("/threads/:id", (req, res, next) => {
-  if (req.method === "DELETE") {
-    const threadId = req.params.id
-    const users = router.db.get('users') as any;
-    const threadFan = users.filter((user) => user.likes.includes(threadId.toString())).value()
-
-    console.log(threadFan)
-    console.log(users.value())
-    threadFan.forEach(user => {
-      if (user.likes) {
-        const index = user.likes.indexOf(threadId);
-        if (index !== -1) {
-          user.likes.splice(index, 1);
-          console.log("sliced done")
-        } else {
-          console.log("index not found")
-        }
-      }
-    });
-    threadFan.forEach(updatedUser => {
-      router.db.get('users')
-        .find({ id: updatedUser.id })
-        .assign(updatedUser)
-        .write();
-    });
-  }
-  next()
-})
 
 // 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {

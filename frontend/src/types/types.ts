@@ -71,6 +71,10 @@ export type UserAction =
     newComment: number;
   }
   | {
+    type: "delete_comment";
+    commentId: number;
+  }
+  | {
     type: 'set_user';
     user: User | null;
   }
