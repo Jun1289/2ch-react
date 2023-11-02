@@ -1,8 +1,8 @@
 import axios from "axios"
 import React from "react";
-import { ThreadFormProps } from "../types/props";
+import { ThreadFormProps } from "../types/types";
 
-export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
+export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
   const [inputError, setInputError] = React.useState<null | string>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
   const threadTitleRef = React.useRef<HTMLInputElement>(null)
@@ -25,7 +25,7 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ onThreadCreated }) => {
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })
-      onThreadCreated({ type: "add_thread", newThread: response.data })
+      threadsDispatch({ type: "add_thread", newThread: response.data })
       formRef.current?.reset()
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);

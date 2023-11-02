@@ -1,5 +1,5 @@
-import { CommentAction, ThreadAction, UserAction } from "../types/action";
-import { CommentsState, ThreadsState, UserState } from "../types/state";
+import { CommentAction, ThreadAction, UserAction } from "../types/types";
+import { CommentsState, ThreadsState, UserState } from "../types/types";
 
 export const userInitialState: UserState = {
   user: {

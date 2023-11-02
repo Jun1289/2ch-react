@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducer";
+import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 
 export const Home = () => {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
@@ -51,7 +51,7 @@ export const Home = () => {
 
   return (
     <div>
-      <ThreadForm onThreadCreated={threadsDispatch} />
+      <ThreadForm threadsDispatch={threadsDispatch} />
       {
         (threadsState.isLoading || commentsState.isLoading) ? (
           null

@@ -1,17 +1,10 @@
 import axios from 'axios';
 import { createContext, useContext, useEffect, useReducer } from 'react'
 import Cookies from 'js-cookie';
-import { UserState } from '../types/state';
-import { UserAction } from '../types/action';
-import { UserProviderProps } from '../types/props';
-import { userInitialState, userReducer } from '../reducers/reducer';
+import { UserContextType, UserProviderProps } from '../types/types';
+import { userInitialState, userReducer } from '../reducers/reducers';
 
-type UserContextType = {
-  userState: UserState;
-  userDispatch: React.Dispatch<UserAction>;
-};
-
-const UserContext = createContext<UserContextType | null>(null);
+const UserContext = createContext<UserContextType>(null);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, userInitialState)

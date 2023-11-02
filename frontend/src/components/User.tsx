@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../context/userContext"
 import Cookies from 'js-cookie';
-import { commentReducer, commentsInitialState } from "../reducers/reducer";
+import { commentReducer, commentsInitialState } from "../reducers/reducers";
 
 export const User = () => {
   const navigate = useNavigate()

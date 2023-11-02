@@ -3,8 +3,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
-import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducer";
-
+import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 
 const formatDateTime = (dateString: string) => {
   const dateObj = new Date(dateString);
