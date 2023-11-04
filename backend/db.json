@@ -5,7 +5,7 @@
       "topic": "wadaoi",
       "createdAt": "2023-10-30T22:31:00.585Z",
       "updatedAt": "2023-11-02T12:59:34.663Z",
-      "commentTotal": 17,
+      "commentTotal": 24,
       "id": 3
     },
     {
@@ -40,13 +40,63 @@
       "id": 8
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "commenter": "tester",
+      "commentContent": "comment1",
+      "commentNo": 18,
+      "createdAt": "2023-11-04T23:27:49.425Z",
+      "threadId": "3",
+      "id": 1
+    },
+    {
+      "commenter": "aa",
+      "commentContent": "aaa",
+      "commentNo": 19,
+      "createdAt": "2023-11-04T23:31:55.332Z",
+      "threadId": "3",
+      "id": 2
+    },
+    {
+      "commenter": "aaa",
+      "commentContent": "aaa",
+      "commentNo": 20,
+      "createdAt": "2023-11-04T23:33:31.838Z",
+      "threadId": "3",
+      "id": 3
+    },
+    {
+      "commenter": "d",
+      "commentContent": "ddd",
+      "commentNo": 21,
+      "createdAt": "2023-11-04T23:34:49.555Z",
+      "threadId": "3",
+      "id": 4
+    },
+    {
+      "commenter": "comment",
+      "commentContent": "dd",
+      "commentNo": 22,
+      "createdAt": "2023-11-04T23:38:33.432Z",
+      "threadId": "3",
+      "id": 5
+    },
+    {
+      "commenter": "dd",
+      "commentContent": "dd",
+      "commentNo": 23,
+      "createdAt": "2023-11-04T23:40:05.901Z",
+      "userId": 28,
+      "threadId": "3",
+      "id": 6
+    }
+  ],
   "users": [
     {
       "name": "user",
       "hashedPassword": "$2b$10$OKjnIz2AwdeMzQA4/14fi.23JGmnA8VLeGoN2WTxCWjr5uhaeMzuC",
       "likes": [],
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk5MDk0MzI2LCJleHAiOjE2OTkxODA3MjZ9.TclIDIyIdABYQHzK-U1DumMGDBrUaH6w-XYXaAVxTyk",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ1c2VyIiwiaWF0IjoxNjk5MTQxMzU0LCJleHAiOjE2OTkyMjc3NTR9.QFq5cof_Avc_CfbDOHFv3djcwxHEp4LpH4b_eUsmtdM",
       "id": 1
     },
     {
@@ -254,6 +304,21 @@
       ],
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiY29tbWVudHRlc3QiLCJpYXQiOjE2OTkwOTQ2NzUsImV4cCI6MTY5OTE4MTA3NX0.sb_RBvd4BzR1-6h37oMUQIDh3oV0ISR6L7oy-NiTO0U",
       "id": 27
+    },
+    {
+      "name": "tester",
+      "hashedPassword": "$2b$10$1B7hGfj0ldPeK5SqUFIOlOeRdm2uW3Q.n5CYwjhJfk8TvjeWT6k12",
+      "comments": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGVyIiwiaWF0IjoxNjk5MTQwNDUzLCJleHAiOjE2OTkyMjY4NTN9.yv0dhNeqB00fqUnyTA84cD2YJ-xzhAOXwEjBc-ns110",
+      "id": 28
     }
   ]
 }

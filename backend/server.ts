@@ -42,12 +42,13 @@ server.use(cors({
 }));
 
 // ユーザがログインしているかチェック
-server.use((req, res, next) => {
+server.use(async (req, res, next) => {
   console.log(req.cookies.token)
   if (req.cookies.token) {
     try {
-      const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
-      console.log("メソッド、トークンの値", req.method, user);
+      const userToken = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
+      const user = await getUserByName(userToken.name);
+
       req.user = user;
     } catch (err) {
       res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
@@ -63,6 +64,7 @@ server.use((req, res, next) => {
 // コメント投稿
 server.post('/threads/:threadId/comments', async (req, res, next) => {
   const threadId = req.params.threadId;
+  console.log("user when post comment", req.user)
   if (isNaN(Number(threadId))) {
     return res.status(400).json({
       message: '無効なスレッドIDです'
@@ -112,7 +114,11 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     }
     const now = new Date().toISOString()
     req.body.createdAt = now
-    req.body.userId = req.user.id
+    if (req.user) {
+      req.body.userId = req.user.id
+    } else {
+      req.body.userId = 0
+    }
   } catch (error) {
     console.error('スレッドの 総コメント数の更新処理に失敗しました:', error);
     return res.status(500).json({ message: '内部処理のエラーです' });
