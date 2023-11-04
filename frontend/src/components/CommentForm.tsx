@@ -13,9 +13,11 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
   const commentResponderRef = useRef<HTMLInputElement>(null)
   const commentContentRef = useRef<HTMLTextAreaElement>(null)
 
+  // コメントの投稿
   const handleSubmit = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
 
+    // 入力フォームにコメントがなければエラー文を設定
     setInputError(null)
     if (!commentContentRef.current?.value) {
       setInputError("コメントを入力してください。")
@@ -23,13 +25,14 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
     if (inputError) return
 
     try {
-      const response = await axios.post(`http://localhost:8000/threads/${threadId}/comments`, {
-        responder: commentResponderRef.current?.value,
+      const response = await axios.post(`/api/threads/${threadId}/comments`, {
+        commenter: commentResponderRef.current?.value,
         commentContent: commentContentRef.current?.value,
-      })
+      }, { withCredentials: true })
       commentDispatch({ type: 'add_comment', newComment: response.data })
       const commentId = response.data.id
 
+      // ログインしている状態でコメント投稿した場合に、user にコメント履歴をつける処理
       if (user) {
         const newUser = {
           ...user,
@@ -39,7 +42,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
           ]
         }
         userDispatch({ type: 'add_comment', 'newComment': commentId })
-        console.log(newUser)
         await axios.put(`http://localhost:8000/users/${userState.user?.id}`, { ...newUser })
       }
       formRef.current?.reset()

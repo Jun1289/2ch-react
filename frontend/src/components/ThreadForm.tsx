@@ -1,16 +1,18 @@
 import axios from "axios"
-import React from "react";
+import { useCallback, useRef, useState } from "react";
 import { ThreadFormProps } from "../types/types";
 
 export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
-  const [inputError, setInputError] = React.useState<null | string>(null);
-  const formRef = React.useRef<HTMLFormElement>(null);
-  const threadTitleRef = React.useRef<HTMLInputElement>(null)
-  const threadTopicRef = React.useRef<HTMLTextAreaElement>(null)
+  const [inputError, setInputError] = useState<null | string>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const threadTitleRef = useRef<HTMLInputElement>(null)
+  const threadTopicRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSubmit = React.useCallback<React.FormEventHandler>(async (event) => {
+  // スレッドの新規作成
+  const handleSubmit = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
 
+    // スレッドの新規作成時にフォームに入力がなければエラー文を設定
     setInputError(null)
     if (!threadTitleRef.current?.value) {
       setInputError("タイトルを入力してください。")
@@ -21,10 +23,12 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
     if (inputError) return
 
     try {
+      // axios.post を使って、json-server の db.json に登録する
       const response = await axios.post("http://localhost:8000/threads", {
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })
+      // state の threadsState に新しいスレッドを追加する
       threadsDispatch({ type: "add_thread", newThread: response.data })
       formRef.current?.reset()
     } catch (error) {

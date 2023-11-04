@@ -23,7 +23,7 @@ export type UserState = {
 export type Comment = {
   id: number,
   commentNo: number,
-  responder: string,
+  commenter: string,
   commentContent: string,
   createdAt: string,
   updatedAt: string,

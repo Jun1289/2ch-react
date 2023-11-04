@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useUserContext } from "../context/userContext"
 import Cookies from 'js-cookie';
-import { commentReducer, commentsInitialState } from "../reducers/reducers";
-import { Comment } from "../types/types";
+// import { commentReducer, commentsInitialState } from "../reducers/reducers";
+// import { Comment } from "../types/types";
 
 export const User = () => {
   const navigate = useNavigate()
@@ -14,8 +14,9 @@ export const User = () => {
   const formRef = useRef<HTMLFormElement>(null)
   const { userState, userDispatch } = useUserContext()
   const { user, isLoading } = userState
-  const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
+  // const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
 
+  // ログインの処理
   const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
@@ -55,6 +56,7 @@ export const User = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // ユーザーの新規登録の処理
   const hundleSignup = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
@@ -93,6 +95,7 @@ export const User = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // ログアウトの処理
   const toLogout = async () => {
     try {
       await axios.post("http://127.0.0.1:8000/users/logout", null, {
@@ -105,24 +108,25 @@ export const User = () => {
     }
   }
 
-  useEffect(() => {
-    const fetchedCommentsData = async () => {
-      if (!user) return
-      try {
-        if (user.comments === undefined) return
-        const commentsByUser: Comment[] = []
-        for (const commentId of user.comments) {
-          await axios.get(`http://localhost:8000/comments/${commentId}`).then((response) => {
-            commentsByUser.push(response.data)
-          })
-        }
-        commentDispatch({ type: 'set_comments', comments: commentsByUser })
-      } catch (error) {
-        console.error("コメントの取得でエラーが発生しました。", error);
-      }
-    }
-    fetchedCommentsData()
-  }, [user])
+  // // ログインしていて、ユーザーにコメント履歴があれば表示する
+  // useEffect(() => {
+  //   const fetchedCommentsData = async () => {
+  //     if (!user) return
+  //     try {
+  //       if (user.comments === undefined) return
+  //       const commentsByUser: Comment[] = []
+  //       for (const commentId of user.comments) {
+  //         await axios.get(`http://localhost:8000/comments/${commentId}`).then((response) => {
+  //           commentsByUser.push(response.data)
+  //         })
+  //       }
+  //       commentDispatch({ type: 'set_comments', comments: commentsByUser })
+  //     } catch (error) {
+  //       console.error("コメントの取得でエラーが発生しました。", error);
+  //     }
+  //   }
+  //   fetchedCommentsData()
+  // }, [user])
 
   return (
     <>
@@ -136,7 +140,7 @@ export const User = () => {
               <dl>
                 <dt>ユーザー名</dt>
                 <dd>{user.name}</dd>
-                <dt>コメント履歴</dt>
+                {/* <dt>コメント履歴</dt>
                 <dd>
                   {commentsState.isLoading ? (
                     null
@@ -150,7 +154,7 @@ export const User = () => {
                     ) : (
                       <div>投稿したコメントはありません。</div>
                     ))}
-                </dd>
+                </dd> */}
               </dl>
               <button onClick={toLogout}>ログアウト</button>
             </>

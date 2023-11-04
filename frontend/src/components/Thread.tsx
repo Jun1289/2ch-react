@@ -24,50 +24,63 @@ export const Thread = () => {
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
   const { userState, userDispatch } = useUserContext()
 
+  // コメントの削除
   const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     try {
-      await axios.delete(`http://localhost:8000/comments/${commentId}`, {
+      // await axios.delete(`http://localhost:8000/comments/${commentId}`, {
+      // await axios.get(`/api/comments/${commentId}`, {
+      //   withCredentials: true
+      // })
+      await axios.delete(`/api/comments/${commentId}`, {
         withCredentials: true
       })
         .then(() => {
           commentDispatch({ type: 'delete_comment', commentId })
           userDispatch({ type: 'delete_comment', commentId })
         })
-      console.log(userState.user)
-      await axios.put(`http://localhost:8000/users/${userState.user?.id}`, {
-        ...userState.user,
-        comments: userState.user?.comments.filter((comment) => comment !== commentId)
-      })
+      // await fetch(`/api/comments/${commentId}`, {
+      //   method: 'DELETE',
+      //   credentials: 'include',
+      // }).then(() => {
+      //   commentDispatch({ type: 'delete_comment', commentId })
+      //   userDispatch({ type: 'delete_comment', commentId })
+      // })
+      // json-server の db.json の user の comments を更新
+      if (userState.user) {
+        // await axios.put(`http://localhost:8000/users/${userState.user.id}`, {
+        await axios.put(`api/users/${userState.user.id}`, {
+          ...userState.user,
+          comments: userState.user?.comments.filter((comment) => comment !== commentId)
+        },
+          {
+            withCredentials: true
+          })
+      }
     } catch (error: unknown) {
       commentDispatch({ type: 'set_error', error: `コメントの削除中にエラーが起きました。${error}` })
     }
   }
 
-  // スレッドデータの取得
-  useEffect(() => {
-    const fetchThreadData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/threads/${threadId}`)
-        threadDispatch({ type: 'set_thread', currentThread: response.data })
-      } catch (error) {
-        threadDispatch({ type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}` })
-      }
-    }
-    fetchThreadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threadId])
-
+  // スレッドデータとコメントデータの取得
   useEffect(() => {
     const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/threads/${threadId}`, { withCredentials: true })
+        threadDispatch({ type: 'set_thread', currentThread: response.data })
+      } catch (error) {
+        threadDispatch({
+          type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}`
+        })
+      }
       try {
         const commentsData = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
         commentDispatch({ type: 'set_comments', comments: commentsData.data })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
       }
-    };
-    fetchData();
+    }
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -87,7 +100,7 @@ export const Thread = () => {
                 {commentsState.comments.map((comment) => (
                   <li key={comment.id}>
                     <div>
-                      <span>{comment.commentNo}: {comment.responder} : {formatDateTime(comment.createdAt)}</span>
+                      <span>{comment.commentNo}: {comment.commenter} : {formatDateTime(comment.createdAt)}</span>
                       <button onClick={(e) => handleDelete(comment.id, e)}>削除</button>
                     </div>
                     <div>

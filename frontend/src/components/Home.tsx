@@ -6,10 +6,11 @@ import { useReducer } from "react";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 
 export const Home = () => {
-  const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
+  const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
 
+  // スレッドの削除
   const handleDelete = async (threadId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     try {
@@ -18,20 +19,24 @@ export const Home = () => {
           threadsDispatch({ type: "delete_thread", threadId })
         })
     } catch (error) {
-      console.error("コメントの削除でエラーが発生しました:", error);
+      console.error("スレッドの削除でエラーが発生しました:", error);
     }
   }
 
+  // スレッドのコメント数を取得
   const getCommentCnt = async (threadId: number): Promise<number> => {
     const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
     const comments = response.data
     return comments.length
   }
 
+  // スレッドの取得と各スレッドのコメント数を取得
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/threads');
+        const response = await axios.get('http://localhost:8000/threads', {
+          withCredentials: true
+        });
         const threads = response.data
         threadsDispatch({ type: 'set_threads', threads })
         if (threads && threads.length > 0) {
@@ -39,7 +44,7 @@ export const Home = () => {
           for (const thread of threads) {
             counts[thread.id] = await getCommentCnt(thread.id);
           }
-          setCommentCounts(counts);
+          setCommentsCount(counts);
         }
         commentDispatch({ type: 'set_comments', comments: [] })
       } catch (error) {

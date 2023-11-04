@@ -15,14 +15,14 @@ server.use(jsonServer.bodyParser)
 
 const BASE_URL = "http://localhost:8000";
 
-// 引数のユーザ名と一致するユーザを返す関数
+// 引数の name に一致するユーザを返す関数
 const getUserByName = async (name) => {
   const fetchedUsers = await nfetch(`${BASE_URL}/users`);
   const users = await fetchedUsers.json();
   return users.find((user) => name === user.name);
 }
 
-// ローカルマシンのフロント炎からのリクエストのみ許可する
+// ローカルマシンのフロントエンドからのリクエストのみ許可する
 const allowedOrigins = ["http://127.0.0.1:5173"];
 
 server.use(cors({
@@ -34,6 +34,7 @@ server.use(cors({
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
+    console.log("許可されたオリジンです。", origin);
     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
     return callback(null, true);
   },
@@ -42,34 +43,29 @@ server.use(cors({
 
 // ユーザがログインしているかチェック
 server.use((req, res, next) => {
-  console.log("ログインチェックを行います。")
-  console.log("cookie", req.cookies)
+  console.log(req.cookies.token)
   if (req.cookies.token) {
     try {
       const user = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
+      console.log("メソッド、トークンの値", req.method, user);
       req.user = user;
-      console.log("ログインチェックを通りました。")
     } catch (err) {
-      console.log("無効なトークンです。", err)
+      res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
+      console.log("無効なトークンなので削除しました。", err)
     }
+  } else {
+    console.log("トークンがありません。")
   }
+
   next();
 });
+
 // コメント投稿
 server.post('/threads/:threadId/comments', async (req, res, next) => {
-  console.log("ログインしているユーザー", req.user)
   const threadId = req.params.threadId;
   if (isNaN(Number(threadId))) {
     return res.status(400).json({
       message: '無効なスレッドIDです'
-    })
-  }
-
-  const comments = router.db.get('comments') as any;
-  const commentsForThread = comments.filter({ threadId }).size().value();
-  if (commentsForThread >= 10) {
-    return res.status(400).json({
-      message: 'スレッドのコメントは10個までです'
     })
   }
 
@@ -79,9 +75,16 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     })
   }
 
-  const now = new Date().toISOString()
+  const response = await nfetch('http://localhost:8000/comments');
+  const comments = await response.json();
+  const commentsForThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
+  if (commentsForThread >= 10) {
+    return res.status(400).json({
+      message: 'スレッドのコメントは10個までです'
+    })
+  }
 
-  // スレッドのupdatedAt パラメータの値をコメントの投稿日時に更新
+  // スレッドのコメント数をカウントアップとコメントデータの作成
   try {
     const threadResponse = await nfetch(`http://localhost:8000/threads/${threadId}`);
     if (!threadResponse.ok) {
@@ -89,9 +92,8 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     }
     const threadData = await threadResponse.json();
 
-    threadData.updatedAt = now;
-    const newCommentTotal = threadData.commentTotal + 1;
-    threadData.commentTotal = newCommentTotal;
+    threadData.commentTotal = threadData.commentTotal + 1;
+    const newCommentTotal = threadData.commentTotal;
 
     const updateResponse = await nfetch(`http://localhost:8000/threads/${threadId}`, {
       method: 'PUT',
@@ -102,16 +104,17 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     });
 
     if (!updateResponse.ok) {
-      throw new Error('スレッドのupdatedAt パラメータの更新に失敗しました');
+      throw new Error('スレッドの総コメント数の更新に失敗しました');
     }
-
-    if (!req.body.responder) {
-      req.body.responder = '名無し'
-    }
-    req.body.createdAt = now
     req.body.commentNo = newCommentTotal
+    if (!req.body.commenter) {
+      req.body.commenter = '名無し'
+    }
+    const now = new Date().toISOString()
+    req.body.createdAt = now
+    req.body.userId = req.user.id
   } catch (error) {
-    console.error('スレッドの updatedAt パラメータの更新処理に失敗しました:', error);
+    console.error('スレッドの 総コメント数の更新処理に失敗しました:', error);
     return res.status(500).json({ message: '内部処理のエラーです' });
   }
 
@@ -119,30 +122,29 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 })
 
 // コメントの削除
-server.use('/comments/:commentId', async (req, res, next) => {
+server.delete('/comments/:commentId', async (req, res, next) => {
   const commentId = req.params.commentId
-  console.log("commentId", commentId)
-  if (req.method === 'DELETE') {
-    if (!req.user) return next()
-    console.log("req.user", req.user)
-    const userId = req.user.id
-    const updatedComments = req.user.comments.fileter((comment) => {
-      return comment != commentId
-    })
-    nfetch(`/user/${userId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...req.user, updatedComments })  // ここでtokenのみをJSONとして送信
-    })
-      .then(updatedUser => {
-        console.log("Updated Comments:", updatedUser.comments);
+  try {
+    const fetchedComment = await nfetch(`http://localhost:8000/comments/${commentId}`)
+    const comment = fetchedComment.json()
+    const userId = comment.userId
+    if (userId) {
+      const fetchedUser = await nfetch(`http://localhost:8000/users/${userId}`)
+      const user = fetchedUser.json()
+      const updatedComments = user.comments.fileter((comment) => {
+        return comment != commentId
       })
-      .catch(error => {
-        console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
-      });
-  }
+      nfetch(`/user/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...req.user, updatedComments })
+      })
+    }
+  } catch (error) {
+    console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
+  };
   next()
 })
 
@@ -162,8 +164,6 @@ server.post('/threads', (req, res, next) => {
 
   const now = new Date().toISOString()
   req.body.createdAt = now
-  req.body.updatedAt = now
-
   req.body.commentTotal = 0
 
   next()
@@ -174,10 +174,12 @@ server.post("/users/register", async (req, res) => {
   try {
     const { name, password } = req.body;
 
+    // 入力されたユーザー名が既に使用されていれば新規登録させない
     const user = await getUserByName(name)
     if (user) {
       return res.status(400).json({ message: "既に使用されているユーザ名です。他のユーザ名を入力してください" })
     }
+
     if (!name || !password) {
       return res.status(400).json({ message: "ユーザー名かパスワードが未入力です" })
     }
@@ -203,9 +205,9 @@ server.post("/users/register", async (req, res) => {
     });
 
     const newUser = await response.json();
-
-    res.cookie("token", token, { sameSite: "lax", httpOnly: false, secure: false, path: '/' })
-
+    // ユーザーがログインしているかどうかの確認用のトークンを発行しクッキーを発行する
+    res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", httpOnly: false, secure: false, path: '/' })
+    // user にトークンの値を持たせておき、
     res.status(200).json({
       ...newUser,
       newToken: token,
@@ -238,7 +240,7 @@ server.post("/users/signin", async (req, res) => {
       { expiresIn: "24h", }
     )
 
-    res.cookie("token", token, { sameSite: "lax", secure: false, httpOnly: false, path: '/' })
+    res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", secure: false, httpOnly: false, path: '/' })
     console.log('cookie created successfully', token);
 
     await nfetch(`http://localhost:8000/users/${user.id}`, {
@@ -255,8 +257,6 @@ server.post("/users/signin", async (req, res) => {
       .catch(error => {
         console.error("ユーザーのトークンの更新でエラーが発生しました。", error);
       });
-
-
 
     res.status(200).json({
       ...user,
