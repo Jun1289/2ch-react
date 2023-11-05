@@ -64,7 +64,6 @@ server.use(async (req, res, next) => {
 // コメント投稿
 server.post('/threads/:threadId/comments', async (req, res, next) => {
   const threadId = req.params.threadId;
-  console.log("user when post comment", req.user)
   if (isNaN(Number(threadId))) {
     return res.status(400).json({
       message: '無効なスレッドIDです'

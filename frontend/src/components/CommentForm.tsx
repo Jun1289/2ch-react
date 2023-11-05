@@ -42,7 +42,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
           ]
         }
         userDispatch({ type: 'add_comment', 'newComment': commentId })
-        await axios.put(`http://localhost:8000/users/${userState.user?.id}`, { ...newUser })
+        await axios.put(`/api/users/${user.id}`, { ...newUser })
       }
       formRef.current?.reset()
     } catch (error) {

@@ -54,7 +54,7 @@ export const Thread = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/threads/${threadId}`, { withCredentials: true })
+        const response = await axios.get(`/api/threads/${threadId}`, { withCredentials: true })
         threadDispatch({ type: 'set_thread', currentThread: response.data })
       } catch (error) {
         threadDispatch({
@@ -62,7 +62,7 @@ export const Thread = () => {
         })
       }
       try {
-        const commentsData = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
+        const commentsData = await axios.get(`/api/threads/${threadId}/comments`)
         commentDispatch({ type: 'set_comments', comments: commentsData.data })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })

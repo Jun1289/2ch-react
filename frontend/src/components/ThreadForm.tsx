@@ -24,7 +24,7 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
 
     try {
       // axios.post を使って、json-server の db.json に登録する
-      const response = await axios.post("http://localhost:8000/threads", {
+      const response = await axios.post("/api/threads", {
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })

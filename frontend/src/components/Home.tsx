@@ -14,7 +14,7 @@ export const Home = () => {
   const handleDelete = async (threadId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     try {
-      await axios.delete(`http://localhost:8000/threads/${threadId}`)
+      await axios.delete(`/api/threads/${threadId}`)
         .then(function () {
           threadsDispatch({ type: "delete_thread", threadId })
         })
@@ -25,7 +25,7 @@ export const Home = () => {
 
   // スレッドのコメント数を取得
   const getCommentCnt = async (threadId: number): Promise<number> => {
-    const response = await axios.get(`http://localhost:8000/threads/${threadId}/comments`)
+    const response = await axios.get(`/api/threads/${threadId}/comments`)
     const comments = response.data
     return comments.length
   }
@@ -34,7 +34,7 @@ export const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/threads', {
+        const response = await axios.get('/api/threads', {
           withCredentials: true
         });
         const threads = response.data
