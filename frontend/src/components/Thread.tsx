@@ -23,15 +23,12 @@ export const Thread = () => {
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
   const { userState, userDispatch } = useUserContext()
+  const { user } = userState
 
   // コメントの削除
   const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     try {
-      // await axios.delete(`http://localhost:8000/comments/${commentId}`, {
-      // await axios.get(`/api/comments/${commentId}`, {
-      //   withCredentials: true
-      // })
       await axios.delete(`/api/comments/${commentId}`, {
         withCredentials: true
       })
@@ -39,19 +36,10 @@ export const Thread = () => {
           commentDispatch({ type: 'delete_comment', commentId })
           userDispatch({ type: 'delete_comment', commentId })
         })
-      // await fetch(`/api/comments/${commentId}`, {
-      //   method: 'DELETE',
-      //   credentials: 'include',
-      // }).then(() => {
-      //   commentDispatch({ type: 'delete_comment', commentId })
-      //   userDispatch({ type: 'delete_comment', commentId })
-      // })
-      // json-server の db.json の user の comments を更新
-      if (userState.user) {
-        // await axios.put(`http://localhost:8000/users/${userState.user.id}`, {
-        await axios.put(`api/users/${userState.user.id}`, {
-          ...userState.user,
-          comments: userState.user?.comments.filter((comment) => comment !== commentId)
+      if (user) {
+        await axios.put(`/api/users/${user.id}`, {
+          ...user,
+          comments: user?.comments.filter((comment) => comment !== commentId)
         },
           {
             withCredentials: true

@@ -36,7 +36,7 @@
       "title": "title",
       "topic": "wadai",
       "createdAt": "2023-11-04T05:28:57.548Z",
-      "commentTotal": 18,
+      "commentTotal": 21,
       "id": 8
     }
   ],
@@ -80,15 +80,6 @@
       "createdAt": "2023-11-04T23:38:33.432Z",
       "threadId": "3",
       "id": 5
-    },
-    {
-      "commenter": "dd",
-      "commentContent": "dd",
-      "commentNo": 23,
-      "createdAt": "2023-11-04T23:40:05.901Z",
-      "userId": 28,
-      "threadId": "3",
-      "id": 6
     }
   ],
   "users": [
@@ -314,10 +305,10 @@
         3,
         4,
         5,
-        6,
-        7
+        7,
+        8
       ],
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGVyIiwiaWF0IjoxNjk5MTQwNDUzLCJleHAiOjE2OTkyMjY4NTN9.yv0dhNeqB00fqUnyTA84cD2YJ-xzhAOXwEjBc-ns110",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnB1dE5hbWUiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTkxNDIxNTgsImV4cCI6MTY5OTIyODU1OH0.3e7BxTa1vLwx2mNvSNCbOS0eBJqWoTPS_a_kcwaZPHw",
       "id": 28
     }
   ]

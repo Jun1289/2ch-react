@@ -140,12 +140,12 @@ server.delete('/comments/:commentId', async (req, res, next) => {
       const updatedComments = user.comments.fileter((comment) => {
         return comment != commentId
       })
-      nfetch(`/user/${userId}`, {
+      await nfetch(`http://localhost:8000/user/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...req.user, updatedComments })
+        body: JSON.stringify({ user, comments: updatedComments })
       })
     }
   } catch (error) {
