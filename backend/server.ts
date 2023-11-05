@@ -2,13 +2,14 @@ const dotenv = require('dotenv')
 dotenv.config()
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
-const nfetch = require('node-fetch')
+// const fetch = require('node-fetch')
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const jsonServer = require('json-server')
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
 const middlewares = jsonServer.defaults()
+import fetch from 'node-fetch';
 
 server.use(cookieParser());
 server.use(jsonServer.bodyParser)
@@ -17,29 +18,33 @@ const BASE_URL = "http://localhost:8000";
 
 // 引数の name に一致するユーザを返す関数
 const getUserByName = async (name) => {
-  const fetchedUsers = await nfetch(`${BASE_URL}/users`);
-  const users = await fetchedUsers.json();
-  return users.find((user) => name === user.name);
+  try {
+    const fetchedUsers = await fetch(`${BASE_URL}/users`);
+    const users = await fetchedUsers.json();
+    return users.find((user) => name === user.name);
+  } catch (error) {
+    console.error("ユーザーの取得に失敗しました。", error);
+  }
 }
 
-// ローカルマシンのフロントエンドからのリクエストのみ許可する
-const allowedOrigins = ["http://127.0.0.1:5173"];
-
-server.use(cors({
-  origin: function (origin, callback) {
-    // 同一オリジンからのアクセスは許可
-    if (!origin) return callback(null, true);
-    // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    console.log("許可されたオリジンです。", origin);
-    // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
-    return callback(null, true);
-  },
-  credentials: true
-}));
+// cors の設定フロントエンドからのリクエストを許可するために行なっていたが、proxy によって不要になった
+// // ローカルマシンのフロントエンドからのリクエストのみ許可する
+// const allowedOrigins = ["http://127.0.0.1:5173"];
+// server.use(cors({
+//   origin: function (origin, callback) {
+//     // 同一オリジンからのアクセスは許可
+//     if (!origin) return callback(null, true);
+//     // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     console.log("許可されたオリジンです。", origin);
+//     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
+//     return callback(null, true);
+//   },
+//   credentials: true
+// }));
 
 // ユーザがログインしているかチェック
 server.use(async (req, res, next) => {
@@ -76,7 +81,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     })
   }
 
-  const response = await nfetch('http://localhost:8000/comments');
+  const response = await fetch('http://localhost:8000/comments');
   const comments = await response.json();
   const commentsForThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
   if (commentsForThread >= 10) {
@@ -87,7 +92,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 
   // スレッドのコメント数をカウントアップとコメントデータの作成
   try {
-    const threadResponse = await nfetch(`http://localhost:8000/threads/${threadId}`);
+    const threadResponse = await fetch(`http://localhost:8000/threads/${threadId}`);
     if (!threadResponse.ok) {
       throw new Error('スレッドのデータを取得できませんでした');
     }
@@ -96,7 +101,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     threadData.commentTotal = threadData.commentTotal + 1;
     const newCommentTotal = threadData.commentTotal;
 
-    const updateResponse = await nfetch(`http://localhost:8000/threads/${threadId}`, {
+    const updateResponse = await fetch(`http://localhost:8000/threads/${threadId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -130,16 +135,16 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 server.delete('/comments/:commentId', async (req, res, next) => {
   const commentId = req.params.commentId
   try {
-    const fetchedComment = await nfetch(`http://localhost:8000/comments/${commentId}`)
-    const comment = fetchedComment.json()
+    const fetchedComment = await fetch(`http://localhost:8000/comments/${commentId}`)
+    const comment = await fetchedComment.json()
     const userId = comment.userId
     if (userId) {
-      const fetchedUser = await nfetch(`http://localhost:8000/users/${userId}`)
-      const user = fetchedUser.json()
+      const response = await fetch(`http://localhost:8000/users/${userId}`)
+      const user = await response.json()
       const updatedComments = user.comments.fileter((comment) => {
         return comment != commentId
       })
-      await nfetch(`http://localhost:8000/user/${userId}`, {
+      await fetch(`http://localhost:8000/user/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +201,7 @@ server.post("/users/register", async (req, res) => {
     // bcrypt.hash の第二引数は salt rounds(ハッシュ化を行う回数)
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const response = await nfetch(`${BASE_URL}/users`, {
+    const fetchedNewUser = await fetch(`${BASE_URL}/users`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -209,7 +214,7 @@ server.post("/users/register", async (req, res) => {
       }),
     });
 
-    const newUser = await response.json();
+    const newUser = await fetchedNewUser.json();
     // ユーザーがログインしているかどうかの確認用のトークンを発行しクッキーを発行する
     res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", httpOnly: false, secure: false, path: '/' })
     // user にトークンの値を持たせておき、
@@ -218,7 +223,7 @@ server.post("/users/register", async (req, res) => {
       newToken: token,
     })
   } catch (error) {
-    res.status(400).json(error);
+    console.error("ユーザーの新規登録でエラーが発生しました。", error);
   }
 });
 
@@ -246,29 +251,21 @@ server.post("/users/signin", async (req, res) => {
     )
 
     res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", secure: false, httpOnly: false, path: '/' })
-    console.log('cookie created successfully', token);
 
-    await nfetch(`http://localhost:8000/users/${user.id}`, {
+    await fetch(`http://localhost:8000/users/${user.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ token })  // ここでtokenのみをJSONとして送信
     })
-      .then(response => response.json())
-      .then(updatedUser => {
-        console.log("Updated user:", updatedUser);
-      })
-      .catch(error => {
-        console.error("ユーザーのトークンの更新でエラーが発生しました。", error);
-      });
 
     res.status(200).json({
       ...user,
       newToken: token,
     })
   } catch (error) {
-    res.status(500).json({ message: "ログインの途中でサーバ側でエラーが発生しました" })
+    console.error("ログイン処理でエラーが発生しました。", error);
   }
 })
 

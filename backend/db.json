@@ -5,7 +5,7 @@
       "topic": "wadai",
       "createdAt": "2023-10-30T22:33:48.702Z",
       "updatedAt": "2023-11-02T12:59:59.271Z",
-      "commentTotal": 10,
+      "commentTotal": 14,
       "id": 4
     },
     {
@@ -30,6 +30,13 @@
       "createdAt": "2023-11-04T05:28:57.548Z",
       "commentTotal": 21,
       "id": 8
+    },
+    {
+      "title": "title",
+      "topic": "arigatou",
+      "createdAt": "2023-11-05T03:46:12.409Z",
+      "commentTotal": 1,
+      "id": 9
     }
   ],
   "comments": [
@@ -77,6 +84,51 @@
       "userId": 29,
       "threadId": "4",
       "id": 11
+    },
+    {
+      "commenter": "poster",
+      "commentContent": "comment",
+      "commentNo": 1,
+      "createdAt": "2023-11-05T03:46:21.459Z",
+      "userId": 0,
+      "threadId": "9",
+      "id": 12
+    },
+    {
+      "commenter": "t",
+      "commentContent": "d",
+      "commentNo": 11,
+      "createdAt": "2023-11-05T03:46:48.250Z",
+      "userId": 0,
+      "threadId": "4",
+      "id": 13
+    },
+    {
+      "commenter": "pote",
+      "commentContent": "ff",
+      "commentNo": 12,
+      "createdAt": "2023-11-05T03:52:41.962Z",
+      "userId": 0,
+      "threadId": "4",
+      "id": 14
+    },
+    {
+      "commenter": "poste",
+      "commentContent": "comment",
+      "commentNo": 13,
+      "createdAt": "2023-11-05T03:57:35.941Z",
+      "userId": 0,
+      "threadId": "4",
+      "id": 15
+    },
+    {
+      "commenter": "poster",
+      "commentContent": "comment",
+      "commentNo": 14,
+      "createdAt": "2023-11-05T04:00:50.010Z",
+      "userId": 0,
+      "threadId": "4",
+      "id": 16
     }
   ],
   "users": [
