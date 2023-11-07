@@ -27,7 +27,7 @@ export type Comment = {
   commentContent: string,
   createdAt: string,
   updatedAt: string,
-  threadId: number
+  threadId: number,
 }
 
 export type CommentsState = {

@@ -25,12 +25,13 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
     if (inputError) return
 
     try {
-      const response = await axios.post(`/api/threads/${threadId}/comments`, {
+      const fetchedNewComment = await axios.post(`/api/threads/${threadId}/comments`, {
         commenter: commentResponderRef.current?.value,
         commentContent: commentContentRef.current?.value,
       }, { withCredentials: true })
-      commentDispatch({ type: 'add_comment', newComment: response.data })
-      const commentId = response.data.id
+      const newComment = fetchedNewComment.data
+      await commentDispatch({ type: 'add_comment', newComment })
+      const commentId = newComment.id
 
       // ログインしている状態でコメント投稿した場合に、user にコメント履歴をつける処理
       if (user) {
@@ -41,7 +42,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
             commentId
           ]
         }
-        userDispatch({ type: 'add_comment', 'newComment': commentId })
+        console.log("user", user)
+        console.log("newUser", newUser)
+        await userDispatch({ type: 'add_comment', 'newComment': commentId })
         await axios.put(`/api/users/${user.id}`, { ...newUser })
       }
       formRef.current?.reset()

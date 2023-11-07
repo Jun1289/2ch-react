@@ -5,6 +5,7 @@ import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 import { useUserContext } from "../context/userContext";
+// import uuid from "uuid";
 
 const formatDateTime = (dateString: string) => {
   const dateObj = new Date(dateString);
@@ -28,15 +29,14 @@ export const Thread = () => {
   // コメントの削除
   const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
+    console.log("commentId", commentId)
     try {
       await axios.delete(`/api/comments/${commentId}`, {
         withCredentials: true
       })
-        .then(() => {
-          commentDispatch({ type: 'delete_comment', commentId })
-          userDispatch({ type: 'delete_comment', commentId })
-        })
-      if (user) {
+      commentDispatch({ type: 'delete_comment', commentId })
+      if (user && user.comments.includes(commentId)) {
+        userDispatch({ type: 'delete_comment', commentId })
         await axios.put(`/api/users/${user.id}`, {
           ...user,
           comments: user?.comments.filter((comment) => comment !== commentId)
@@ -54,7 +54,7 @@ export const Thread = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/threads/${threadId}`, { withCredentials: true })
+        const response = await axios.get(`/api/threads/${threadId}`)
         threadDispatch({ type: 'set_thread', currentThread: response.data })
       } catch (error) {
         threadDispatch({
@@ -63,14 +63,17 @@ export const Thread = () => {
       }
       try {
         const commentsData = await axios.get(`/api/threads/${threadId}/comments`)
+        console.log("commentsData", commentsData)
         commentDispatch({ type: 'set_comments', comments: commentsData.data })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
       }
+
     }
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
 
   return (
     <>{
@@ -86,7 +89,7 @@ export const Thread = () => {
             {(commentsState.comments && commentsState.comments.length != 0) ? (
               <ul>
                 {commentsState.comments.map((comment) => (
-                  <li key={comment.id}>
+                  <li key={`${threadId}${comment.commentNo}`}>
                     <div>
                       <span>{comment.commentNo}: {comment.commenter} : {formatDateTime(comment.createdAt)}</span>
                       <button onClick={(e) => handleDelete(comment.id, e)}>削除</button>

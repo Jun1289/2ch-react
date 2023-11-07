@@ -64,8 +64,11 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
+        console.log("comment.id", comment.id)
+        console.log("action.commentId", action.commentId)
         return comment.id !== action.commentId
       }) || null;
+      console.log("newCommentsData", newCommentsData)
       return {
         ...commentsState,
         comments: newCommentsData

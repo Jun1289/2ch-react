@@ -48,12 +48,11 @@ const getUserByName = async (name) => {
 
 // ユーザがログインしているかチェック
 server.use(async (req, res, next) => {
-  console.log(req.cookies.token)
+  console.log("in server.use token : ", req.cookies.token)
   if (req.cookies.token) {
     try {
-      const userToken = jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
+      const userToken = await jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
       const user = await getUserByName(userToken.name);
-
       req.user = user;
     } catch (err) {
       res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
@@ -62,7 +61,6 @@ server.use(async (req, res, next) => {
   } else {
     console.log("トークンがありません。")
   }
-
   next();
 });
 
@@ -116,13 +114,14 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     if (!req.body.commenter) {
       req.body.commenter = '名無し'
     }
+    if (!req.user) {
+      req.body.userIdentification = 0
+    } else {
+      req.body.userIdentification = req.user.id
+    }
     const now = new Date().toISOString()
     req.body.createdAt = now
-    if (req.user) {
-      req.body.userId = req.user.id
-    } else {
-      req.body.userId = 0
-    }
+    console.log("req.body i.e comment", req.body)
   } catch (error) {
     console.error('スレッドの 総コメント数の更新処理に失敗しました:', error);
     return res.status(500).json({ message: '内部処理のエラーです' });
@@ -133,23 +132,42 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 
 // コメントの削除
 server.delete('/comments/:commentId', async (req, res, next) => {
+
   const commentId = req.params.commentId
+  // const user = req.user
+  // if (user) {
+  //   user.comments = user.comments.filter((comment) => {
+  //     return comment != commentId
+  //   })
+  //   await fetch(`http://localhost:8000/users/${user.id}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ user })
+  //   })
+  // }
+
+  // console.log("called delete")
   try {
     const fetchedComment = await fetch(`http://localhost:8000/comments/${commentId}`)
     const comment = await fetchedComment.json()
-    const userId = comment.userId
-    if (userId) {
+    const userId = comment.userIdentification
+    console.log("userId before deleting comment in user", userId)
+    if (userId != 0 && userId != undefined) {
+      console.log("userId after", userId)
       const response = await fetch(`http://localhost:8000/users/${userId}`)
       const user = await response.json()
-      const updatedComments = user.comments.fileter((comment) => {
+      const updatedComments = user.comments.filter((comment) => {
         return comment != commentId
       })
-      await fetch(`http://localhost:8000/user/${userId}`, {
+      console.log("updatedComments", updatedComments)
+      await fetch(`http://localhost:8000/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user, comments: updatedComments })
+        body: JSON.stringify({ ...user, comments: updatedComments })
       })
     }
   } catch (error) {
@@ -230,22 +248,22 @@ server.post("/users/register", async (req, res) => {
 // ログイン
 server.post("/users/signin", async (req, res) => {
   try {
-    const inputName = req.body.name
-    const inputPassword = req.body.password
+    const name = req.body.name
+    const password = req.body.password
 
-    const user = await getUserByName(inputName)
+    const user = await getUserByName(name)
     if (!user) {
       return res.status(401).json({ message: "認証情報が無効です" })
     }
 
-    const match = await bcrypt.compare(inputPassword, user.hashedPassword)
+    const match = await bcrypt.compare(password, user.hashedPassword)
 
     if (!match) {
       return res.status(401).json({ message: "認証情報が無効です" })
     }
 
     const token = jwt.sign(
-      { inputName },
+      { name },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "24h", }
     )
