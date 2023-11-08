@@ -14,7 +14,7 @@ export const userReducer = (userState: UserState, action: UserAction): UserState
       return {
         user: {
           ...(userState.user),
-          comments: [...userState!.user!.comments, action.newComment]
+          comments: [...(userState.user.comments), action.newComment]
         },
         isLoading: false,
         error: null

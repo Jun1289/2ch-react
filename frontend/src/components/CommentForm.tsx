@@ -42,17 +42,15 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
             commentId
           ]
         }
-        console.log("user", user)
-        console.log("newUser", newUser)
-        await userDispatch({ type: 'add_comment', 'newComment': commentId })
         await axios.put(`/api/users/${user.id}`, { ...newUser })
+        await userDispatch({ type: 'add_comment', 'newComment': commentId })
       }
       formRef.current?.reset()
     } catch (error) {
       userDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   return (
     <section>
