@@ -10,18 +10,6 @@ export const Home = () => {
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
 
-  // スレッドの削除
-  const handleDelete = async (threadId: number, event: React.MouseEvent<Element, MouseEvent>) => {
-    event.preventDefault();
-    try {
-      await axios.delete(`/api/threads/${threadId}`)
-        .then(function () {
-          threadsDispatch({ type: "delete_thread", threadId })
-        })
-    } catch (error) {
-      console.error("スレッドの削除でエラーが発生しました:", error);
-    }
-  }
 
   // スレッドのコメント数を取得
   const getCommentCnt = async (threadId: number): Promise<number> => {
@@ -71,7 +59,6 @@ export const Home = () => {
                       <Link to={`/threads/${thread.id}`}>
                         <span>{thread.id}: {thread.title} ({commentCounts[thread.id] || 0})</span>
                       </Link>
-                      <button onClick={(e) => handleDelete(thread.id, e)}>削除</button>
                     </li>
                   ))
                 }

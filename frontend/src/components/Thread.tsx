@@ -4,8 +4,6 @@ import { useParams } from "react-router-dom";
 import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
-import { useUserContext } from "../context/userContext";
-// import uuid from "uuid";
 
 const formatDateTime = (dateString: string) => {
   const dateObj = new Date(dateString);
@@ -23,38 +21,14 @@ export const Thread = () => {
   const { threadId } = useParams()
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
-  const { userState, userDispatch } = useUserContext()
-  const { user } = userState
 
-  // コメントの削除
-  const handleDelete = async (commentId: number, event: React.MouseEvent<Element, MouseEvent>) => {
-    event.preventDefault();
-    console.log("commentId", commentId)
-    try {
-      await axios.delete(`/api/comments/${commentId}`, {
-        withCredentials: true
-      })
-      commentDispatch({ type: 'delete_comment', commentId })
-      if (user && user.comments.includes(commentId)) {
-        userDispatch({ type: 'delete_comment', commentId })
-        await axios.put(`/api/users/${user.id}`, {
-          ...user,
-          comments: user?.comments.filter((comment) => comment !== commentId)
-        },
-          {
-            withCredentials: true
-          })
-      }
-    } catch (error: unknown) {
-      commentDispatch({ type: 'set_error', error: `コメントの削除中にエラーが起きました。${error}` })
-    }
-  }
 
   // スレッドデータとコメントデータの取得
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/threads/${threadId}`)
+        console.log("response.data", response.data)
         threadDispatch({ type: 'set_thread', currentThread: response.data })
       } catch (error) {
         threadDispatch({
@@ -72,7 +46,7 @@ export const Thread = () => {
     }
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [threadId])
 
 
   return (
@@ -92,7 +66,6 @@ export const Thread = () => {
                   <li key={`${threadId}${comment.commentNo}`}>
                     <div>
                       <span>{comment.commentNo}: {comment.commenter} : {formatDateTime(comment.createdAt)}</span>
-                      <button onClick={(e) => handleDelete(comment.id, e)}>削除</button>
                     </div>
                     <div>
                       {comment.commentContent}
