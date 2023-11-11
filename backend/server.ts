@@ -2,9 +2,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
-// const fetch = require('node-fetch')
 const cookieParser = require('cookie-parser');
-// const cors = require('cors');
 const jsonServer = require('json-server')
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
@@ -26,25 +24,6 @@ const getUserByName = async (name) => {
     console.error("ユーザーの取得に失敗しました。", error);
   }
 }
-
-// cors の設定フロントエンドからのリクエストを許可するために行なっていたが、proxy によって不要になった
-// // ローカルマシンのフロントエンドからのリクエストのみ許可する
-// const allowedOrigins = ["http://127.0.0.1:5173"];
-// server.use(cors({
-//   origin: function (origin, callback) {
-//     // 同一オリジンからのアクセスは許可
-//     if (!origin) return callback(null, true);
-//     // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
-//     if (allowedOrigins.indexOf(origin) === -1) {
-//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-//       return callback(new Error(msg), false);
-//     }
-//     console.log("許可されたオリジンです。", origin);
-//     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
-//     return callback(null, true);
-//   },
-//   credentials: true
-// }));
 
 // ユーザがログインしているかチェック
 server.use(async (req, res, next) => {
@@ -121,58 +100,9 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     }
     const now = new Date().toISOString()
     req.body.createdAt = now
-    console.log("req.body i.e comment", req.body)
   } catch (error) {
-    console.error('スレッドの 総コメント数の更新処理に失敗しました:', error);
-    return res.status(500).json({ message: '内部処理のエラーです' });
+    return res.status(500).json({ message: `コメント投稿のサーバーサイドでの処理中にエラーが発生しました。${error}` });
   }
-
-  next()
-})
-
-// コメントの削除
-server.delete('/comments/:commentId', async (req, res, next) => {
-
-  const commentId = req.params.commentId
-  // const user = req.user
-  // if (user) {
-  //   user.comments = user.comments.filter((comment) => {
-  //     return comment != commentId
-  //   })
-  //   await fetch(`http://localhost:8000/users/${user.id}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ user })
-  //   })
-  // }
-
-  // console.log("called delete")
-  try {
-    const fetchedComment = await fetch(`http://localhost:8000/comments/${commentId}`)
-    const comment = await fetchedComment.json()
-    const userId = comment.userIdentification
-    console.log("userId before deleting comment in user", userId)
-    if (userId != 0 && userId != undefined) {
-      console.log("userId after", userId)
-      const response = await fetch(`http://localhost:8000/users/${userId}`)
-      const user = await response.json()
-      const updatedComments = user.comments.filter((comment) => {
-        return comment != commentId
-      })
-      console.log("updatedComments", updatedComments)
-      await fetch(`http://localhost:8000/users/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...user, comments: updatedComments })
-      })
-    }
-  } catch (error) {
-    console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
-  };
   next()
 })
 
@@ -241,7 +171,7 @@ server.post("/users/register", async (req, res) => {
       newToken: token,
     })
   } catch (error) {
-    console.error("ユーザーの新規登録でエラーが発生しました。", error);
+    return res.status(500).json({ message: `ユーザー新規登録のサーバーサイドでの処理中にエラーが発生しました。${error}` });
   }
 });
 
@@ -283,7 +213,7 @@ server.post("/users/signin", async (req, res) => {
       newToken: token,
     })
   } catch (error) {
-    console.error("ログイン処理でエラーが発生しました。", error);
+    return res.status(500).json({ message: `ログインのサーバーサイドでの処理中にエラーが発生しました。${error}` });
   }
 })
 
@@ -291,7 +221,7 @@ server.post("/users/signin", async (req, res) => {
 server.post("/users/logout", (req, res) => {
   // トークンを削除することでログアウトを行う
   res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
-  res.status(200).json({ message: "ログアウトに成功しました" });
+  res.status(200).json({ message: "トークンを削除しました。" });
 });
 
 server.delete("/reset", (req, res) => {
@@ -302,6 +232,74 @@ server.delete("/reset", (req, res) => {
 
   res.status(200).json({ message: "リセットに成功しました" });
 })
+
+// 不要になったコード
+// corsの設定、proxy に乗り換えた
+// cors の設定フロントエンドからのリクエストを許可するために行なっていたが、proxy によって不要になった
+// // ローカルマシンのフロントエンドからのリクエストのみ許可する
+// const allowedOrigins = ["http://127.0.0.1:5173"];
+// server.use(cors({
+//   origin: function (origin, callback) {
+//     // 同一オリジンからのアクセスは許可
+//     if (!origin) return callback(null, true);
+//     // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     console.log("許可されたオリジンです。", origin);
+//     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
+//     return callback(null, true);
+//   },
+//   credentials: true
+// }));
+
+// コメントの削除
+// server.delete('/comments/:commentId', async (req, res, next) => {
+
+//   const commentId = req.params.commentId
+//   // const user = req.user
+//   // if (user) {
+//   //   user.comments = user.comments.filter((comment) => {
+//   //     return comment != commentId
+//   //   })
+//   //   await fetch(`http://localhost:8000/users/${user.id}`, {
+//   //     method: 'PUT',
+//   //     headers: {
+//   //       'Content-Type': 'application/json',
+//   //     },
+//   //     body: JSON.stringify({ user })
+//   //   })
+//   // }
+
+//   // console.log("called delete")
+//   try {
+//     const fetchedComment = await fetch(`http://localhost:8000/comments/${commentId}`)
+//     const comment = await fetchedComment.json()
+//     const userId = comment.userIdentification
+//     console.log("userId before deleting comment in user", userId)
+//     if (userId != 0 && userId != undefined) {
+//       console.log("userId after", userId)
+//       const response = await fetch(`http://localhost:8000/users/${userId}`)
+//       const user = await response.json()
+//       const updatedComments = user.comments.filter((comment) => {
+//         return comment != commentId
+//       })
+//       console.log("updatedComments", updatedComments)
+//       await fetch(`http://localhost:8000/users/${userId}`, {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ ...user, comments: updatedComments })
+//       })
+//     }
+//   } catch (error) {
+//     console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
+//   };
+//   next()
+// })
+
 // 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {
   (router.db.get('comments') as any).remove().write();
