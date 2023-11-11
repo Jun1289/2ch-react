@@ -13,7 +13,7 @@ export const User = () => {
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const { userState, userDispatch } = useUserContext()
-  const { user, isLoading } = userState
+  const { user, isLoading, error: userError } = userState
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
 
   // ログインの処理
@@ -48,7 +48,7 @@ export const User = () => {
           setInputError("ユーザー名かパスワードが間違っています")
         }
       } catch (error) {
-        console.error("ログイン時にエラーが発生しました。", error)
+        userDispatch({ type: 'set_error', error: `ログイン時にエラーが発生しました。${error}` })
       }
     }
     fetchedUser()
@@ -87,7 +87,7 @@ export const User = () => {
           }
         })
       } catch (error) {
-        console.error("新規ユーザー作成時にエラーが発生しました。", error)
+        userDispatch({ type: 'set_error', error: `新規ユーザー作成時にエラーが発生しました。${error}` })
       }
     }
     fetchedUser()
@@ -133,6 +133,9 @@ export const User = () => {
         null
       ) : (
         <>
+          {userError && (
+            <p className="error">{userError}</p>
+          )}
           {user ? (
             <>
               <h2>ユーザープロフィール</h2>

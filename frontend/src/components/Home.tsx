@@ -9,7 +9,9 @@ import { useUserContext } from "../context/userContext";
 export const Home = () => {
   const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
+  const { isLoading: commentsIsLoading } = commentsState
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
+  const { threads, isLoading: threadsIsLoading, error: threadsError } = threadsState
   const { userDispatch } = useUserContext()
 
   // スレッドのコメント数を取得
@@ -26,21 +28,21 @@ export const Home = () => {
       commentDispatch({ type: "reset" })
       userDispatch({ type: "reset" })
     } catch (error) {
-      console.error("全てリセットの処理でエラーが発生しました。", error);
+      threadsDispatch({ type: "set_error", error: `全てリセットの処理でエラーが発生しました。${error}` });
     }
   }
   // スレッドの取得と各スレッドのコメント数を取得
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/threads', {
+        const fetchedThreadsData = await axios.get('/api/threads', {
           withCredentials: true
         });
-        const threads = response.data
-        await threadsDispatch({ type: 'set_threads', threads })
-        if (threads && threads.length > 0) {
+        const threadsData = fetchedThreadsData.data
+        await threadsDispatch({ type: 'set_threads', threads: threadsData })
+        if (threadsData && threadsData.length > 0) {
           const counts: Record<number, number> = {};
-          for (const thread of threads) {
+          for (const thread of threadsData) {
             counts[thread.id] = await getCommentCnt(thread.id);
           }
           setCommentsCount(counts);
@@ -55,17 +57,20 @@ export const Home = () => {
 
   return (
     <div>
+      {threadsError && (
+        <p className="error">{threadsError}</p>
+      )}
       <ThreadForm threadsDispatch={threadsDispatch} />
       {
-        (threadsState.isLoading || commentsState.isLoading) ? (
+        (threadsIsLoading || commentsIsLoading) ? (
           null
         ) : (
           <section>
             <h2>スレッド一覧</h2>
-            {threadsState.threads && threadsState.threads.length > 0 ? (
+            {threads && threads.length > 0 ? (
               <ul>
                 {
-                  threadsState.threads.map(thread => (
+                  threads.map(thread => (
                     <li key={thread.id}>
                       <Link to={`/threads/${thread.id}`}>
                         <span>{thread.id}: {thread.title} ({commentCounts[thread.id] || 0})</span>

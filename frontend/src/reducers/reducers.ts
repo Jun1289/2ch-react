@@ -52,6 +52,7 @@ export const userReducer = (userState: UserState, action: UserAction): UserState
     case 'set_error':
       return {
         ...userState,
+        isLoading: false,
         error: action.error
       }
       break;
@@ -78,7 +79,9 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
       }) || null;
       return {
         ...commentsState,
-        comments: newCommentsData
+        comments: newCommentsData,
+        isLoading: false,
+        error: null
       }
       break;
     }
@@ -86,6 +89,7 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
       return {
         ...commentsState,
         comments: [...commentsState.comments, action.newComment],
+        isLoading: false,
         error: null
       }
       break;
@@ -100,6 +104,7 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
     case 'set_error':
       return {
         ...commentsState,
+        isLoading: false,
         error: action.error
       }
       break;
@@ -125,7 +130,9 @@ export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) 
       }) || null;
       return {
         ...threadsState,
-        threads: newthreadsData
+        threads: newthreadsData,
+        isLoaing: false,
+        error: null
       }
       break;
     }
@@ -133,6 +140,7 @@ export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) 
       return {
         ...threadsState,
         threads: [...threadsState.threads, action.newThread],
+        isLoading: false,
         error: null
       }
       break;
@@ -149,11 +157,13 @@ export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) 
         ...threadsState,
         currentThread: action.currentThread,
         isLoading: false,
+        error: null
       }
       break;
     case 'set_error':
       return {
         ...threadsState,
+        isLoading: false,
         error: action.error
       }
       break;

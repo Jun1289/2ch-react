@@ -33,15 +33,15 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
       threadsDispatch({ type: "add_thread", newThread: newThread })
       formRef.current?.reset()
     } catch (error) {
-      console.error("新しいスレッド作成時にエラーが発生しました", error);
+      threadsDispatch({ type: "set_error", error: `新しいスレッド作成時にエラーが発生しました。${error}` })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <section>
-      {inputError && <p className="error">{inputError}</p>}
       <h2>スレッドの新規作成</h2>
+      {inputError && <p className="error">{inputError}</p>}
       <form ref={formRef} onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">タイトル</label>

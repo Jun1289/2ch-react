@@ -20,28 +20,27 @@ const formatDateTime = (dateString: string) => {
 export const Thread = () => {
   const { threadId } = useParams()
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
+  const { comments, isLoading: commentsIsLoading, error: commentsError } = commentsState
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
+  const { currentThread, isLoading: threadsIsLoading, error: threadsError } = threadsState
 
   // スレッドデータとコメントデータの取得
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedThread = await axios.get(`/api/threads/${threadId}`)
-        const thread = fetchedThread.data
-        threadDispatch({ type: 'set_thread', currentThread: thread })
+        const fetchedThreadData = await axios.get(`/api/threads/${threadId}`)
+        const threadData = fetchedThreadData.data
+        threadDispatch({ type: 'set_thread', currentThread: threadData })
       } catch (error) {
-        threadDispatch({
-          type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}`
-        })
+        threadDispatch({ type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}` })
       }
       try {
-        const fetchedComments = await axios.get(`/api/threads/${threadId}/comments`)
-        const comments = fetchedComments.data
-        commentDispatch({ type: 'set_comments', comments: comments })
+        const fetchedCommentsData = await axios.get(`/api/threads/${threadId}/comments`)
+        const commentsData = fetchedCommentsData.data
+        commentDispatch({ type: 'set_comments', comments: commentsData })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
       }
-
     }
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,18 +49,24 @@ export const Thread = () => {
 
   return (
     <>{
-      (threadsState.isLoading || commentsState.isLoading) ? (
+      (threadsIsLoading || commentsIsLoading) ? (
         null
       ) : (
-        <div className="thread-wrapper content-wrapper">
+        < div className="thread-wrapper content-wrapper">
+          {threadsError && (
+            <p className="error">{threadsError}</p>
+          )}
+          {commentsError && (
+            <p className="error">{commentsError}</p>
+          )}
           <section>
-            <p className="thread_title">{threadsState.currentThread?.title}</p>
-            <p>{threadsState.currentThread?.topic}</p>
+            <p className="thread_title">{currentThread?.title}</p>
+            <p>{currentThread?.topic}</p>
           </section>
           <section>
-            {(commentsState.comments && commentsState.comments.length != 0) ? (
+            {(comments && comments.length != 0) ? (
               <ul>
-                {commentsState.comments.map((comment) => (
+                {comments.map((comment) => (
                   <li key={`${threadId}${comment.commentNo}`}>
                     <div>
                       <span>{comment.commentNo}: {comment.commenter} : {formatDateTime(comment.createdAt)}</span>
@@ -76,7 +81,7 @@ export const Thread = () => {
               <div>コメントはまだありません</div>}
           </section>
           <CommentForm commentDispatch={commentDispatch} />
-        </div>
+        </div >
       )
     }
     </>

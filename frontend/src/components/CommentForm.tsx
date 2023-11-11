@@ -25,13 +25,13 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
     if (inputError) return
 
     try {
-      const fetchedNewComment = await axios.post(`/api/threads/${threadId}/comments`, {
+      const fetchedNewCommentData = await axios.post(`/api/threads/${threadId}/comments`, {
         commenter: commentResponderRef.current?.value,
         commentContent: commentContentRef.current?.value,
       }, { withCredentials: true })
-      const newComment = fetchedNewComment.data
-      await commentDispatch({ type: 'add_comment', newComment })
-      const commentId = newComment.id
+      const newCommentData = fetchedNewCommentData.data
+      await commentDispatch({ type: 'add_comment', newComment: newCommentData })
+      const commentId = newCommentData.id
 
       // ログインしている状態でコメント投稿した場合に、user にコメント履歴をつける処理
       if (user) {
@@ -45,10 +45,10 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
         await axios.put(`/api/users/${user.id}`, { ...newUser })
         await userDispatch({ type: 'add_comment', 'newComment': commentId })
       }
-      formRef.current?.reset()
     } catch (error) {
-      await userDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
+      await commentDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
     }
+    formRef.current?.reset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
