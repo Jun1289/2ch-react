@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-import { commentReducer, commentsInitialState, threadReducer, threadsInitialState, userInitialState, userReducer } from "../reducers/reducers";
+import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
+import { useUserContext } from "../context/userContext";
 
 export const Home = () => {
   const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
-  const [_, userDispatch] = useReducer(userReducer, userInitialState);
+  const { userDispatch } = useUserContext()
 
   // スレッドのコメント数を取得
   const getCommentCnt = async (threadId: number): Promise<number> => {
@@ -36,7 +37,7 @@ export const Home = () => {
           withCredentials: true
         });
         const threads = response.data
-        threadsDispatch({ type: 'set_threads', threads })
+        await threadsDispatch({ type: 'set_threads', threads })
         if (threads && threads.length > 0) {
           const counts: Record<number, number> = {};
           for (const thread of threads) {
@@ -44,9 +45,9 @@ export const Home = () => {
           }
           setCommentsCount(counts);
         }
-        commentDispatch({ type: 'set_comments', comments: [] })
+        await commentDispatch({ type: 'set_comments', comments: [] })
       } catch (error) {
-        console.error("スレッドデータのフェッチでエラーが発生しました。", error);
+        threadsDispatch({ type: "set_error", error: `スレッドデータの取得でエラーが発生しました。${error}` })
       }
     };
     fetchData();
@@ -61,7 +62,7 @@ export const Home = () => {
         ) : (
           <section>
             <h2>スレッド一覧</h2>
-            {threadsState.threads ? (
+            {threadsState.threads && threadsState.threads.length > 0 ? (
               <ul>
                 {
                   threadsState.threads.map(thread => (

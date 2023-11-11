@@ -34,20 +34,19 @@ export const User = () => {
       if (!inputedName || !inputedPassword) return
 
       try {
-        await axios.post("/api/users/signin", {
+        const fetchedUser = await axios.post("/api/users/signin", {
           name: userNameRef.current?.value,
           password: passwordRef.current?.value
         }, {
           withCredentials: true
-        }).then(function (response) {
-          const status = response.status
-          if (status == 200) {
-            userDispatch({ type: "set_user", user: response.data })
-            navigate(`/user/${response.data.id}`)
-          } else {
-            setInputError("ユーザー名かパスワードが間違っています")
-          }
         })
+        if (fetchedUser.status === 200) {
+          const user = fetchedUser.data
+          userDispatch({ type: "set_user", user: user })
+          navigate(`/user/${user.id}`)
+        } else {
+          setInputError("ユーザー名かパスワードが間違っています")
+        }
       } catch (error) {
         console.error("ログイン時にエラーが発生しました。", error)
       }
@@ -177,7 +176,6 @@ export const User = () => {
                   <button onClick={hundleSignup}>新規ユーザー作成</button>
                 </div>
               </form>
-              <button onClick={() => console.log(userState.user)}>ユーザーの確認</button>
             </>
           )}
         </>)

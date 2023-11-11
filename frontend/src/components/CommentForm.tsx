@@ -47,7 +47,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
       }
       formRef.current?.reset()
     } catch (error) {
-      userDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
+      await userDispatch({ type: 'set_error', error: `コメント投稿時にエラーが起きました。${error}` })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])

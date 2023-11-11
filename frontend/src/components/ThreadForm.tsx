@@ -24,16 +24,18 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
 
     try {
       // axios.post を使って、json-server の db.json に登録する
-      const response = await axios.post("/api/threads", {
+      const fetchedNewThread = await axios.post("/api/threads", {
         title: threadTitleRef.current?.value,
         topic: threadTopicRef.current?.value
       })
+      const newThread = fetchedNewThread.data
       // state の threadsState に新しいスレッドを追加する
-      threadsDispatch({ type: "add_thread", newThread: response.data })
+      threadsDispatch({ type: "add_thread", newThread: newThread })
       formRef.current?.reset()
     } catch (error) {
       console.error("新しいスレッド作成時にエラーが発生しました", error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -18,10 +18,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           userDispatch({ type: 'set_user', user: userInitialState.user });
           return;
         }
-        console.log("token", token)
         const response = await axios.get(`/api/users?token=${token}`)
         const status = response.status
-        console.log("response.data", response.data)
         if (status == 200) {
           userDispatch({ type: "set_user", user: response.data[0] })
         }

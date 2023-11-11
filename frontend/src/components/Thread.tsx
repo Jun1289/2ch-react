@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
@@ -22,23 +22,22 @@ export const Thread = () => {
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadDispatch] = useReducer(threadReducer, threadsInitialState);
 
-
   // スレッドデータとコメントデータの取得
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/threads/${threadId}`)
-        console.log("response.data", response.data)
-        threadDispatch({ type: 'set_thread', currentThread: response.data })
+        const fetchedThread = await axios.get(`/api/threads/${threadId}`)
+        const thread = fetchedThread.data
+        threadDispatch({ type: 'set_thread', currentThread: thread })
       } catch (error) {
         threadDispatch({
           type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}`
         })
       }
       try {
-        const commentsData = await axios.get(`/api/threads/${threadId}/comments`)
-        console.log("commentsData", commentsData)
-        commentDispatch({ type: 'set_comments', comments: commentsData.data })
+        const fetchedComments = await axios.get(`/api/threads/${threadId}/comments`)
+        const comments = fetchedComments.data
+        commentDispatch({ type: 'set_comments', comments: comments })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
       }
