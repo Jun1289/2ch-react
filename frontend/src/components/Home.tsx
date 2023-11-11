@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
+import { commentReducer, commentsInitialState, threadReducer, threadsInitialState, userInitialState, userReducer } from "../reducers/reducers";
 
 export const Home = () => {
   const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
-
+  const [_, userDispatch] = useReducer(userReducer, userInitialState);
 
   // スレッドのコメント数を取得
   const getCommentCnt = async (threadId: number): Promise<number> => {
@@ -18,6 +18,16 @@ export const Home = () => {
     return comments.length
   }
 
+  const handleReset = async () => {
+    try {
+      await axios.delete('/api/reset')
+      threadsDispatch({ type: "reset" })
+      commentDispatch({ type: "reset" })
+      userDispatch({ type: "reset" })
+    } catch (error) {
+      console.error("全てリセットの処理でエラーが発生しました。", error);
+    }
+  }
   // スレッドの取得と各スレッドのコメント数を取得
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +46,7 @@ export const Home = () => {
         }
         commentDispatch({ type: 'set_comments', comments: [] })
       } catch (error) {
-        console.error("Error fetching threads:", error);
+        console.error("スレッドデータのフェッチでエラーが発生しました。", error);
       }
     };
     fetchData();
@@ -67,6 +77,7 @@ export const Home = () => {
               <div>スレッドはまだありません</div>
             )}
           </section>)}
+      <button onClick={() => handleReset()}>全てリセット</button>
     </div >
   )
 }

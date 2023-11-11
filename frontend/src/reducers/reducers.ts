@@ -1,6 +1,13 @@
 import { CommentAction, ThreadAction, UserAction } from "../types/types";
 import { CommentsState, ThreadsState, UserState } from "../types/types";
 
+const initialize = <T extends UserState | CommentsState | ThreadsState>(initialState: T): T => {
+  return {
+    ...initialState,
+    isLoading: false
+  }
+}
+
 export const userInitialState: UserState = {
   user: null,
   isLoading: true,
@@ -48,6 +55,9 @@ export const userReducer = (userState: UserState, action: UserAction): UserState
         error: action.error
       }
       break;
+    case 'reset':
+      return initialize(userInitialState);
+      break;
     default:
       return userState;
 
@@ -64,11 +74,8 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
   switch (action.type) {
     case 'delete_comment': {
       const newCommentsData = commentsState.comments?.filter((comment) => {
-        console.log("comment.id", comment.id)
-        console.log("action.commentId", action.commentId)
         return comment.id !== action.commentId
       }) || null;
-      console.log("newCommentsData", newCommentsData)
       return {
         ...commentsState,
         comments: newCommentsData
@@ -96,6 +103,9 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
         error: action.error
       }
       break;
+    case 'reset':
+      return initialize(commentsInitialState);
+      break;
   }
 }
 
@@ -105,6 +115,7 @@ export const threadsInitialState: ThreadsState = {
   currentThread: null,
   error: null
 }
+
 
 export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) => {
   switch (action.type) {
@@ -146,5 +157,9 @@ export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) 
         error: action.error
       }
       break;
+    case 'reset':
+      return initialize(threadsInitialState);
+      break;
+
   }
 }

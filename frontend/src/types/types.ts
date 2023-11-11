@@ -81,6 +81,8 @@ export type UserAction =
   | {
     type: "set_error";
     error: string | null;
+  } | {
+    type: "reset";
   }
 
 
@@ -104,6 +106,8 @@ export type ThreadAction =
   | {
     type: "set_error";
     error: string | null;
+  } | {
+    type: "reset";
   }
 
 
@@ -123,4 +127,7 @@ export type CommentAction =
   | {
     type: "set_error";
     error: string | null;
+  }
+  | {
+    type: "reset";
   }

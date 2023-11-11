@@ -294,6 +294,14 @@ server.post("/users/logout", (req, res) => {
   res.status(200).json({ message: "ログアウトに成功しました" });
 });
 
+server.delete("/reset", (req, res) => {
+  res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
+  (router.db.get('comments') as any).remove().write();
+  (router.db.get('users') as any).remove().write();
+  (router.db.get('threads') as any).remove().write();
+
+  res.status(200).json({ message: "リセットに成功しました" });
+})
 // 全てのコメントの削除
 server.delete('/clear-comments', (req, res) => {
   (router.db.get('comments') as any).remove().write();

@@ -177,6 +177,7 @@ export const User = () => {
                   <button onClick={hundleSignup}>新規ユーザー作成</button>
                 </div>
               </form>
+              <button onClick={() => console.log(userState.user)}>ユーザーの確認</button>
             </>
           )}
         </>)
