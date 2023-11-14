@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { createContext, useContext, useEffect, useReducer } from 'react'
 import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useReducer, useState } from 'react'
 import { UserContextType, UserProviderProps } from '../types/types';
 import { userInitialState, userReducer } from '../reducers/reducers';
 
@@ -8,7 +8,7 @@ const UserContext = createContext<UserContextType>(null);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userState, userDispatch] = useReducer(userReducer, userInitialState)
-  const token = Cookies.get('token')
+  const [token, setToken] = useState<string | undefined>(Cookies.get('token'))
 
   // ユーザー情報取得の処理
   useEffect(() => {
@@ -18,10 +18,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           userDispatch({ type: 'set_user', user: userInitialState.user });
           return;
         }
-        const response = await axios.get(`/api/users?token=${token}`)
-        const status = response.status
+        const fetchedUsersData = await axios.get(`/api/users?token=${token}`)
+        const { status, data: usersData } = fetchedUsersData
+        const userData = usersData[0]
         if (status == 200) {
-          userDispatch({ type: "set_user", user: response.data[0] })
+          userDispatch({ type: "set_user", user: userData })
         }
       } catch (error) {
         console.error("ログイン時にエラーが発生しました。", error)
@@ -31,7 +32,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, [token])
 
   return (
-    <UserContext.Provider value={{ userState, userDispatch }}>
+    <UserContext.Provider value={{ userState, userDispatch, setToken }}>
       {children}
     </UserContext.Provider>
   );

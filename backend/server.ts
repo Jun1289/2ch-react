@@ -27,7 +27,6 @@ const getUserByName = async (name) => {
 
 // ユーザがログインしているかチェック
 server.use(async (req, res, next) => {
-  console.log("in server.use token : ", req.cookies.token)
   if (req.cookies.token) {
     try {
       const userToken = await jwt.verify(req.cookies.token, process.env.ACCESS_TOKEN_SECRET);
@@ -35,7 +34,7 @@ server.use(async (req, res, next) => {
       req.user = user;
     } catch (err) {
       res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
-      console.log("無効なトークンなので削除しました。", err)
+      console.error("無効なトークンなので削除しました。", err)
     }
   } else {
     console.log("トークンがありません。")
@@ -94,9 +93,9 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
       req.body.commenter = '名無し'
     }
     if (!req.user) {
-      req.body.userIdentification = 0
+      req.body.userId = 0
     } else {
-      req.body.userIdentification = req.user.id
+      req.body.userId = req.user.id
     }
     const now = new Date().toISOString()
     req.body.createdAt = now
@@ -178,8 +177,7 @@ server.post("/users/register", async (req, res) => {
 // ログイン
 server.post("/users/signin", async (req, res) => {
   try {
-    const name = req.body.name
-    const password = req.body.password
+    const { name, password } = req.body
 
     const user = await getUserByName(name)
     if (!user) {

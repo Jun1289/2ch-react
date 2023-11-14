@@ -27,21 +27,6 @@ export const userReducer = (userState: UserState, action: UserAction): UserState
         error: null
       }
       break;
-    case 'delete_comment': {
-      if (userState.user === null) return userState
-      const newCommentsData = userState.user.comments?.filter((comment) => {
-        return comment !== action.commentId
-      }) || null;
-      return {
-        user: {
-          ...userState.user,
-          comments: newCommentsData
-        },
-        isLoading: false,
-        error: null
-      }
-      break;
-    }
     case 'set_user':
       return {
         user: action.user,
@@ -73,18 +58,6 @@ export const commentsInitialState: CommentsState = {
 
 export const commentReducer = (commentsState: CommentsState, action: CommentAction) => {
   switch (action.type) {
-    case 'delete_comment': {
-      const newCommentsData = commentsState.comments?.filter((comment) => {
-        return comment.id !== action.commentId
-      }) || null;
-      return {
-        ...commentsState,
-        comments: newCommentsData,
-        isLoading: false,
-        error: null
-      }
-      break;
-    }
     case 'add_comment':
       return {
         ...commentsState,
@@ -124,18 +97,6 @@ export const threadsInitialState: ThreadsState = {
 
 export const threadReducer = (threadsState: ThreadsState, action: ThreadAction) => {
   switch (action.type) {
-    case 'delete_thread': {
-      const newthreadsData = threadsState.threads?.filter((thread) => {
-        return thread.id !== action.threadId
-      }) || null;
-      return {
-        ...threadsState,
-        threads: newthreadsData,
-        isLoaing: false,
-        error: null
-      }
-      break;
-    }
     case 'add_thread':
       return {
         ...threadsState,

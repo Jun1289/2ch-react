@@ -12,12 +12,12 @@ export const User = () => {
   const userNameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
-  const { userState, userDispatch } = useUserContext()
+  const { userState, userDispatch, setToken } = useUserContext()
   const { user, isLoading, error: userError } = userState
   const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
 
   // ログインの処理
-  const hundleLogin = useCallback<React.FormEventHandler>(async (event) => {
+  const handleLogin = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
 
@@ -44,6 +44,7 @@ export const User = () => {
           const user = fetchedUser.data
           userDispatch({ type: "set_user", user: user })
           navigate(`/user/${user.id}`)
+          setToken(Cookies.get('token'))
         } else {
           setInputError("ユーザー名かパスワードが間違っています")
         }
@@ -56,7 +57,7 @@ export const User = () => {
   }, [])
 
   // ユーザーの新規登録の処理
-  const hundleSignup = useCallback<React.FormEventHandler>(async (event) => {
+  const handleSignup = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
     const fetchedUser = async () => {
@@ -72,20 +73,20 @@ export const User = () => {
       if (!inputedName || !inputedPassword) return
 
       try {
-        await axios.post("/api/users/register", {
+        const fetchedNewUserData = await axios.post("/api/users/register", {
           name: inputedName,
           password: inputedPassword
         }, {
           withCredentials: true
-        }).then(function (response) {
-          const status = response.status
-          if (status == 200) {
-            userDispatch({ type: "set_user", user: response.data })
-            navigate(`/user/${response.data.id}`)
-          } else {
-            setInputError("ユーザー名かパスワードが間違っています")
-          }
         })
+        const { status, data: newUserData } = fetchedNewUserData
+        if (status == 200) {
+          userDispatch({ type: "set_user", user: newUserData })
+          navigate(`/user/${newUserData.id}`)
+          setToken(Cookies.get('token'))
+        } else {
+          setInputError("ユーザー名かパスワードが間違っています")
+        }
       } catch (error) {
         userDispatch({ type: 'set_error', error: `新規ユーザー作成時にエラーが発生しました。${error}` })
       }
@@ -100,8 +101,7 @@ export const User = () => {
       await axios.post("/api/users/logout", null, {
         withCredentials: true
       })
-      Cookies.remove('token')
-      userDispatch({ type: "set_user", user: null })
+      setToken(undefined)
     } catch (error) {
       console.error("ログアウト時にエラーが発生しました。", error)
     }
@@ -115,8 +115,8 @@ export const User = () => {
         if (user.comments === undefined) return
         const commentsByUser: Comment[] = []
         for (const commentId of user.comments) {
-          await axios.get(`/api/comments/${commentId}`).then((response) => {
-            commentsByUser.push(response.data)
+          await axios.get(`/api/comments/${commentId}`).then((fetchedCommentData) => {
+            commentsByUser.push(fetchedCommentData.data)
           })
         }
         commentDispatch({ type: 'set_comments', comments: commentsByUser })
@@ -173,10 +173,10 @@ export const User = () => {
                   <input id="password" type="password" ref={passwordRef} />
                 </div>
                 <div>
-                  <button onClick={hundleLogin}>ログイン</button>
+                  <button onClick={handleLogin}>ログイン</button>
                 </div>
                 <div>
-                  <button onClick={hundleSignup}>新規ユーザー作成</button>
+                  <button onClick={handleSignup}>新規ユーザー作成</button>
                 </div>
               </form>
             </>

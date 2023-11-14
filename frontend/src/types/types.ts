@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 export type UserContextType = {
   userState: UserState;
   userDispatch: React.Dispatch<UserAction>;
+  setToken: (token: string | undefined) => void;
 } | null;
 
 export type User = {
@@ -71,10 +72,6 @@ export type UserAction =
     newComment: number;
   }
   | {
-    type: "delete_comment";
-    commentId: number;
-  }
-  | {
     type: 'set_user';
     user: User | null;
   }
@@ -87,10 +84,6 @@ export type UserAction =
 
 
 export type ThreadAction =
-  | {
-    type: "delete_thread";
-    threadId: number;
-  }
   | {
     type: "add_thread";
     newThread: Thread;
@@ -112,10 +105,6 @@ export type ThreadAction =
 
 
 export type CommentAction =
-  | {
-    type: "delete_comment";
-    commentId: number;
-  }
   | {
     type: "add_comment";
     newComment: Comment;
