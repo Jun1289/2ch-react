@@ -222,11 +222,21 @@ server.post("/users/logout", (req, res) => {
   res.status(200).json({ message: "トークンを削除しました。" });
 });
 
-server.delete("/reset", (req, res) => {
+const deleteAll = async (category: string) => {
+  const fetchedAllData = await fetch(`http://localhost:8000/${category}`);
+  const allData = await fetchedAllData.json();
+  const allId = allData.map((data) => data.id);
+  allId.forEach(async (id) => {
+    await fetch(`http://localhost:8000/${category}/${id}`, {
+      method: 'DELETE',
+    });
+  });
+}
+server.delete("/reset", async (req, res) => {
   res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
-  (router.db.get('comments') as any).remove().write();
-  (router.db.get('users') as any).remove().write();
-  (router.db.get('threads') as any).remove().write();
+  await deleteAll("comments");
+  await deleteAll("users");
+  await deleteAll("threads");
 
   res.status(200).json({ message: "リセットに成功しました" });
 })
