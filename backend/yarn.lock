@@ -116,7 +116,7 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.199.tgz#c3edb5650149d847a277a8961a7ad360c474e9bf"
   integrity sha512-Vrjz5N5Ia4SEzWWgIVwnHNEnb1UE1XMkvY5DGXrAeOGE9imk0hgTHh5GyDjLDJi9OTCn9oo9dXH1uToK1VRfrg==
 
-"@types/lowdb@*", "@types/lowdb@^1.0.12":
+"@types/lowdb@*":
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/@types/lowdb/-/lowdb-1.0.12.tgz#e9828264cb5cc5ccd5462c437a9a625d34088f7f"
   integrity sha512-m/hOfY7nuwo9V3yApvR6aJ3uZP6iNC74S7Bx5BWz0L7IrzjKyzUur/jEdlYWBWWVjmkCz+ECK9nk8UJoQa8aZw==

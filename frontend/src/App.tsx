@@ -16,7 +16,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/threads/:threadId" element={<Thread />}></Route>
         <Route path="/user/:userId?" element={<User />}></Route>
-        {/* <Route path="/" element={<Thread />} /> */}
       </Routes>
     </UserProvider>
   );

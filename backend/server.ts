@@ -15,11 +15,11 @@ server.use(jsonServer.bodyParser)
 const BASE_URL = "http://localhost:8000";
 
 // 引数の name に一致するユーザを返す関数
-const getUserByName = async (name) => {
+const getUserByName = async (name: string) => {
   try {
     const fetchedUsers = await fetch(`${BASE_URL}/users`);
     const users = await fetchedUsers.json();
-    return users.find((user) => name === user.name);
+    return users.find((user) => name === user?.name);
   } catch (error) {
     console.error("ユーザーの取得に失敗しました。", error);
   }
@@ -222,6 +222,7 @@ server.post("/users/logout", (req, res) => {
   res.status(200).json({ message: "トークンを削除しました。" });
 });
 
+// 全てのデータを削除
 const deleteAll = async (category: string) => {
   const fetchedAllData = await fetch(`http://localhost:8000/${category}`);
   const allData = await fetchedAllData.json();
@@ -240,102 +241,6 @@ server.delete("/reset", async (req, res) => {
 
   res.status(200).json({ message: "リセットに成功しました" });
 })
-
-// 不要になったコード
-// corsの設定、proxy に乗り換えた
-// cors の設定フロントエンドからのリクエストを許可するために行なっていたが、proxy によって不要になった
-// // ローカルマシンのフロントエンドからのリクエストのみ許可する
-// const allowedOrigins = ["http://127.0.0.1:5173"];
-// server.use(cors({
-//   origin: function (origin, callback) {
-//     // 同一オリジンからのアクセスは許可
-//     if (!origin) return callback(null, true);
-//     // リクエストしてきた origin が allowedOrigins にない場合はアクセス拒否 
-//     if (allowedOrigins.indexOf(origin) === -1) {
-//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-//       return callback(new Error(msg), false);
-//     }
-//     console.log("許可されたオリジンです。", origin);
-//     // リクエストしてきた origin が allowedOrigins にある場合はアクセス許可 
-//     return callback(null, true);
-//   },
-//   credentials: true
-// }));
-
-// コメントの削除
-// server.delete('/comments/:commentId', async (req, res, next) => {
-
-//   const commentId = req.params.commentId
-//   // const user = req.user
-//   // if (user) {
-//   //   user.comments = user.comments.filter((comment) => {
-//   //     return comment != commentId
-//   //   })
-//   //   await fetch(`http://localhost:8000/users/${user.id}`, {
-//   //     method: 'PUT',
-//   //     headers: {
-//   //       'Content-Type': 'application/json',
-//   //     },
-//   //     body: JSON.stringify({ user })
-//   //   })
-//   // }
-
-//   // console.log("called delete")
-//   try {
-//     const fetchedComment = await fetch(`http://localhost:8000/comments/${commentId}`)
-//     const comment = await fetchedComment.json()
-//     const userId = comment.userIdentification
-//     console.log("userId before deleting comment in user", userId)
-//     if (userId != 0 && userId != undefined) {
-//       console.log("userId after", userId)
-//       const response = await fetch(`http://localhost:8000/users/${userId}`)
-//       const user = await response.json()
-//       const updatedComments = user.comments.filter((comment) => {
-//         return comment != commentId
-//       })
-//       console.log("updatedComments", updatedComments)
-//       await fetch(`http://localhost:8000/users/${userId}`, {
-//         method: 'PUT',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ ...user, comments: updatedComments })
-//       })
-//     }
-//   } catch (error) {
-//     console.error("ユーザーデータからコメント削除する処理でエラーが発生しました。", error);
-//   };
-//   next()
-// })
-
-// 全てのコメントの削除
-server.delete('/clear-comments', (req, res) => {
-  (router.db.get('comments') as any).remove().write();
-  res.status(200).send('すべてのコメントを削除しました');
-});
-
-// 全てのユーザーの削除
-server.delete('/clear-users', (req, res) => {
-  (router.db.get('users') as any).remove().write();
-  res.status(200).send('すべてのユーザーを削除しました');
-});
-
-// 全てのスレッドの削除
-server.delete('/clear-threads', (req, res) => {
-  (router.db.get('threads') as any).remove().write();
-  res.status(200).send('すべてのスレッドを削除しました');
-});
-
-// 特定のスレッドのコメントの削除
-server.delete('/threads/:threadId/comments', (req, res) => {
-  const threadId = parseInt(req.params.threadId, 10);
-  if (isNaN(threadId)) {
-    return res.status(400).send('Invalid thread ID');
-  }
-
-  (router.db.get('comments') as any).remove({ threadId: threadId }).write();
-  res.status(200).send(`スレッドID ${threadId} のスレッドの子マントを全て削除しました`);
-});
 
 server.use(middlewares)
 server.use(router)

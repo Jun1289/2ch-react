@@ -27,7 +27,6 @@ export type Comment = {
   commenter: string,
   commentContent: string,
   createdAt: string,
-  updatedAt: string,
   threadId: number,
 }
 
@@ -42,7 +41,6 @@ export type Thread = {
   title: string,
   topic: string,
   createdAt: string,
-  updatedAt: string,
   commentTotal: number,
   builder: string
 }

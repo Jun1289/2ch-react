@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useReducer } from "react";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 import { useUserContext } from "../context/userContext";
+// import fetch from "node-fetch";
+
 
 export const Home = () => {
   const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
