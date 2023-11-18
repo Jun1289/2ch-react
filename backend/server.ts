@@ -42,6 +42,28 @@ server.use(async (req, res, next) => {
   next();
 });
 
+
+// スレッドの新規作成
+server.post('/threads', (req, res, next) => {
+  if (!req.body.title) {
+    return res.status(400).json({
+      message: 'スレッドのタイトルが入力されていません'
+    })
+  }
+
+  if (!req.body.topic) {
+    return res.status(400).json({
+      message: 'スレッドのトピックが入力されていません'
+    })
+  }
+
+  const now = new Date().toISOString()
+  req.body.createdAt = now
+  req.body.commentTotal = 0
+
+  next()
+})
+
 // コメント投稿
 server.post('/threads/:threadId/comments', async (req, res, next) => {
   const threadId = req.params.threadId;
@@ -102,27 +124,6 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ message: `コメント投稿のサーバーサイドでの処理中にエラーが発生しました。${error}` });
   }
-  next()
-})
-
-// スレッドの新規作成
-server.post('/threads', (req, res, next) => {
-  if (!req.body.title) {
-    return res.status(400).json({
-      message: 'スレッドのタイトルが入力されていません'
-    })
-  }
-
-  if (!req.body.topic) {
-    return res.status(400).json({
-      message: 'スレッドのトピックが入力されていません'
-    })
-  }
-
-  const now = new Date().toISOString()
-  req.body.createdAt = now
-  req.body.commentTotal = 0
-
   next()
 })
 
