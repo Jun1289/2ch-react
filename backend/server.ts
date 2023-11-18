@@ -42,7 +42,6 @@ server.use(async (req, res, next) => {
   next();
 });
 
-
 // スレッドの新規作成
 server.post('/threads', (req, res, next) => {
   if (!req.body.title) {
@@ -79,7 +78,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     })
   }
 
-  const response = await fetch('http://localhost:8000/comments');
+  const response = await fetch(`${BASE_URL}/comments`);
   const comments = await response.json();
   const commentsForThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
   if (commentsForThread >= 10) {
@@ -90,7 +89,8 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 
   // スレッドのコメント数をカウントアップとコメントデータの作成
   try {
-    const threadResponse = await fetch(`http://localhost:8000/threads/${threadId}`);
+    const threadResponse = await fetch(`${BASE_URL}/threads/${threadId}`);
+    console.log(`${BASE_URL}/${threadId}`)
     if (!threadResponse.ok) {
       throw new Error('スレッドのデータを取得できませんでした');
     }
@@ -99,7 +99,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     threadData.commentTotal = threadData.commentTotal + 1;
     const newCommentTotal = threadData.commentTotal;
 
-    const updateResponse = await fetch(`http://localhost:8000/threads/${threadId}`, {
+    const updateResponse = await fetch(`${BASE_URL}/threads/${threadId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -199,7 +199,7 @@ server.post("/users/signin", async (req, res) => {
 
     res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", secure: false, httpOnly: false, path: '/' })
 
-    await fetch(`http://localhost:8000/users/${user.id}`, {
+    await fetch(`${BASE_URL}/users/${user.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -225,11 +225,11 @@ server.post("/users/logout", (req, res) => {
 
 // 全てのデータを削除
 const deleteAll = async (category: string) => {
-  const fetchedAllData = await fetch(`http://localhost:8000/${category}`);
+  const fetchedAllData = await fetch(`${BASE_URL}/${category}`);
   const allData = await fetchedAllData.json();
   const allId = allData.map((data) => data.id);
   allId.forEach(async (id) => {
-    await fetch(`http://localhost:8000/${category}/${id}`, {
+    await fetch(`${BASE_URL}/${category}/${id}`, {
       method: 'DELETE',
     });
   });
