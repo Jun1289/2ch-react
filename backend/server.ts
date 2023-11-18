@@ -56,9 +56,14 @@ server.post('/threads', (req, res, next) => {
     })
   }
 
-  const now = new Date().toISOString()
-  req.body.createdAt = now
-  req.body.commentTotal = 0
+  const now = new Date();
+  const japanTimeOffset = 9 * 60; // 日本時間のオフセット（分）
+  // 現在のUTC時刻に日本時間のオフセットを加算
+  now.setMinutes(now.getMinutes() + japanTimeOffset);
+  // 日本時間の日時文字列を作成
+  const formattedDate = now.toISOString().replace('Z', '+09:00');
+  req.body.createdAt = formattedDate;
+  req.body.commentTotal = 0;
 
   next()
 })
@@ -119,7 +124,13 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     } else {
       req.body.userId = req.user.id
     }
-    const now = new Date().toISOString()
+    const now = new Date();
+    const japanTimeOffset = 9 * 60; // 日本時間のオフセット（分）
+    // 現在のUTC時刻に日本時間のオフセットを加算
+    now.setMinutes(now.getMinutes() + japanTimeOffset);
+    // 日本時間の日時文字列を作成
+    const formattedDate = now.toISOString().replace('Z', '+09:00');
+    req.body.createdAt = formattedDate;
     req.body.createdAt = now
   } catch (error) {
     return res.status(500).json({ message: `コメント投稿のサーバーサイドでの処理中にエラーが発生しました。${error}` });

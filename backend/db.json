@@ -1,59 +1,13 @@
 {
   "threads": [
     {
-      "title": "title",
-      "topic": "dd",
-      "createdAt": "2023-11-18T05:28:35.458Z",
-      "commentTotal": 2,
+      "title": "っっd",
+      "topic": "っっd",
+      "createdAt": "2023-11-18T18:10:07.978+09:00",
+      "commentTotal": 0,
       "id": 1
-    },
-    {
-      "title": "title",
-      "topic": "poster",
-      "createdAt": "2023-11-18T05:30:35.541Z",
-      "commentTotal": 1,
-      "id": 2
     }
   ],
-  "comments": [
-    {
-      "commenter": "title",
-      "commentContent": "comment",
-      "commentNo": 1,
-      "userId": 0,
-      "createdAt": "2023-11-18T05:30:43.130Z",
-      "threadId": "2",
-      "id": 1
-    },
-    {
-      "commenter": "test2",
-      "commentContent": "comment",
-      "commentNo": 1,
-      "userId": 1,
-      "createdAt": "2023-11-18T05:31:03.722Z",
-      "threadId": "1",
-      "id": 2
-    },
-    {
-      "commenter": "tester",
-      "commentContent": "dd",
-      "commentNo": 2,
-      "userId": 1,
-      "createdAt": "2023-11-18T05:31:12.354Z",
-      "threadId": "1",
-      "id": 3
-    }
-  ],
-  "users": [
-    {
-      "name": "test",
-      "hashedPassword": "$2b$10$FLu1QWMBM6hg9zvR7HriieS4qZ7f1sfY7/ERAshknRGihFrOU4qrS",
-      "comments": [
-        2,
-        3
-      ],
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTcwMDI4NTQ1MCwiZXhwIjoxNzAwMzcxODUwfQ.42dTbLqAy7rzfXnKQH84wBvn5jKU4yK0HBSoxoP8LgE",
-      "id": 1
-    }
-  ]
+  "comments": [],
+  "users": []
 }

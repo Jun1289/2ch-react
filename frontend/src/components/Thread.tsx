@@ -6,16 +6,13 @@ import { CommentForm } from "./CommentForm";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 
 const formatDateTime = (dateString: string) => {
-  const dateObj = new Date(dateString);
-  const year = dateObj.getFullYear();
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const day = String(dateObj.getDate()).padStart(2, '0');
-  const hours = String(dateObj.getHours()).padStart(2, '0');
-  const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-  const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+  const [datePart, timePart] = dateString.split('T');
+  const [year, month, day] = datePart.split('-');
+  const [time] = timePart.split('+'); // タイムゾーン情報を無視する
+  const [hours, minutes, seconds] = time.split(':');
 
   return `${year}/${month}/${day}-${hours}:${minutes}:${seconds}`;
-}
+};
 
 export const Thread = () => {
   const { threadId } = useParams()

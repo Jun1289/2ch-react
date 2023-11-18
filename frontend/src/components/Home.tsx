@@ -29,6 +29,7 @@ export const Home = () => {
       threadsDispatch({ type: "reset" })
       commentDispatch({ type: "reset" })
       userDispatch({ type: "reset" })
+      setCommentsCount({})
     } catch (error) {
       threadsDispatch({ type: "set_error", error: `全てリセットの処理でエラーが発生しました。${error}` });
     }
