@@ -36,20 +36,18 @@ server.use(async (req, res, next) => {
       res.clearCookie("token", { sameSite: "lax", secure: false, httpOnly: false, path: '/' });
       console.error("無効なトークンなので削除しました。", err)
     }
-  } else {
-    console.log("トークンがありません。")
   }
   next();
 });
 
 // スレッドの新規作成
 server.post('/threads', (req, res, next) => {
+  // タイトルとトピックが入力されているかチェック
   if (!req.body.title) {
     return res.status(400).json({
       message: 'スレッドのタイトルが入力されていません'
     })
   }
-
   if (!req.body.topic) {
     return res.status(400).json({
       message: 'スレッドのトピックが入力されていません'
@@ -85,6 +83,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 
   const response = await fetch(`${BASE_URL}/comments`);
   const comments = await response.json();
+  // 現在のスレッドのコメント数を取得
   const commentsForThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
   if (commentsForThread >= 10) {
     return res.status(400).json({
@@ -95,7 +94,6 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
   // スレッドのコメント数をカウントアップとコメントデータの作成
   try {
     const threadResponse = await fetch(`${BASE_URL}/threads/${threadId}`);
-    console.log(`${BASE_URL}/${threadId}`)
     if (!threadResponse.ok) {
       throw new Error('スレッドのデータを取得できませんでした');
     }
@@ -131,7 +129,6 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
     // 日本時間の日時文字列を作成
     const formattedDate = now.toISOString().replace('Z', '+09:00');
     req.body.createdAt = formattedDate;
-    req.body.createdAt = now
   } catch (error) {
     return res.status(500).json({ message: `コメント投稿のサーバーサイドでの処理中にエラーが発生しました。${error}` });
   }
@@ -141,6 +138,7 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
 // ユーザ新規登録
 server.post("/users/register", async (req, res) => {
   try {
+    // 入力フォームから送られてきたユーザー名とパスワードを取得
     const { name, password } = req.body;
 
     // 入力されたユーザー名が既に使用されていれば新規登録させない
@@ -153,10 +151,13 @@ server.post("/users/register", async (req, res) => {
       return res.status(400).json({ message: "ユーザー名かパスワードが未入力です" })
     }
 
+    // トークンの発行
     // jwt.sign の第一引数は トークンのペイロード（ユーザの認証情報）、第二引数は秘密鍵の情報、第三引数はオプション（今回はトークンの有効期限を10分に設定）
     const token = jwt.sign({ name }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "24h",
     })
+
+    // パスワードのハッシュ化
     // bcrypt.hash の第二引数は salt rounds(ハッシュ化を行う回数)
     const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -189,27 +190,32 @@ server.post("/users/register", async (req, res) => {
 // ログイン
 server.post("/users/signin", async (req, res) => {
   try {
+    // 入力フォームから送られてきたユーザー名とパスワードを取得
     const { name, password } = req.body
 
+    // ユーザー名の照合
     const user = await getUserByName(name)
     if (!user) {
       return res.status(401).json({ message: "認証情報が無効です" })
     }
 
+    // パスワードの照合
     const match = await bcrypt.compare(password, user.hashedPassword)
-
     if (!match) {
       return res.status(401).json({ message: "認証情報が無効です" })
     }
 
+    // トークンの発行
     const token = jwt.sign(
       { name },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "24h", }
     )
 
+    // ユーザーがログインしているかどうかの確認用のトークンを付与したクッキーを発行する
     res.cookie("token", token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), sameSite: "lax", secure: false, httpOnly: false, path: '/' })
 
+    // user のトークンの値を更新する
     await fetch(`${BASE_URL}/users/${user.id}`, {
       method: 'PATCH',
       headers: {
@@ -218,9 +224,10 @@ server.post("/users/signin", async (req, res) => {
       body: JSON.stringify({ token })  // ここでtokenのみをJSONとして送信
     })
 
+    // ユーザー情報を更新したトークンと共に返す
     res.status(200).json({
       ...user,
-      newToken: token,
+      token,
     })
   } catch (error) {
     return res.status(500).json({ message: `ログインのサーバーサイドでの処理中にエラーが発生しました。${error}` });

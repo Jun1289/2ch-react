@@ -25,11 +25,13 @@ export const CommentForm: React.FC<CommentFormProps> = ({ commentDispatch }) => 
     if (inputError) return
 
     try {
+      // 新しいコメントを作成。db.json に新しいコメントが追加される
       const fetchedNewCommentData = await axios.post(`/api/threads/${threadId}/comments`, {
         commenter: commentResponderRef.current?.value,
         commentContent: commentContentRef.current?.value,
-      }, { withCredentials: true })
+      })
       const newCommentData = fetchedNewCommentData.data
+      // state の commentsState に新しいコメントを追加する
       await commentDispatch({ type: 'add_comment', newComment: newCommentData })
       const commentId = newCommentData.id
 

@@ -24,25 +24,27 @@ export const User = () => {
     const fetchedUser = async () => {
       const inputedName = userNameRef.current?.value
       const inputedPassword = passwordRef.current?.value
-
+      // ユーザー名かパスワードが入力されていなければエラー文を設定
       if (!inputedName) {
         setInputError("ユーザー名を入力してください。")
       }
       if (!inputedPassword) {
         setInputError((prevError) => prevError ? prevError + "パスワードを入力してください。" : "パスワードを入力してください。")
       }
+      // ユーザー名かパスワードが入力されていなければ処理を終了
       if (!inputedName || !inputedPassword) return
 
       try {
+        // ログイン処理
         const fetchedUser = await axios.post("/api/users/signin", {
           name: userNameRef.current?.value,
           password: passwordRef.current?.value
-        }, {
-          withCredentials: true
         })
+        // ログインに成功したら、ユーザー情報を state にセット
         if (fetchedUser.status === 200) {
           const user = fetchedUser.data
           userDispatch({ type: "set_user", user: user })
+          // url を /user/:userId に変更
           navigate(`/user/${user.id}`)
           setToken(Cookies.get('token'))
         } else {
@@ -64,20 +66,20 @@ export const User = () => {
       const inputedName = userNameRef.current?.value
       const inputedPassword = passwordRef.current?.value
 
+      // ユーザー名かパスワードが入力されていなければエラー文を設定
       if (!inputedName) {
         setInputError("ユーザー名を入力してください。")
       }
       if (!inputedPassword) {
         setInputError((prevError) => prevError ? prevError + "パスワードを入力してください。" : "パスワードを入力してください。")
       }
+      // ユーザー名かパスワードが入力されていなければ処理を終了
       if (!inputedName || !inputedPassword) return
 
       try {
         const fetchedNewUserData = await axios.post("/api/users/register", {
           name: inputedName,
           password: inputedPassword
-        }, {
-          withCredentials: true
         })
         const { status, data: newUserData } = fetchedNewUserData
         if (status == 200) {

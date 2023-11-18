@@ -3,15 +3,12 @@ import { useEffect, useState } from "react";
 import { ThreadForm } from "./ThreadForm";
 import { Link } from "react-router-dom";
 import { useReducer } from "react";
-import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
+import { threadReducer, threadsInitialState } from "../reducers/reducers";
 import { useUserContext } from "../context/userContext";
-// import fetch from "node-fetch";
 
 
 export const Home = () => {
   const [commentCounts, setCommentsCount] = useState<Record<number, number>>({});
-  const [commentsState, commentDispatch] = useReducer(commentReducer, commentsInitialState);
-  const { isLoading: commentsIsLoading } = commentsState
   const [threadsState, threadsDispatch] = useReducer(threadReducer, threadsInitialState);
   const { threads, isLoading: threadsIsLoading, error: threadsError } = threadsState
   const { userDispatch } = useUserContext()
@@ -23,11 +20,11 @@ export const Home = () => {
     return comments.length
   }
 
+  // 全てリセットの処理
   const handleReset = async () => {
     try {
       await axios.delete('/api/reset')
       threadsDispatch({ type: "reset" })
-      commentDispatch({ type: "reset" })
       userDispatch({ type: "reset" })
       setCommentsCount({})
     } catch (error) {
@@ -38,19 +35,19 @@ export const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedThreadsData = await axios.get('/api/threads', {
-          withCredentials: true
-        });
+        // スレッドの取得
+        const fetchedThreadsData = await axios.get('/api/threads')
         const threadsData = fetchedThreadsData.data
         await threadsDispatch({ type: 'set_threads', threads: threadsData })
         if (threadsData && threadsData.length > 0) {
+          // 各スレッドのコメント数を取得し、counts[thread.id]にthreadのコメント数を格納 
           const counts: Record<number, number> = {};
           for (const thread of threadsData) {
             counts[thread.id] = await getCommentCnt(thread.id);
           }
+          // 各スレッドのコメント数をセット
           setCommentsCount(counts);
         }
-        await commentDispatch({ type: 'set_comments', comments: [] })
       } catch (error) {
         threadsDispatch({ type: "set_error", error: `スレッドデータの取得でエラーが発生しました。${error}` })
       }
@@ -65,7 +62,7 @@ export const Home = () => {
       )}
       <ThreadForm threadsDispatch={threadsDispatch} />
       {
-        (threadsIsLoading || commentsIsLoading) ? (
+        (threadsIsLoading) ? (
           null
         ) : (
           <section>

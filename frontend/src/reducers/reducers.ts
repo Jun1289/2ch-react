@@ -1,6 +1,7 @@
 import { CommentAction, ThreadAction, UserAction } from "../types/types";
 import { CommentsState, ThreadsState, UserState } from "../types/types";
 
+// stateの初期化
 const initialize = <T extends UserState | CommentsState | ThreadsState>(initialState: T): T => {
   return {
     ...initialState,

@@ -5,6 +5,7 @@ import { useReducer } from "react";
 import { CommentForm } from "./CommentForm";
 import { commentReducer, commentsInitialState, threadReducer, threadsInitialState } from "../reducers/reducers";
 
+// 日付のフォーマット
 const formatDateTime = (dateString: string) => {
   const [datePart, timePart] = dateString.split('T');
   const [year, month, day] = datePart.split('-');
@@ -25,15 +26,19 @@ export const Thread = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 現在のページのスレッドの取得
         const fetchedThreadData = await axios.get(`/api/threads/${threadId}`)
         const threadData = fetchedThreadData.data
+        // スレッドの取得が成功したら、スレッドのデータをセット
         threadDispatch({ type: 'set_thread', currentThread: threadData })
       } catch (error) {
         threadDispatch({ type: 'set_error', error: `スレッドデータの取得でエラーが発生しました。${error}` })
       }
       try {
+        // 現在のページのスレッドのコメントの取得
         const fetchedCommentsData = await axios.get(`/api/threads/${threadId}/comments`)
         const commentsData = fetchedCommentsData.data
+        // コメントの取得が成功したら、コメントのデータをセット
         commentDispatch({ type: 'set_comments', comments: commentsData })
       } catch (error) {
         commentDispatch({ type: 'set_error', error: `コメントの取得でエラーが起きました。${error}` })
