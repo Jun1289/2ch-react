@@ -1,5 +1,13 @@
 {
-  "threads": [],
+  "threads": [
+    {
+      "title": "スレッドタイトル",
+      "topic": "スレッドトピック",
+      "createdAt": "2023-11-19T09:11:38.858+09:00",
+      "commentTotal": 0,
+      "id": 1
+    }
+  ],
   "comments": [],
   "users": []
 }
