@@ -18,7 +18,7 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
       setInputError("タイトルを入力してください。")
     }
     if (!threadTopicRef.current?.value) {
-      setInputError((prevError) => prevError ? prevError + "話題を入力してください。" : "話題を入力してください。")
+      setInputError((prevError) => prevError ? prevError + "トピックを入力してください。" : "トピックを入力してください。")
     }
     if (inputError) return
 
@@ -54,7 +54,7 @@ export const ThreadForm: React.FC<ThreadFormProps> = ({ threadsDispatch }) => {
           />
         </div>
         <div>
-          <label htmlFor="topic">話題</label>
+          <label htmlFor="topic">トピック</label>
           <textarea
             id="topic"
             name="topic"
