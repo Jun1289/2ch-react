@@ -84,8 +84,8 @@ server.post('/threads/:threadId/comments', async (req, res, next) => {
   const response = await fetch(`${BASE_URL}/comments`);
   const comments = await response.json();
   // 現在のスレッドのコメント数を取得
-  const commentsForThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
-  if (commentsForThread >= 10) {
+  const commentsInThread = comments.length > 0 ? comments.filter((comment) => comment.threadId == threadId).length : 0;
+  if (commentsInThread >= 10) {
     return res.status(400).json({
       message: 'スレッドのコメントは10個までです'
     })

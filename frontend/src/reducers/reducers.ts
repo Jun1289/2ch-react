@@ -82,9 +82,6 @@ export const commentReducer = (commentsState: CommentsState, action: CommentActi
         error: action.error
       }
       break;
-    case 'reset':
-      return initialize(commentsInitialState);
-      break;
   }
 }
 

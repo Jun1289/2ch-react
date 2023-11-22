@@ -115,6 +115,3 @@ export type CommentAction =
     type: "set_error";
     error: string | null;
   }
-  | {
-    type: "reset";
-  }

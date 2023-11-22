@@ -1,13 +1,5 @@
 {
-  "threads": [
-    {
-      "title": "って",
-      "topic": "っt",
-      "createdAt": "2023-11-19T10:48:09.707+09:00",
-      "commentTotal": 0,
-      "id": 1
-    }
-  ],
+  "threads": [],
   "comments": [],
   "users": []
 }

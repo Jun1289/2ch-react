@@ -22,7 +22,7 @@ export const User = () => {
     event.preventDefault();
     setInputError(null)
 
-    const fetchedUser = async () => {
+    const fetchUser = async () => {
       const inputedName = userNameRef.current?.value
       const inputedPassword = passwordRef.current?.value
       // ユーザー名かパスワードが入力されていなければエラー文を設定
@@ -55,7 +55,7 @@ export const User = () => {
         userDispatch({ type: 'set_error', error: `ログイン時にエラーが発生しました。${error}` })
       }
     }
-    fetchedUser()
+    fetchUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -63,7 +63,7 @@ export const User = () => {
   const handleSignup = useCallback<React.FormEventHandler>(async (event) => {
     event.preventDefault();
     setInputError(null)
-    const fetchedUser = async () => {
+    const fetchUser = async () => {
       const inputedName = userNameRef.current?.value
       const inputedPassword = passwordRef.current?.value
 
@@ -94,25 +94,23 @@ export const User = () => {
         userDispatch({ type: 'set_error', error: `新規ユーザー作成時にエラーが発生しました。${error}` })
       }
     }
-    fetchedUser()
+    fetchUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ログアウトの処理
   const toLogout = async () => {
     try {
-      await axios.post("/api/users/logout", null, {
-        withCredentials: true
-      })
+      await axios.post("/api/users/logout", null)
       setToken(undefined)
     } catch (error) {
       console.error("ログアウト時にエラーが発生しました。", error)
     }
   }
 
-  // ログインしていて、ユーザーにコメント履歴があれば表示する
+  // ユーザーのコメント履歴の取得
   useEffect(() => {
-    const fetchedCommentsData = async () => {
+    const fetchCommentsData = async () => {
       if (!user) return
       try {
         if (user.comments === undefined) return
@@ -127,7 +125,7 @@ export const User = () => {
         console.error("コメントの取得でエラーが発生しました。", error);
       }
     }
-    fetchedCommentsData()
+    fetchCommentsData()
   }, [user])
 
   return (
